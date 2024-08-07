@@ -1,5 +1,8 @@
 *~
 *.swp
+*.o
+*.ko
+*.d
 *.sqfs
 install/*
 cscope.out
