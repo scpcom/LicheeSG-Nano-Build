@@ -3,7 +3,7 @@
 # download source
 
 ```
-git clone https://github.com/sipeed/LicheeSG-Nano-Build --depth=1
+git clone https://github.com/scpcom/LicheeSG-Nano-Build --depth=1
 cd LicheeSG-Nano-Build
 git submodule update --init --recursive
 ```
