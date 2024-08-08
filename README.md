@@ -1,11 +1,11 @@
-# LicheeRV-Nano-Build
+# LicheeSG-Nano-Build
 
 # download source
 
 ```
-git clone https://github.com/sipeed/LicheeRV-Nano-Build --depth=1
-cd LicheeRV-Nano-Build
-git clone https://github.com/sophgo/host-tools --depth=1
+git clone https://github.com/sipeed/LicheeSG-Nano-Build --depth=1
+cd LicheeSG-Nano-Build
+git submodule update --init --recursive
 ```
 
 ## host environment
