@@ -5,8 +5,9 @@
 ```
 git clone https://github.com/scpcom/LicheeSG-Nano-Build --depth=1
 cd LicheeSG-Nano-Build
-git submodule update --init --recursive
+git submodule update --init --recursive --depth=1
 ```
+You can remove the --depth=1 parameter to get full history.
 
 ## host environment
 
