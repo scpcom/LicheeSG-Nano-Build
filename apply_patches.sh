@@ -26,3 +26,18 @@ git am ../patches/build/0028-sg2002_licheervnano_defconfig-enable-libdaemon-expa
 
 git am ../patches/build/0031-sg2002_licheervnano_sd_defconfig-clean-buggy-package.patch
 git am ../patches/build/0033-sg2002_licheervnano_sd_defconfig-add-input-event-dae.patch
+cd ..
+
+cd ramdisk
+git am ../patches/ramdisk/0001-rootfs-public-add-a-lot-of-package-for-licheervnano.patch
+git am ../patches/ramdisk/0002-src-add-qt5.patch
+git am ../patches/ramdisk/0003-src-add-avahi-dbus-expat-libdaemon-doc.patch
+git am ../patches/ramdisk/0004-overlay-add-sg2002_licheervnano_sd.patch
+git am ../patches/ramdisk/0005-src-add-openssh-openssl.patch
+git am ../patches/ramdisk/0006-common_musl_riscv64-busybox-upgrade.patch
+git am ../patches/ramdisk/0007-common_musl_riscv64-S40network-allow-load-config-fro.patch
+git am ../patches/ramdisk/0008-20240228.patch
+git am ../patches/ramdisk/0009-licheervnano-upgrade-isp-tune-config.patch
+git am ../patches/ramdisk/0010-loadsystemko.sh-dont-drop-cache.patch
+git am ../patches/ramdisk/0011-S99ivetest-rewrite.patch
+git am ../patches/ramdisk/0012-S99loadtest-dont-show-loadavg.patch
