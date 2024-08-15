@@ -18,3 +18,11 @@ git am ../patches/build/0020-boards-sg200x-sg2002_licheervnano_sd-sg2002_licheer
 # licheervnano enable tpu demo for tpu test
 git am ../patches/build/0022-boards-sg200x-sg2002_licheervnano_sd-sg2002_licheerv.patch
 
+# enable haveged unifont qt5 qt5demo
+git am ../patches/build/0026-sg2002_licheervnano_sd_defconfig-enable-haveged-unif.patch
+
+# licheervnano: enable libdaemon expat dbus avahi
+git am ../patches/build/0028-sg2002_licheervnano_defconfig-enable-libdaemon-expat.patch
+
+git am ../patches/build/0031-sg2002_licheervnano_sd_defconfig-clean-buggy-package.patch
+git am ../patches/build/0033-sg2002_licheervnano_sd_defconfig-add-input-event-dae.patch
