@@ -1,0 +1,53 @@
+[submodule "buildroot"]
+	path = buildroot
+	url = https://github.com/scpcom/buildroot
+[submodule "freertos"]
+	path = freertos
+	url = https://github.com/scpcom/FreeRTOS
+	branch = sg200x-2024-02-14
+[submodule "linux_5.10"]
+	path = linux_5.10
+	url = https://github.com/scpcom/linux
+	branch = sg200x-2024-02-14
+[submodule "opensbi"]
+	path = opensbi
+	url = https://github.com/scpcom/opensbi
+	branch = sg200x-2024-02-14
+[submodule "u-boot-2021.10"]
+	path = u-boot-2021.10
+	url = https://github.com/scpcom/u-boot
+	branch = sg200x-2024-02-14
+[submodule "build"]
+	path = build
+	url = https://github.com/scpcom/sophgo-build
+	branch = sg200x-2024-02-14
+[submodule "fsbl"]
+	path = fsbl
+	url = https://github.com/scpcom/sophgo-fsbl
+	branch = sg200x-2024-02-14
+[submodule "isp_tuning"]
+	path = isp_tuning
+	url = https://github.com/scpcom/sophgo-isp_tuning
+	branch = sg200x-2024-02-14
+[submodule "middleware"]
+	path = middleware
+	url = https://github.com/scpcom/sophgo-middleware
+	branch = sg200x-2024-02-14
+[submodule "osdrv"]
+	path = osdrv
+	url = https://github.com/scpcom/sophgo-osdrv
+	branch = sg200x-2024-02-14
+[submodule "oss"]
+	path = oss
+	url = https://github.com/scpcom/sophgo-oss
+	branch = sg200x-2024-02-14
+[submodule "ramdisk"]
+	path = ramdisk
+	url = https://github.com/scpcom/sophgo-ramdisk
+	branch = sg200x-2024-02-14
+[submodule "host-tools"]
+	path = host-tools
+	url = https://github.com/sophgo/host-tools
+[submodule "tpu-mlir"]
+	path = tpu-mlir
+	url = https://github.com/sophgo/tpu-mlir
