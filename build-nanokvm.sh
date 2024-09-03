@@ -11,6 +11,13 @@ fi
 if ! grep -q "usb.hid" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
   sed -i 's| \${output_dir}/input/usb.disk0$| ${output_dir}/input/usb.disk0\ntouch ${output_dir}/input/usb.hid|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 fi
+# set hostname prefix
+if ! grep -q "hostname.prefix" tools/common/sd_tools/genimage_rootless.cfg ; then
+  sed -i s/'\t\t\t"usb.hid",'/'\t\t\t"usb.hid",\n\t\t\t"hostname.prefix",'/g tools/common/sd_tools/genimage_rootless.cfg
+fi
+if ! grep -q "hostname.prefix" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
+  sed -i 's| \${output_dir}/input/usb.hid$| ${output_dir}/input/usb.hid\necho -n kvm > ${output_dir}/input/hostname.prefix|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+fi
 cd ..
 
 cd buildroot
