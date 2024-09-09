@@ -5,11 +5,29 @@ cd build
 sed -i s/'usb.ncm'/'usb.disk0'/g tools/common/sd_tools/genimage_rootless.cfg
 sed -i 's|touch ${output_dir}/input/usb.ncm|echo /dev/mmcblk0p3 > ${output_dir}/input/usb.disk0|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 # enable usb hid
-if ! grep -q "usb.hid" tools/common/sd_tools/genimage_rootless.cfg ; then
-  sed -i s/'\t\t\t"usb.disk0",'/'\t\t\t"usb.disk0",\n\t\t\t"usb.hid",'/g tools/common/sd_tools/genimage_rootless.cfg
+#if ! grep -q "usb.hid" tools/common/sd_tools/genimage_rootless.cfg ; then
+#  sed -i s/'\t\t\t"usb.disk0",'/'\t\t\t"usb.disk0",\n\t\t\t"usb.hid",'/g tools/common/sd_tools/genimage_rootless.cfg
+#fi
+if ! grep -q "usb.touchpad" tools/common/sd_tools/genimage_rootless.cfg ; then
+  sed -i s/'\t\t\t"usb.disk0",'/'\t\t\t"usb.disk0",\n\t\t\t"usb.touchpad",'/g tools/common/sd_tools/genimage_rootless.cfg
 fi
-if ! grep -q "usb.hid" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
-  sed -i 's| \${output_dir}/input/usb.disk0$| ${output_dir}/input/usb.disk0\ntouch ${output_dir}/input/usb.hid|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+if ! grep -q "usb.mouse" tools/common/sd_tools/genimage_rootless.cfg ; then
+  sed -i s/'\t\t\t"usb.disk0",'/'\t\t\t"usb.disk0",\n\t\t\t"usb.mouse",'/g tools/common/sd_tools/genimage_rootless.cfg
+fi
+if ! grep -q "usb.keyboard" tools/common/sd_tools/genimage_rootless.cfg ; then
+  sed -i s/'\t\t\t"usb.disk0",'/'\t\t\t"usb.disk0",\n\t\t\t"usb.keyboard",'/g tools/common/sd_tools/genimage_rootless.cfg
+fi
+#if ! grep -q "usb.hid" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
+#  sed -i 's| \${output_dir}/input/usb.disk0$| ${output_dir}/input/usb.disk0\ntouch ${output_dir}/input/usb.hid|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+#fi
+if ! grep -q "usb.touchpad" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
+  sed -i 's| \${output_dir}/input/usb.disk0$| ${output_dir}/input/usb.disk0\ntouch ${output_dir}/input/usb.touchpad|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+fi
+if ! grep -q "usb.mouse" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
+  sed -i 's| \${output_dir}/input/usb.disk0$| ${output_dir}/input/usb.disk0\ntouch ${output_dir}/input/usb.mouse|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+fi
+if ! grep -q "usb.keyboard" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
+  sed -i 's| \${output_dir}/input/usb.disk0$| ${output_dir}/input/usb.disk0\ntouch ${output_dir}/input/usb.keyboard|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 fi
 # set hostname prefix
 if ! grep -q "hostname.prefix" tools/common/sd_tools/genimage_rootless.cfg ; then
@@ -35,6 +53,9 @@ git restore tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 cd ..
 
 cd buildroot
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
+git restore board/cvitek/SG200X/overlay/etc/init.d
 git restore configs/cvitek_SG200X_musl_riscv64_defconfig
 cd ..
 
