@@ -39,6 +39,9 @@ fi
 cd ..
 
 cd buildroot
+if [ -e output/per-package/nanokvm-sg200x/target/kvmapp/system/init.d ]; then
+  rsync -r --verbose --copy-dirlinks --copy-links --hard-links output/per-package/nanokvm-sg200x/target/kvmapp/system/init.d/ board/cvitek/SG200X/overlay/etc/init.d/
+fi
 # enable nanokvm app, disable tpudemo
 sed -i s/'^BR2_PACKAGE_TPUDEMO_SG200X=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_NANOKVM_SG200X=y\nBR2_PACKAGE_TAILSCALE_RISCV64=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
 cd ..
