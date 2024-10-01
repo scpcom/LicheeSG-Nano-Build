@@ -60,6 +60,9 @@ rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
 git restore board/cvitek/SG200X/overlay/etc/init.d
 git restore configs/cvitek_SG200X_musl_riscv64_defconfig
+rm -f output/target/etc/init.d/S*kvm*
+rm -f output/target/etc/init.d/S*tailscale*
+rm -rf output/target/kvmapp/
 cd ..
 
 echo OK
