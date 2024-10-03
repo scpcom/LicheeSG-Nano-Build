@@ -1,5 +1,9 @@
 #!/bin/bash -e
 
+if [ -e prepare-licheesgnano.sh ]; then
+  bash -e prepare-licheesgnano.sh
+fi
+
 cd build
 # enable usb disk, disable ncm
 sed -i s/'usb.ncm'/'usb.disk0'/g tools/common/sd_tools/genimage_rootless.cfg
