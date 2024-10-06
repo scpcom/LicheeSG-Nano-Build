@@ -4,7 +4,8 @@
 - merged mainline v5.10.226 into linux_5.10
 - updated buildroot to 2024.05.3
 - added maix_mmf sources and media_server submodule to middleware/sample/test_mmf
-- add support for nanokvm
+- imported rtsp_server from maixcdk to middleware/sample/test_mmf
+- added support for nanokvm
 - minimal fixes for a53 build
 - Kept backward comptabibility for older middleware used by MaixCDK and NanoKVM app
 
