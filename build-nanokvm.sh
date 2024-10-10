@@ -47,7 +47,9 @@ if [ -e output/per-package/nanokvm-sg200x/target/kvmapp/system/init.d ]; then
   rsync -r --verbose --copy-dirlinks --copy-links --hard-links output/per-package/nanokvm-sg200x/target/kvmapp/system/init.d/ board/cvitek/SG200X/overlay/etc/init.d/
 fi
 # enable nanokvm app, disable tpudemo
-sed -i s/'^BR2_PACKAGE_TPUDEMO_SG200X=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_NANOKVM_SG200X=y\nBR2_PACKAGE_TAILSCALE_RISCV64=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
+sed -i s/'^BR2_PACKAGE_TPUDEMO_SG200X=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_NANOKVM_SG200X=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
+# uncomment the following line if you need tailscale
+#sed -i s/'^BR2_PACKAGE_NANOKVM_SG200X=y'/'BR2_PACKAGE_NANOKVM_SG200X=y\nBR2_PACKAGE_TAILSCALE_RISCV64=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
 cd ..
 
 source build/cvisetup.sh
@@ -64,8 +66,11 @@ rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
 git restore board/cvitek/SG200X/overlay/etc/init.d
 git restore configs/cvitek_SG200X_musl_riscv64_defconfig
+rm -f output/target/etc/tailscale_disabled
 rm -f output/target/etc/init.d/S*kvm*
 rm -f output/target/etc/init.d/S*tailscale*
+rm -f output/target/usr/bin/tailscale
+rm -f output/target/usr/sbin/tailscaled
 rm -rf output/target/kvmapp/
 cd ..
 
