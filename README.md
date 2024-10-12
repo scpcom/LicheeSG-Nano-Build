@@ -8,6 +8,10 @@
 - added support for nanokvm
 - minimal fixes for a53 build
 - Kept backward comptabibility for older middleware used by MaixCDK and NanoKVM app
+- added build of NanoKVM server and web from source
+- added flag to NanoKVM server to force download of libmaixcam_lib.so on first login
+- added flag to NanoKVM server to disable tailscale
+- imported maix_err, maix_fs and maix_log from MaixCDK and added functions to maix_mmf sources to build libmaixcam_lib.so replacement in middleware/sample/test_mmf
 
 # download source
 
