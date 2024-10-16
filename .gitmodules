@@ -1,7 +1,7 @@
 [submodule "buildroot"]
 	path = buildroot
 	url = https://github.com/scpcom/buildroot
-	branch = licheervnano-2023.11
+	branch = nanokvm-2024.05
 [submodule "freertos"]
 	path = freertos
 	url = https://github.com/scpcom/FreeRTOS
@@ -9,7 +9,7 @@
 [submodule "linux_5.10"]
 	path = linux_5.10
 	url = https://github.com/scpcom/linux
-	branch = licheervnano-5.10.y
+	branch = licheervnano-merged-5.10.y
 [submodule "opensbi"]
 	path = opensbi
 	url = https://github.com/scpcom/opensbi
@@ -17,7 +17,7 @@
 [submodule "u-boot-2021.10"]
 	path = u-boot-2021.10
 	url = https://github.com/scpcom/u-boot
-	branch = licheervnano-2021.10
+	branch = licheervnano-cvisdk-2021.10
 [submodule "build"]
 	path = build
 	url = https://github.com/scpcom/sophgo-build
@@ -29,15 +29,15 @@
 [submodule "isp_tuning"]
 	path = isp_tuning
 	url = https://github.com/scpcom/sophgo-isp_tuning
-	branch = licheervnano
+	branch = sg200x-dev
 [submodule "middleware"]
 	path = middleware
 	url = https://github.com/scpcom/sophgo-middleware
-	branch = licheervnano
+	branch = maix_mmf-cvisdk
 [submodule "osdrv"]
 	path = osdrv
 	url = https://github.com/scpcom/sophgo-osdrv
-	branch = licheervnano
+	branch = licheervnano-cvisdk
 [submodule "oss"]
 	path = oss
 	url = https://github.com/scpcom/sophgo-oss
@@ -45,7 +45,7 @@
 [submodule "ramdisk"]
 	path = ramdisk
 	url = https://github.com/scpcom/sophgo-ramdisk
-	branch = licheervnano
+	branch = licheesgnano
 [submodule "host-tools"]
 	path = host-tools
 	url = https://github.com/sophgo/host-tools
