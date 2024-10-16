@@ -35,10 +35,10 @@ if ! grep -q "usb.keyboard" tools/common/sd_tools/sd_gen_burn_image_rootless.sh 
 fi
 # set hostname prefix
 if ! grep -q "hostname.prefix" tools/common/sd_tools/genimage_rootless.cfg ; then
-  sed -i s/'\t\t\t"usb.hid",'/'\t\t\t"usb.hid",\n\t\t\t"hostname.prefix",'/g tools/common/sd_tools/genimage_rootless.cfg
+  sed -i s/'\t\t\t"usb.touchpad",'/'\t\t\t"usb.touchpad",\n\t\t\t"hostname.prefix",'/g tools/common/sd_tools/genimage_rootless.cfg
 fi
 if ! grep -q "hostname.prefix" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
-  sed -i 's| \${output_dir}/input/usb.hid$| ${output_dir}/input/usb.hid\necho -n kvm > ${output_dir}/input/hostname.prefix|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+  sed -i 's| \${output_dir}/input/usb.touchpad$| ${output_dir}/input/usb.touchpad\necho -n kvm > ${output_dir}/input/hostname.prefix|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 fi
 cd ..
 
