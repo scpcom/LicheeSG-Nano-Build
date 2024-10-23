@@ -30,6 +30,17 @@ if git -C linux_5.10 checkout -b build 2>/dev/null ; then
   git -C linux_5.10 commit -m "licheervnano: symlink dts and memmap"
 fi
 
+if git -C u-boot-2021.10 checkout -b build 2>/dev/null ; then
+  d=`pwd`/build/boards/sg200x/sg2002_licheervnano_sd/u-boot
+  ln -sf $d/cvi_board_init.c u-boot-2021.10/board/cvitek/cvi_board_init.c
+  git -C u-boot-2021.10 add board/cvitek/cvi_board_init.c
+  ln -sf $d/cvitek.h u-boot-2021.10/include/cvitek/cvitek.h
+  git -C u-boot-2021.10 add include/cvitek/cvitek.h
+  ln -sf ../../build/output/sg2002_licheervnano_sd/cvi_board_memmap.h u-boot-2021.10/include/cvi_board_memmap.h
+  git -C u-boot-2021.10 add include/cvi_board_memmap.h
+  git -C u-boot-2021.10 commit -m "licheervnano: symlink dts and memmap"
+fi
+
 KERNEL_PATH=linux_5.10
 KERNEL_TAG=`git -C ${KERNEL_PATH} describe --exact-match --tags HEAD 2>/dev/null || true`
 [ "X$KERNEL_TAG" = "X" ] && git -C ${KERNEL_PATH} tag `date +%Y%m%d`
