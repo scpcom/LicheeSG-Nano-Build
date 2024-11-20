@@ -65,7 +65,16 @@ git restore tools/common/sd_tools/genimage_rootless.cfg
 git restore tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 cd ..
 
+installdir=`pwd`/install/soc_sg2002_licheervnano_sd
 cd buildroot
+cd output/target
+if [ -e kvmapp/server/NanoKVM-Server ]; then
+  rm -f ${installdir}/nanokvm-latest.zip
+  ln -s kvmapp latest
+  zip -r --symlinks ${installdir}/nanokvm-latest.zip latest/*
+  rm latest
+fi
+cd ../..
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
 git restore board/cvitek/SG200X/overlay/etc/init.d
