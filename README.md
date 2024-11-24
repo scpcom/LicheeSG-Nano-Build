@@ -24,7 +24,12 @@ You can remove the --depth=1 parameter to get full history.
 
 ## host environment
 
-you can use container:
+On Debian/Ubuntu you can install required packages with:
+```
+./host/prepare-host.sh
+```
+
+Or you can use container:
 
 ```
 cd host/ubuntu
