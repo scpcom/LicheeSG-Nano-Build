@@ -1,7 +1,7 @@
 # LicheeSG-Nano-Build
 
-- updated linux, u-boot, middleware (cvi_mpi and SensorSupportList) and osdrv to sophgo weekly rls 2024.09.11
-- merged mainline v5.10.226 into linux_5.10
+- updated linux, u-boot, middleware (cvi_mpi and SensorSupportList) and osdrv to sophgo weekly rls 2024.10.14
+- merged mainline v5.10.230 into linux_5.10
 - updated buildroot to 2024.05.3
 - added maix_mmf sources and media_server submodule to middleware/sample/test_mmf
 - imported rtsp_server from maixcdk to middleware/sample/test_mmf
