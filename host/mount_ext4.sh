@@ -23,4 +23,4 @@ echo "PART: $PART"
 echo "PART OFFSET: $PART_OFFSET"
 
 # some old version fuse2fs not support offset
-$THISDIR/fuse2fs -o fakeroot -o offset=$PART_OFFSET $1 $2
+fuse2fs -o fakeroot -o offset=$PART_OFFSET $1 $2
