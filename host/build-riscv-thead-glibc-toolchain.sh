@@ -8,11 +8,12 @@ tcver=2.6.1
 #tcdat=20220906
 tcdat=20230307
 
+harch=`uname -m`
 gctgt=riscv64-linux
 gctup=riscv64-unknown-linux-gnu
 gcver=10.2.0
-gcrel=${gctgt}-`uname -m`
-gctar=${gctgt}-gcc-thead_${tcdat}-${gcver}-`uname -m`.tar.gz
+gcrel=${gctgt}-${harch}
+gctar=${gctgt}-gcc-thead_${tcdat}-${gcver}-${harch}.tar.gz
 
 installpkgs(){
   echo "Updating repositories..."
@@ -116,9 +117,9 @@ echo "Packing toolchain..."
 mv build ${gcrel}
 
 if [ $tclib = musl ]; then
-  if [ -e riscv64-linux-x86_64/sysroot/usr/include/sys/queue.h -a \
+  if [ -e riscv64-linux-${harch}/sysroot/usr/include/sys/queue.h -a \
      ! -e ${gcrel}/sysroot/usr/include/sys/queue.h ]; then
-    cp -p riscv64-linux-x86_64/sysroot/usr/include/sys/queue.h ${gcrel}/sysroot/usr/include/sys/
+    cp -p riscv64-linux-${harch}/sysroot/usr/include/sys/queue.h ${gcrel}/sysroot/usr/include/sys/
   fi
 
   cd ${gcrel}
