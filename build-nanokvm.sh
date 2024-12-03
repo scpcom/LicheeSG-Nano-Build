@@ -45,6 +45,8 @@ cd ..
 cd buildroot
 if git checkout -b build ; then
   true
+elif git branch -D build-nanokvm ; then
+  true
 fi
 if [ -e output/per-package/nanokvm-sg200x/target/kvmapp/system/init.d ]; then
   rsync -r --verbose --copy-dirlinks --copy-links --hard-links output/per-package/nanokvm-sg200x/target/kvmapp/system/init.d/ board/cvitek/SG200X/overlay/etc/init.d/
