@@ -10,6 +10,12 @@ installpkgs(){
   apt-get install -y dosfstools file mtools
   apt-get install -y fuse2fs shellcheck
 
+  if dpkg -s python-is-python2 2>/dev/null | grep -q -E '^Status: install ok installed' ; then
+    apt-get install -y python-jinja2
+  elif apt-get install -y python3 ; then
+    apt-get install -y python3-git python3-jinja2
+  fi
+
   echo "Checking for python..."
   pythonbin=`which python || true`
   if [ "X${pythonbin}" = "X" ]; then
