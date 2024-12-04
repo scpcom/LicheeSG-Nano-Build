@@ -27,6 +27,7 @@ installpkgs(){
   #apt-get build-dep openocd
 
   apt-get install -y autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
+  apt-get install -y autopoint dwz gettext
 }
 
 isadmin=`whoami`
