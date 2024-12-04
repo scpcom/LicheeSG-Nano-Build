@@ -13,7 +13,7 @@ installpkgs(){
   if dpkg -s python-is-python2 2>/dev/null | grep -q -E '^Status: install ok installed' ; then
     apt-get install -y python-jinja2
   elif apt-get install -y python3 ; then
-    apt-get install -y python3-git python3-jinja2
+    apt-get install -y python3-git python3-jinja2 python3-requests
   fi
 
   echo "Checking for python..."
