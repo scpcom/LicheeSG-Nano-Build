@@ -10,6 +10,11 @@ installpkgs(){
   apt-get install -y dosfstools file mtools
   apt-get install -y fuse2fs shellcheck
 
+  harch=`uname -m`
+  if [ "${harch}" != "x86_64" -a "${harch}" != "i686" -a "${harch}" != "armv7l" ]; then
+    apt-get install -y golang golang-go
+  fi
+
   if dpkg -s python-is-python2 2>/dev/null | grep -q -E '^Status: install ok installed' ; then
     apt-get install -y python-jinja2
   elif apt-get install -y python3 ; then
