@@ -5,6 +5,7 @@ installpkgs(){
   apt-get update
 
   echo "Installing required packages..."
+  apt-get install -y cpio xxd
   apt-get install -y build-essential cmake git pkg-config rsync unzip wget zip
   apt-get install -y bc bison flex libncurses-dev libssl-dev device-tree-compiler
   apt-get install -y dosfstools file mtools
