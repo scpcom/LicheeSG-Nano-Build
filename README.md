@@ -32,7 +32,7 @@ You can remove the --depth=1 parameter to get full history.
 
 ## host environment
 
-- OS: Debian 12/Ubuntu 22.04 or higher is recommended
+- OS: Debian 11/Ubuntu 22.04 or higher is recommended
 - CPU: AMD/Intel x86_64 (for ARM aarch64 and others ./host/replace-all-thead-toolchains.sh maybe used)
 - Memory: 8 GB RAM (Required to build opencv tests, all other can be complied with 4GB and below)
 - Storage: 30GB free space minimum (plus optional 40GB to compile the toolchain)
