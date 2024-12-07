@@ -1,5 +1,13 @@
 #!/bin/bash -e
 
+for p in / /usr/ /usr/local/ ; do
+  if echo $PATH | grep -q ${p}bin ; then
+    if ! echo $PATH | grep -q ${p}sbin ; then
+      export PATH=${p}sbin:$PATH
+    fi
+  fi
+done
+
 if [ -e prepare-licheesgnano.sh ]; then
   bash -e prepare-licheesgnano.sh
 fi
