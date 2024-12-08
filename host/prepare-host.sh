@@ -11,6 +11,19 @@ installpkgs(){
   apt-get install -y dosfstools file mtools
   apt-get install -y fuse2fs shellcheck
 
+  for c in bookworm ; do
+    if grep -q ${c} /etc/apt/sources.list ; then
+      echo "Installing cmake backport..."
+      if ! grep -q ${c}-backports /etc/apt/sources.list ; then
+        if [ ! -e /etc/apt/sources.list.d/backports.list ]; then
+          echo "deb http://deb.debian.org/debian ${c}-backports main" | tee /etc/apt/sources.list.d/backports.list
+        fi
+      fi
+      apt-get update
+      apt-get install -t ${c}-backports -y cmake
+    fi
+  done
+
   harch=`uname -m`
   if [ "${harch}" != "x86_64" -a "${harch}" != "i686" -a "${harch}" != "armv7l" ]; then
     apt-get install -y golang golang-go
