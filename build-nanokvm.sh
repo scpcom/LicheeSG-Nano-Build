@@ -1,5 +1,23 @@
 #!/bin/bash -e
 
+maixcdk=n
+tailscale=n
+while [ "$#" -gt 0 ]; do
+	case "$1" in
+	--maix-cdk|--maixcdk)
+		shift
+		maixcdk=y
+		;;
+	--tailscale)
+		shift
+		tailscale=y
+		;;
+	*)
+		break
+		;;
+	esac
+done
+
 for p in / /usr/ /usr/local/ ; do
   if echo $PATH | grep -q ${p}bin ; then
     if ! echo $PATH | grep -q ${p}sbin ; then
@@ -61,12 +79,16 @@ if [ -e output/per-package/nanokvm-sg200x/target/kvmapp/system/init.d ]; then
   rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
   rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
 fi
+
 # enable nanokvm app, disable tpudemo
 sed -i s/'^BR2_PACKAGE_TPUDEMO_SG200X=y'/'BR2_PACKAGE_NANOKVM_SG200X=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
-# uncomment the following line if you need MaixCDK
-# sed -i s/'^BR2_PACKAGE_NANOKVM_SG200X=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_NANOKVM_SG200X=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
-# uncomment the following line if you need tailscale
-#sed -i s/'^BR2_PACKAGE_NANOKVM_SG200X=y'/'BR2_PACKAGE_NANOKVM_SG200X=y\nBR2_PACKAGE_TAILSCALE_RISCV64=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
+if [ $maixcdk = y ]; then
+  sed -i s/'^BR2_PACKAGE_NANOKVM_SG200X=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_NANOKVM_SG200X=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
+fi
+if [ $tailscale = y ]; then
+  sed -i s/'^BR2_PACKAGE_NANOKVM_SG200X=y'/'BR2_PACKAGE_NANOKVM_SG200X=y\nBR2_PACKAGE_TAILSCALE_RISCV64=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
+fi
+
 if git checkout -b build-nanokvm ; then
   git add board/cvitek/SG200X/overlay/etc/init.d
   git add configs/cvitek_SG200X_musl_riscv64_defconfig
