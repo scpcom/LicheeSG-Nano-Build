@@ -49,3 +49,23 @@
 [submodule "host-tools"]
 	path = host-tools
 	url = https://github.com/sophgo/host-tools
+[submodule "cnpy"]
+	path = cnpy
+	url = https://github.com/sophgo/cnpy
+	branch = tpu
+[submodule "cvibuilder"]
+	path = cvibuilder
+	url = https://github.com/sophgo/cvibuilder
+[submodule "cvikernel"]
+	path = cvikernel
+	url = https://github.com/sophgo/cvikernel
+[submodule "cvimath"]
+	path = cvimath
+	url = https://github.com/sophgo/cvimath
+[submodule "cviruntime"]
+	path = cviruntime
+	url = https://github.com/sophgo/cviruntime
+[submodule "flatbuffers"]
+	path = flatbuffers
+	url = https://github.com/sophgo/flatbuffers
+	branch = master
