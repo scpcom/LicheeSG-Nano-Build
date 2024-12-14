@@ -69,3 +69,15 @@
 	path = flatbuffers
 	url = https://github.com/sophgo/flatbuffers
 	branch = master
+[submodule "ive"]
+	path = ive
+	url = https://github.com/sophgo/ive
+	branch = master
+[submodule "tdl_sdk"]
+	path = tdl_sdk
+	url = https://github.com/sophgo/tdl_sdk
+	branch = master
+[submodule "cvi_rtsp"]
+	path = cvi_rtsp
+	url = https://github.com/sophgo/cvi_rtsp
+	branch = master
