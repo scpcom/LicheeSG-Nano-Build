@@ -14,6 +14,13 @@ fi
 
 source build/cvisetup.sh
 defconfig sg2002_licheervnano_sd
+
+if [ -e cviruntime -a -e flatbuffers ]; then
+  # small fix to keep fork of flatbuffers repository optional
+  sed -i s/'-Werror=unused-parameter"'/'-Werror=unused-parameter -Wno-class-memaccess"'/g flatbuffers/CMakeLists.txt
+  export TPU_REL=1
+fi
+
 build_all
 # build other variant
 cp -p build/boards/sg200x/sg2002_licheervnano_sd/sg2002_licheervnano_sd_defconfig bak.config
