@@ -79,5 +79,5 @@
 	branch = master
 [submodule "cvi_rtsp"]
 	path = cvi_rtsp
-	url = https://github.com/sophgo/cvi_rtsp
-	branch = master
+	url = https://github.com/scpcom/cvi_rtsp
+	branch = develop
