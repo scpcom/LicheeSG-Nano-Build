@@ -70,7 +70,7 @@ jobs:
             libatomic1-riscv64-cross \
             libc6-dbg-riscv64-cross \
             libc6-dev-riscv64-cross \
-            libconfuse-dev
+            libconfuse-dev \
             libegl1-mesa \
             liblz4-tool \
             libncurses-dev \
