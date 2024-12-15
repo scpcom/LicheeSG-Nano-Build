@@ -1,5 +1,23 @@
 #!/bin/bash -e
 
+maixcdk=n
+tailscale=n
+while [ "$#" -gt 0 ]; do
+	case "$1" in
+	--maix-cdk|--maixcdk)
+		shift
+		maixcdk=y
+		;;
+	--tailscale)
+		shift
+		tailscale=y
+		;;
+	*)
+		break
+		;;
+	esac
+done
+
 for p in / /usr/ /usr/local/ ; do
   if echo $PATH | grep -q ${p}bin ; then
     if ! echo $PATH | grep -q ${p}sbin ; then
@@ -13,6 +31,9 @@ if [ -e prepare-licheesgnano.sh ]; then
 fi
 
 cd build
+# Expand user space RAM from 128MB to 160MB
+sed -i s/'ION_SIZE = .* . SIZE_1M'/'ION_SIZE = 75 * SIZE_1M'/g boards/sg200x/sg2002_licheervnano_sd/memmap.py
+sed -i s/'BOOTLOGO_SIZE = .* . SIZE_1K'/'BOOTLOGO_SIZE = 5632 * SIZE_1K'/g boards/sg200x/sg2002_licheervnano_sd/memmap.py
 # enable usb disk, disable ncm
 sed -i s/'usb.ncm'/'usb.disk0'/g tools/common/sd_tools/genimage_rootless.cfg
 sed -i 's|touch ${output_dir}/input/usb.ncm|echo /dev/mmcblk0p3 > ${output_dir}/input/usb.disk0|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
@@ -61,12 +82,16 @@ if [ -e output/per-package/nanokvm-sg200x/target/kvmapp/system/init.d ]; then
   rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
   rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
 fi
+
 # enable nanokvm app, disable tpudemo
 sed -i s/'^BR2_PACKAGE_TPUDEMO_SG200X=y'/'BR2_PACKAGE_NANOKVM_SG200X=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
-# uncomment the following line if you need MaixCDK
-# sed -i s/'^BR2_PACKAGE_NANOKVM_SG200X=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_NANOKVM_SG200X=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
-# uncomment the following line if you need tailscale
-#sed -i s/'^BR2_PACKAGE_NANOKVM_SG200X=y'/'BR2_PACKAGE_NANOKVM_SG200X=y\nBR2_PACKAGE_TAILSCALE_RISCV64=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
+if [ $maixcdk = y ]; then
+  sed -i s/'^BR2_PACKAGE_NANOKVM_SG200X=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_NANOKVM_SG200X=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
+fi
+if [ $tailscale = y ]; then
+  sed -i s/'^BR2_PACKAGE_NANOKVM_SG200X=y'/'BR2_PACKAGE_NANOKVM_SG200X=y\nBR2_PACKAGE_TAILSCALE_RISCV64=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
+fi
+
 if git checkout -b build-nanokvm ; then
   git add board/cvitek/SG200X/overlay/etc/init.d
   git add configs/cvitek_SG200X_musl_riscv64_defconfig
@@ -79,6 +104,7 @@ defconfig sg2002_licheervnano_sd
 build_all
 
 cd build
+git restore boards/sg200x/sg2002_licheervnano_sd/memmap.py
 git restore tools/common/sd_tools/genimage_rootless.cfg
 git restore tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 cd ..
