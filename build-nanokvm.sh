@@ -73,7 +73,10 @@ cd ..
 
 cd buildroot
 if git checkout -b build ; then
-  true
+  rm -f board/cvitek/SG200X/overlay/etc/init.d/uvc-gadget-server.elf
+  rm -f board/cvitek/SG200X/overlay/etc/init.d/uvc-gadget-server.tar.xz
+  git add board/cvitek/SG200X/overlay/etc/init.d
+  git commit -m "build"
 elif git branch -D build-nanokvm ; then
   true
 fi
