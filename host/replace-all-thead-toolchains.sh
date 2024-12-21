@@ -29,6 +29,8 @@ for gctgt in $gctgts ; do
 done
 cd ..
 
+mkdir -p host-tools
+
 cd host-tools/
 rm -rf gcc/
 mkdir gcc
@@ -40,6 +42,13 @@ done
 cd ../..
 
 sed -i s/x86_64/${harch}/g build/envsetup_soc.sh
-sed -i s/x86_64/${harch}/g middleware/Makefile.param
+
+if [ -e cvi_mpi/Makefile.param ]; then
+  sed -i s/x86_64/${harch}/g cvi_mpi/Makefile.param
+elif [ -e middleware/v2/Makefile.param ]; then
+  sed -i s/x86_64/${harch}/g middleware/v2/Makefile.param
+else
+  sed -i s/x86_64/${harch}/g middleware/Makefile.param
+fi
 
 echo OK
