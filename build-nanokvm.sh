@@ -5,6 +5,7 @@ export SG_BOARD_LINK=sg2002_licheervnano_sd
 
 maixcdk=n
 tailscale=n
+tpusdk=n
 while [ "$#" -gt 0 ]; do
 	case "$1" in
 	--maix-cdk|--maixcdk)
@@ -14,6 +15,10 @@ while [ "$#" -gt 0 ]; do
 	--tailscale)
 		shift
 		tailscale=y
+		;;
+	--tpu-sdk|--tpusdk)
+		shift
+		tpusdk=y
 		;;
 	*)
 		break
@@ -107,6 +112,13 @@ cd ..
 
 source build/cvisetup.sh
 defconfig ${SG_BOARD_LINK}
+
+if [ -e cviruntime -a -e flatbuffers ]; then
+  # small fix to keep fork of flatbuffers repository optional
+  sed -i s/'-Werror=unused-parameter"'/'-Werror=unused-parameter -Wno-class-memaccess"'/g flatbuffers/CMakeLists.txt
+  [ $tpusdk = y ] && export TPU_REL=1
+fi
+
 build_all
 
 cd build
