@@ -49,3 +49,36 @@
 [submodule "host-tools"]
 	path = host-tools
 	url = https://github.com/sophgo/host-tools
+[submodule "cnpy"]
+	path = cnpy
+	url = https://github.com/scpcom/cnpy
+	branch = tpu
+[submodule "cvi_rtsp"]
+	path = cvi_rtsp
+	url = https://github.com/scpcom/cvi_rtsp
+	branch = licheervnano-cvisdk
+[submodule "cvibuilder"]
+	path = cvibuilder
+	url = https://github.com/scpcom/cvibuilder
+[submodule "cvikernel"]
+	path = cvikernel
+	url = https://github.com/scpcom/cvikernel
+[submodule "cvimath"]
+	path = cvimath
+	url = https://github.com/scpcom/cvimath
+[submodule "cviruntime"]
+	path = cviruntime
+	url = https://github.com/scpcom/cviruntime
+	branch = licheervnano-cvisdk
+[submodule "flatbuffers"]
+	path = flatbuffers
+	url = https://github.com/scpcom/flatbuffers
+	branch = licheervnano-cvisdk
+[submodule "ive"]
+	path = ive
+	url = https://github.com/scpcom/sophgo-ive
+	branch = master
+[submodule "tdl_sdk"]
+	path = tdl_sdk
+	url = https://github.com/scpcom/sophgo-tdl_sdk
+	branch = licheervnano-cvisdk
