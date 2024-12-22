@@ -3,6 +3,34 @@
 export SG_BOARD_FAMILY=sg200x
 export SG_BOARD_LINK=sg2002_licheea53nano_sd
 
+maixcdk=n
+tailscale=n
+tpudemo=c
+tpusdk=y
+while [ "$#" -gt 0 ]; do
+	case "$1" in
+	--maix-cdk|--maixcdk)
+		shift
+		maixcdk=y
+		;;
+	--tailscale)
+		shift
+		tailscale=y
+		;;
+	--no-tpu-demo|--no-tpudemo)
+		shift
+		tpudemo=n
+		;;
+	--no-tpu-sdk|--no-tpusdk)
+		shift
+		tpusdk=n
+		;;
+	*)
+		break
+		;;
+	esac
+done
+
 for p in / /usr/ /usr/local/ ; do
   if echo $PATH | grep -q ${p}bin ; then
     if ! echo $PATH | grep -q ${p}sbin ; then
@@ -18,10 +46,24 @@ fi
 source build/cvisetup.sh
 defconfig ${SG_BOARD_LINK}
 
+cd buildroot
+if [ $maixcdk = y ]; then
+  sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
+fi
+if [ $tailscale = y ]; then
+  sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_TAILSCALE_RISCV64=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
+fi
+if [ $tpudemo = y ]; then
+  sed -i s/'^# BR2_PACKAGE_TPUDEMO_SG200X is not set'/'BR2_PACKAGE_TPUDEMO_SG200X=y'/g configs/${BR_DEFCONFIG}
+elif [ $tpudemo = n ]; then
+  sed -i s/'^BR2_PACKAGE_TPUDEMO_SG200X=y'/'# BR2_PACKAGE_TPUDEMO_SG200X is not set'/g configs/${BR_DEFCONFIG}
+fi
+cd ..
+
 if [ -e cviruntime -a -e flatbuffers ]; then
   # small fix to keep fork of flatbuffers repository optional
   sed -i s/'-Werror=unused-parameter"'/'-Werror=unused-parameter -Wno-class-memaccess"'/g flatbuffers/CMakeLists.txt
-  export TPU_REL=1
+  [ $tpusdk = y ] && export TPU_REL=1
 fi
 
 build_all
