@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+export SG_BOARD_FAMILY=sg200x
+export SG_BOARD_LINK=sg2002_licheervnano_sd
+
 maixcdk=n
 tailscale=n
 while [ "$#" -gt 0 ]; do
@@ -32,8 +35,8 @@ fi
 
 cd build
 # Expand user space RAM from 128MB to 160MB
-sed -i s/'ION_SIZE = .* . SIZE_1M'/'ION_SIZE = 75 * SIZE_1M'/g boards/sg200x/sg2002_licheervnano_sd/memmap.py
-sed -i s/'BOOTLOGO_SIZE = .* . SIZE_1K'/'BOOTLOGO_SIZE = 5632 * SIZE_1K'/g boards/sg200x/sg2002_licheervnano_sd/memmap.py
+sed -i s/'ION_SIZE = .* . SIZE_1M'/'ION_SIZE = 75 * SIZE_1M'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/memmap.py
+sed -i s/'BOOTLOGO_SIZE = .* . SIZE_1K'/'BOOTLOGO_SIZE = 5632 * SIZE_1K'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/memmap.py
 # enable usb disk, disable ncm
 sed -i s/'usb.ncm'/'usb.disk0'/g tools/common/sd_tools/genimage_rootless.cfg
 sed -i 's|touch ${output_dir}/input/usb.ncm|echo /dev/mmcblk0p3 > ${output_dir}/input/usb.disk0|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
@@ -103,16 +106,16 @@ fi
 cd ..
 
 source build/cvisetup.sh
-defconfig sg2002_licheervnano_sd
+defconfig ${SG_BOARD_LINK}
 build_all
 
 cd build
-git restore boards/sg200x/sg2002_licheervnano_sd/memmap.py
+git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/memmap.py
 git restore tools/common/sd_tools/genimage_rootless.cfg
 git restore tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 cd ..
 
-installdir=`pwd`/install/soc_sg2002_licheervnano_sd
+installdir=`pwd`/install/soc_${SG_BOARD_LINK}
 cd buildroot
 cd output/target
 if [ -e kvmapp/server/NanoKVM-Server ]; then
