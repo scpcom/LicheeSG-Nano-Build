@@ -4,7 +4,9 @@ export SG_BOARD_FAMILY=sg200x
 export SG_BOARD_LINK=sg2002_licheervnano_sd
 
 maixcdk=n
+nanokvm=y
 tailscale=n
+tpudemo=n
 tpusdk=n
 while [ "$#" -gt 0 ]; do
 	case "$1" in
@@ -79,6 +81,9 @@ if ! grep -q "hostname.prefix" tools/common/sd_tools/sd_gen_burn_image_rootless.
 fi
 cd ..
 
+source build/cvisetup.sh
+defconfig ${SG_BOARD_LINK}
+
 cd buildroot
 if git checkout -b build ; then
   rm -f board/cvitek/SG200X/overlay/etc/init.d/uvc-gadget-server.elf
@@ -94,24 +99,27 @@ if [ -e output/per-package/nanokvm-sg200x/target/kvmapp/system/init.d ]; then
   rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
 fi
 
-# enable nanokvm app, disable tpudemo
-sed -i s/'^BR2_PACKAGE_TPUDEMO_SG200X=y'/'BR2_PACKAGE_NANOKVM_SG200X=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
 if [ $maixcdk = y ]; then
-  sed -i s/'^BR2_PACKAGE_NANOKVM_SG200X=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_NANOKVM_SG200X=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
+  sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
+fi
+if [ $nanokvm = y ]; then
+  sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_NANOKVM_SG200X=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
 fi
 if [ $tailscale = y ]; then
-  sed -i s/'^BR2_PACKAGE_NANOKVM_SG200X=y'/'BR2_PACKAGE_NANOKVM_SG200X=y\nBR2_PACKAGE_TAILSCALE_RISCV64=y'/g configs/cvitek_SG200X_musl_riscv64_defconfig
+  sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_TAILSCALE_RISCV64=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
+fi
+if [ $tpudemo = y ]; then
+  sed -i s/'^# BR2_PACKAGE_TPUDEMO_SG200X is not set'/'BR2_PACKAGE_TPUDEMO_SG200X=y'/g configs/${BR_DEFCONFIG}
+else
+  sed -i s/'^BR2_PACKAGE_TPUDEMO_SG200X=y'/'# BR2_PACKAGE_TPUDEMO_SG200X is not set'/g configs/${BR_DEFCONFIG}
 fi
 
 if git checkout -b build-nanokvm ; then
   git add board/cvitek/SG200X/overlay/etc/init.d
-  git add configs/cvitek_SG200X_musl_riscv64_defconfig
+  git add configs/${BR_DEFCONFIG}
   git commit -m "build-nanokvm"
 fi
 cd ..
-
-source build/cvisetup.sh
-defconfig ${SG_BOARD_LINK}
 
 if [ -e cviruntime -a -e flatbuffers ]; then
   # small fix to keep fork of flatbuffers repository optional
@@ -143,7 +151,7 @@ fi
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
 git restore board/cvitek/SG200X/overlay/etc/init.d
-git restore configs/cvitek_SG200X_musl_riscv64_defconfig
+git restore configs/${BR_DEFCONFIG}
 rm -f output/target/etc/tailscale_disabled
 rm -f output/target/etc/init.d/S*kvm*
 rm -f output/target/etc/init.d/S*tailscale*
