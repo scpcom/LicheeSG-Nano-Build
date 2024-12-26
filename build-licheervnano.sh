@@ -9,17 +9,37 @@ tpudemo=c
 tpusdk=y
 while [ "$#" -gt 0 ]; do
 	case "$1" in
+	--board=*|--board-link=*)
+		export SG_BOARD_LINK=`echo $1 | cut -d '=' -f 2-`
+		shift
+		;;
 	--maix-cdk|--maixcdk)
 		shift
 		maixcdk=y
+		;;
+	--no-maix-cdk|--no-maixcdk)
+		shift
+		maixcdk=n
 		;;
 	--tailscale)
 		shift
 		tailscale=y
 		;;
+	--no-tailscale)
+		shift
+		tailscale=n
+		;;
+	--tpu-demo|--tpudemo)
+		shift
+		tpudemo=y
+		;;
 	--no-tpu-demo|--no-tpudemo)
 		shift
 		tpudemo=n
+		;;
+	--tpu-sdk|--tpusdk)
+		shift
+		tpusdk=y
 		;;
 	--no-tpu-sdk|--no-tpusdk)
 		shift
@@ -38,6 +58,13 @@ for p in / /usr/ /usr/local/ ; do
     fi
   fi
 done
+
+if echo ${SG_BOARD_LINK} | grep -q -E '^cv180' ; then
+  export SG_BOARD_FAMILY=cv180x
+fi
+if echo ${SG_BOARD_LINK} | grep -q -E '^sg200' ; then
+  export SG_BOARD_FAMILY=sg200x
+fi
 
 if [ -e prepare-licheesgnano.sh ]; then
   bash -e prepare-licheesgnano.sh
@@ -67,6 +94,10 @@ if [ -e cviruntime -a -e flatbuffers ]; then
 fi
 
 build_all
+
+cd buildroot
+git restore configs/${BR_DEFCONFIG}
+cd ..
 
 # build other variant
 cp -p build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig bak.config
