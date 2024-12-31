@@ -76,9 +76,11 @@ if [ -e prepare-licheesgnano.sh ]; then
   bash -e prepare-licheesgnano.sh
 fi
 
+sdkcros=linux-gnu
 sdklibc=`echo $sdkver | cut -d '_' -f 1`
 sdkarch=`echo $sdkver | cut -d '_' -f 2`
 sdktool=`echo $sdkver | tr a-z A-Z`
+oldcros=$sdkcros
 oldlibc=$sdklibc
 oldarch=$sdkarch
 # Allow to switch from ARM 32-bit to 64-bit and vice versa
@@ -87,9 +89,22 @@ if [ $sdkver = glibc_arm64 ]; then
 elif [ $sdkver = glibc_arm ]; then
   oldarch=arm64
 fi
+# Allow to switch from RISC-V musl to glibc and vice versa
+if [ $sdkver = musl_riscv64 ]; then
+  sdkcros=linux-musl
+  oldlibc=glibc
+elif [ $sdkver = glibc_riscv64 ]; then
+  oldcros=linux-musl
+  oldlibc=musl
+fi
 oldtool=`echo ${oldlibc}_${oldarch} | tr a-z A-Z`
+[ $oldarch = riscv64 ] && oldarch=riscv
+[ $sdkarch = riscv64 ] && sdkarch=riscv
 
 cd build
+if [ $sdkcros != $oldcros ]; then
+  sed -i s/'-unknown-'${oldcros}'-'/'-unknown-'${sdkcros}'-'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+fi
 if [ $sdktool != $oldtool ]; then
   sed -i s/'^CONFIG_TOOLCHAIN_'${oldtool}'=y'/'CONFIG_TOOLCHAIN_'${sdktool}'=y'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
 fi
@@ -190,6 +205,7 @@ build_all
 
 cd build
 git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/memmap.py
+git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
 git restore tools/common/sd_tools/genimage_rootless.cfg
 git restore tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 cd ..
