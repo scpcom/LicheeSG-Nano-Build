@@ -138,6 +138,8 @@ if ! grep -q "hostname.prefix" tools/common/sd_tools/sd_gen_burn_image_rootless.
 fi
 cd ..
 
+BR_OUTPUT_DIR=output
+
 source build/cvisetup.sh
 defconfig ${SG_BOARD_LINK}
 
@@ -150,8 +152,8 @@ if git checkout -b build ; then
 elif git branch -D build-nanokvm ; then
   true
 fi
-if [ -e output/per-package/nanokvm-sg200x/target/kvmapp/system/init.d ]; then
-  rsync -r --verbose --copy-dirlinks --copy-links --hard-links output/per-package/nanokvm-sg200x/target/kvmapp/system/init.d/ board/cvitek/SG200X/overlay/etc/init.d/
+if [ -e ${BR_OUTPUT_DIR}/per-package/nanokvm-sg200x/target/kvmapp/system/init.d ]; then
+  rsync -r --verbose --copy-dirlinks --copy-links --hard-links ${BR_OUTPUT_DIR}/per-package/nanokvm-sg200x/target/kvmapp/system/init.d/ board/cvitek/SG200X/overlay/etc/init.d/
   rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
   rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
 fi
@@ -194,14 +196,14 @@ cd ..
 
 installdir=`pwd`/install/soc_${SG_BOARD_LINK}
 cd buildroot
-cd output/target
+cd ${BR_OUTPUT_DIR}/target
 if [ -e kvmapp/server/NanoKVM-Server ]; then
   rm -f ${installdir}/nanokvm-latest.zip
   ln -s kvmapp latest
   zip -r --symlinks ${installdir}/nanokvm-latest.zip latest/*
   rm latest
 fi
-cd ../..
+cd -
 if git checkout build ; then
   true
 fi
@@ -209,12 +211,12 @@ rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
 git restore board/cvitek/SG200X/overlay/etc/init.d
 git restore configs/${BR_DEFCONFIG}
-rm -f output/target/etc/tailscale_disabled
-rm -f output/target/etc/init.d/S*kvm*
-rm -f output/target/etc/init.d/S*tailscale*
-rm -f output/target/usr/bin/tailscale
-rm -f output/target/usr/sbin/tailscaled
-rm -rf output/target/kvmapp/
+rm -f ${BR_OUTPUT_DIR}/target/etc/tailscale_disabled
+rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*kvm*
+rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*tailscale*
+rm -f ${BR_OUTPUT_DIR}/target/usr/bin/tailscale
+rm -f ${BR_OUTPUT_DIR}/target/usr/sbin/tailscaled
+rm -rf ${BR_OUTPUT_DIR}/target/kvmapp/
 cd ..
 
 echo OK
