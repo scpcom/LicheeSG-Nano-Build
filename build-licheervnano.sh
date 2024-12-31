@@ -75,9 +75,11 @@ if [ -e prepare-licheesgnano.sh ]; then
   bash -e prepare-licheesgnano.sh
 fi
 
+sdkcros=linux-gnu
 sdklibc=`echo $sdkver | cut -d '_' -f 1`
 sdkarch=`echo $sdkver | cut -d '_' -f 2`
 sdktool=`echo $sdkver | tr a-z A-Z`
+oldcros=$sdkcros
 oldlibc=$sdklibc
 oldarch=$sdkarch
 # Allow to switch from ARM 32-bit to 64-bit and vice versa
@@ -86,9 +88,22 @@ if [ $sdkver = glibc_arm64 ]; then
 elif [ $sdkver = glibc_arm ]; then
   oldarch=arm64
 fi
+# Allow to switch from RISC-V musl to glibc and vice versa
+if [ $sdkver = musl_riscv64 ]; then
+  sdkcros=linux-musl
+  oldlibc=glibc
+elif [ $sdkver = glibc_riscv64 ]; then
+  oldcros=linux-musl
+  oldlibc=musl
+fi
 oldtool=`echo ${oldlibc}_${oldarch} | tr a-z A-Z`
+[ $oldarch = riscv64 ] && oldarch=riscv
+[ $sdkarch = riscv64 ] && sdkarch=riscv
 
 cd build
+if [ $sdkcros != $oldcros ]; then
+  sed -i s/'-unknown-'${oldcros}'-'/'-unknown-'${sdkcros}'-'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+fi
 if [ $sdktool != $oldtool ]; then
   sed -i s/'^CONFIG_TOOLCHAIN_'${oldtool}'=y'/'CONFIG_TOOLCHAIN_'${sdktool}'=y'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
 fi
@@ -124,10 +139,6 @@ fi
 
 build_all
 
-cd buildroot
-git restore configs/${BR_DEFCONFIG}
-cd ..
-
 # build other variant
 cp -p build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig bak.config
 
@@ -159,5 +170,13 @@ build_fsbl
 cp -v install/soc_${SG_BOARD_LINK}/fip.bin install/soc_${SG_BOARD_LINK}/dxq5d0019b480854.bin
 
 mv bak.config build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+
+cd build
+git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+cd ..
+
+cd buildroot
+git restore configs/${BR_DEFCONFIG}
+cd ..
 
 echo OK
