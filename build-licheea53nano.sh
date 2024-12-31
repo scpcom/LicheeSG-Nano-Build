@@ -3,6 +3,7 @@
 export SG_BOARD_FAMILY=sg200x
 export SG_BOARD_LINK=sg2002_licheea53nano_sd
 
+sdkver=keep
 maixcdk=n
 tailscale=n
 tpudemo=c
@@ -11,6 +12,10 @@ while [ "$#" -gt 0 ]; do
 	case "$1" in
 	--board=*|--board-link=*)
 		export SG_BOARD_LINK=`echo $1 | cut -d '=' -f 2-`
+		shift
+		;;
+	--sdk-ver=*|--sdkver=*)
+		sdkver=`echo $1 | cut -d '=' -f 2-`
 		shift
 		;;
 	--maix-cdk|--maixcdk)
@@ -69,6 +74,30 @@ fi
 if [ -e prepare-licheesgnano.sh ]; then
   bash -e prepare-licheesgnano.sh
 fi
+
+sdklibc=`echo $sdkver | cut -d '_' -f 1`
+sdkarch=`echo $sdkver | cut -d '_' -f 2`
+sdktool=`echo $sdkver | tr a-z A-Z`
+oldlibc=$sdklibc
+oldarch=$sdkarch
+# Allow to switch from ARM 32-bit to 64-bit and vice versa
+if [ $sdkver = glibc_arm64 ]; then
+  oldarch=arm
+elif [ $sdkver = glibc_arm ]; then
+  oldarch=arm64
+fi
+oldtool=`echo ${oldlibc}_${oldarch} | tr a-z A-Z`
+
+cd build
+if [ $sdktool != $oldtool ]; then
+  sed -i s/'^CONFIG_TOOLCHAIN_'${oldtool}'=y'/'CONFIG_TOOLCHAIN_'${sdktool}'=y'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+fi
+if [ $sdkarch != $oldarch ]; then
+  sed -i s/'^CONFIG_ARCH="'${oldarch}'"'/'CONFIG_ARCH="'${sdkarch}'"'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+  [ -e boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${oldarch} -a \
+  ! -e boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch} ] && ln -s dts_${oldarch} boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch}
+fi
+cd ..
 
 source build/cvisetup.sh
 defconfig ${SG_BOARD_LINK}
