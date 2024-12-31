@@ -1,6 +1,8 @@
 # LicheeSG-Nano-Build
 
-- updated linux, u-boot, middleware (cvi_mpi and SensorSupportList) and osdrv to sophgo weekly rls 2024.10.14
+- updated build, fsbl, opensbi, u-boot, linux, middleware (cvi_mpi and SensorSupportList) and osdrv to sophgo weekly rls 2024.10.14
+- updated isp_tuning to sophgo weekly rls 2024.09.11
+- updated freertos to sophgo weekly rls 2024.06.6 and ramdisk to sophgo weekly rls 2024.07.20
 - merged mainline v5.10.230 into linux_5.10
 - updated buildroot to 2024.05.3
 - added maix_mmf sources and media_server submodule to middleware/sample/test_mmf
@@ -20,6 +22,10 @@
 - created dummy libs for ae, af, awb, cvi_json-c, cvi_miniz and isp_algo in middleware/modules/dummy to avoid usage of any pre-built closed source lib
 - created light libs for cvi_bin, cvi_bin_isp and isp in middleware/modules/isp_light to reduce usage of dummy code
 - dummy and light libs are currently only used in kvmapp folder for NanoKVM, the real libs are still required and used for the other projects with camera module
+- added build of tailscale from source
+- synced defconfig and dts from licheervnano to licheea53nano
+- updated build scripts to compile the firmware (including MaixCDK and NanoKVM) for a53 mode (ARM 32-bit and 64-bit)
+- added submodules to compile tpu sdk
 
 # download source
 
