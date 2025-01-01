@@ -129,6 +129,11 @@ if [ $tpudemo = y ]; then
 elif [ $tpudemo = n ]; then
   sed -i s/'^BR2_PACKAGE_TPUDEMO_SG200X=y'/'# BR2_PACKAGE_TPUDEMO_SG200X is not set'/g configs/${BR_DEFCONFIG}
 fi
+if [ $tpusdk = y ]; then
+  sed -i s/'^# BR2_PACKAGE_SOPHGO_LIBRARY is not set'/'BR2_PACKAGE_SOPHGO_LIBRARY=y'/g configs/${BR_DEFCONFIG}
+elif [ $tpusdk = n ]; then
+  sed -i s/'^BR2_PACKAGE_SOPHGO_LIBRARY=y'/'# BR2_PACKAGE_SOPHGO_LIBRARY is not set'/g configs/${BR_DEFCONFIG}
+fi
 cd ..
 
 if [ -e cviruntime -a -e flatbuffers ]; then
