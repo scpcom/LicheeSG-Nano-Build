@@ -116,6 +116,18 @@ fi
 # Expand user space RAM from 128MB to 160MB
 sed -i s/'ION_SIZE = .* . SIZE_1M'/'ION_SIZE = 75 * SIZE_1M'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/memmap.py
 sed -i s/'BOOTLOGO_SIZE = .* . SIZE_1K'/'BOOTLOGO_SIZE = 5632 * SIZE_1K'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/memmap.py
+# set mipi sensor flag
+if echo ${SG_BOARD_LINK} | grep -q lichee ; then
+  sed -i /epsilon/d tools/common/sd_tools/genimage_rootless.cfg
+  sed -i /epsilon/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+else
+  if ! grep -q "epsilon" tools/common/sd_tools/genimage_rootless.cfg ; then
+    sed -i s/'\t\t\t"usb.dev",'/'\t\t\t"usb.dev",\n\t\t\t"epsilon",'/g tools/common/sd_tools/genimage_rootless.cfg
+  fi
+  if ! grep -q "epsilon" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
+    sed -i 's| \${output_dir}/input/usb.dev$| ${output_dir}/input/usb.dev\ntouch ${output_dir}/input/epsilon|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+  fi
+fi
 # enable usb disk, disable ncm
 sed -i s/'usb.ncm'/'usb.disk0'/g tools/common/sd_tools/genimage_rootless.cfg
 sed -i 's|touch ${output_dir}/input/usb.ncm|echo /dev/mmcblk0p3 > ${output_dir}/input/usb.disk0|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
