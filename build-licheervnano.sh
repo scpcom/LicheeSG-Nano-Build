@@ -112,6 +112,18 @@ if [ $sdkarch != $oldarch ]; then
   [ -e boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${oldarch} -a \
   ! -e boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch} ] && ln -s dts_${oldarch} boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch}
 fi
+# set mipi sensor flag
+if echo ${SG_BOARD_LINK} | grep -q lichee ; then
+  sed -i /epsilon/d tools/common/sd_tools/genimage_rootless.cfg
+  sed -i /epsilon/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+else
+  if ! grep -q "epsilon" tools/common/sd_tools/genimage_rootless.cfg ; then
+    sed -i s/'\t\t\t"usb.dev",'/'\t\t\t"usb.dev",\n\t\t\t"epsilon",'/g tools/common/sd_tools/genimage_rootless.cfg
+  fi
+  if ! grep -q "epsilon" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
+    sed -i 's| \${output_dir}/input/usb.dev$| ${output_dir}/input/usb.dev\ntouch ${output_dir}/input/epsilon|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+  fi
+fi
 cd ..
 
 source build/cvisetup.sh
@@ -178,6 +190,8 @@ mv bak.config build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_
 
 cd build
 git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+git restore tools/common/sd_tools/genimage_rootless.cfg
+git restore tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 cd ..
 
 cd buildroot
