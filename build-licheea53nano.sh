@@ -112,6 +112,15 @@ if [ $sdkarch != $oldarch ]; then
   [ -e boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${oldarch} -a \
   ! -e boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch} ] && ln -s dts_${oldarch} boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch}
 fi
+# board config for maixcdk
+if [ $maixcdk = y ]; then
+  if ! grep -q "board" tools/common/sd_tools/genimage_rootless.cfg ; then
+    sed -i s/'\t\t\t"usb.dev",'/'\t\t\t"usb.dev",\n\t\t\t"board",'/g tools/common/sd_tools/genimage_rootless.cfg
+  fi
+  if ! grep -q "board" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
+    sed -i 's| \${output_dir}/input/usb.dev$| ${output_dir}/input/usb.dev\necho "id=maixcam" > ${output_dir}/input/board\necho "panel=st7701_hd228001c31" >> ${output_dir}/input/board|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+  fi
+fi
 # set mipi sensor flag
 if echo ${SG_BOARD_LINK} | grep -q lichee ; then
   sed -i /epsilon/d tools/common/sd_tools/genimage_rootless.cfg
