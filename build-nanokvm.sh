@@ -250,6 +250,7 @@ if git checkout build ; then
   true
 fi
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*ssh*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
 git restore board/cvitek/SG200X/overlay/etc/init.d
 git restore configs/${BR_DEFCONFIG}
