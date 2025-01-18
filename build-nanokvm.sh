@@ -180,6 +180,7 @@ source build/cvisetup.sh
 defconfig ${SG_BOARD_LINK}
 
 cd buildroot
+branchnanokvm=false
 if git checkout -b build ; then
   rm -f board/cvitek/SG200X/overlay/etc/init.d/uvc-gadget-server.elf
   rm -f board/cvitek/SG200X/overlay/etc/init.d/uvc-gadget-server.tar.xz
@@ -187,6 +188,8 @@ if git checkout -b build ; then
   git commit -m "build"
 elif git branch -D build-nanokvm ; then
   true
+elif git checkout build-nanokvm ; then
+  branchnanokvm=true
 fi
 if [ -e ${BR_OUTPUT_DIR}/per-package/nanokvm-sg200x/target/kvmapp/system/init.d ]; then
   rsync -r --verbose --copy-dirlinks --copy-links --hard-links ${BR_OUTPUT_DIR}/per-package/nanokvm-sg200x/target/kvmapp/system/init.d/ board/cvitek/SG200X/overlay/etc/init.d/
@@ -215,6 +218,9 @@ elif [ $tpusdk = n ]; then
 fi
 
 if git checkout -b build-nanokvm ; then
+  branchnanokvm=true
+fi
+if [ $branchnanokvm = true ]; then
   git add board/cvitek/SG200X/overlay/etc/init.d
   git add configs/${BR_DEFCONFIG}
   git commit -m "build-nanokvm"
