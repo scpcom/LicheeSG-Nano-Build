@@ -6,6 +6,7 @@ export SG_BOARD_LINK=sg2002_licheervnano_sd
 sdkver=keep
 maixcdk=n
 nanokvm=y
+shrink=y
 tailscale=n
 tpudemo=n
 tpusdk=n
@@ -26,6 +27,14 @@ while [ "$#" -gt 0 ]; do
 	--no-maix-cdk|--no-maixcdk)
 		shift
 		maixcdk=n
+		;;
+	--shrink)
+		shift
+		shrink=y
+		;;
+	--no-shrink)
+		shift
+		shrink=n
 		;;
 	--tailscale)
 		shift
@@ -200,6 +209,10 @@ fi
 if [ $maixcdk = y ]; then
   sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
 fi
+if [ $maixcdk = y -a $shrink = y ]; then
+  sed -i s/'^BR2_PACKAGE_MAIX_CDK=y'/'BR2_PACKAGE_MAIX_CDK=y\n# BR2_PACKAGE_MAIX_CDK_ALL_PROJECTS is not set'/g configs/${BR_DEFCONFIG}
+  sed -i s/'^BR2_PACKAGE_MAIX_CDK=y'/'BR2_PACKAGE_MAIX_CDK=y\n# BR2_PACKAGE_MAIX_CDK_ALL_EXAMPLES is not set'/g configs/${BR_DEFCONFIG}
+fi
 if [ $nanokvm = y ]; then
   sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_NANOKVM_SG200X=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
 fi
@@ -215,6 +228,48 @@ if [ $tpusdk = y ]; then
   sed -i s/'^# BR2_PACKAGE_SOPHGO_LIBRARY is not set'/'BR2_PACKAGE_SOPHGO_LIBRARY=y'/g configs/${BR_DEFCONFIG}
 elif [ $tpusdk = n ]; then
   sed -i s/'^BR2_PACKAGE_SOPHGO_LIBRARY=y'/'# BR2_PACKAGE_SOPHGO_LIBRARY is not set'/g configs/${BR_DEFCONFIG}
+fi
+if [ $shrink = y ]; then
+  sed -i /'^BR2_PACKAGE_PYTHON_'/d configs/${BR_DEFCONFIG}
+
+  sed -i s/'^BR2_PACKAGE_PYTHON3_PY_PYC=y$'/'BR2_PACKAGE_PYTHON3_PY_PYC=y'\
+'\nBR2_PACKAGE_PYTHON_REQUESTS=y'\
+'\nBR2_PACKAGE_PYTHON_REQUESTS_OAUTHLIB=y'\
+'\nBR2_PACKAGE_PYTHON_REQUESTS_TOOLBELT=y'/g configs/${BR_DEFCONFIG}
+
+  sed -i /'^BR2_PACKAGE_GDB'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_HOST_GDB'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_GDB_'/d configs/${BR_DEFCONFIG}
+
+  sed -i /'^BR2_PACKAGE_BLUEZ'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_LLDP'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_AVAHI'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_WIRELESS_TOOLS'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_AIRCRACK'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_UTIL_LINUX_RFKILL'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_IPMITOOL'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_SOCAT'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_TINC'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_WIRELESS_REGDB'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_MOSH'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_LRZSZ'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_MTR'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_WIREGUARD'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_WPA_SUPPLICANT'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_HOSTAPD'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_HAVEGED'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_DHRYSTONE'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_COREMARK'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_RAMSPEED'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_ALSA_UTILS'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_SQUASHFS'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_LCDTEST'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_ASCII_INVADERS'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_GNUCHESS'/d configs/${BR_DEFCONFIG}
+
+  sed -i /'^BR2_PACKAGE_SSDP'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_PPPD'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_TCL'/d configs/${BR_DEFCONFIG}
 fi
 
 if git checkout -b build-nanokvm ; then
