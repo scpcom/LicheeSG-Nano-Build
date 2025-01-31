@@ -9,14 +9,14 @@ RUN apt-get update \
         binfmt-support gdisk kpartx sbuild \
         parted ca-certificates dh-make \
         autoconf automake autotools-dev bc \
-        build-essential cpio curl sudo \
-        dosfstools e2fsprogs fdisk flex gawk  \
+        build-essential cmake cpio curl sudo \
+        device-tree-compiler dosfstools e2fsprogs fdisk flex fuse2fs gawk  \
         git gperf kmod libexpat-dev \
         libgmp-dev libmpc-dev libmpfr-dev libncurses-dev libssl-dev \
-        libtool mmdebstrap openssl parted \
+        libtool mmdebstrap ninja-build openssl parted \
         patchutils python3 python3-dev  \
         python-is-python3 python3-jinja2 pkg-config xxd \
-        python3-setuptools  swig gnupg \
+        python3-setuptools shellcheck swig gnupg \
         systemd-container texinfo zlib1g-dev wget arch-test \
         linux-image-generic genimage joe mc unzip zip \
         fakeroot git kernel-wedge quilt ccache flex bison \
