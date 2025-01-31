@@ -18,7 +18,7 @@ RUN apt-get update \
         python-is-python3 python3-jinja2 pkg-config xxd \
         python3-setuptools shellcheck swig gnupg \
         systemd-container texinfo zlib1g-dev wget arch-test \
-        linux-image-generic genimage joe mc unzip zip \
+        genimage joe mc unzip zip \
         fakeroot git kernel-wedge quilt ccache flex bison \
         libssl-dev dh-exec rsync libelf-dev bc gcc-riscv64-unknown-elf
 
