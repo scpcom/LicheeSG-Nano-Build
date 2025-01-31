@@ -30,6 +30,8 @@ fi
 
 SDK_BOARD_LINK=${SDK_CHIP}_${SDK_BOARD}_${STORAGE_TYPE}
 
+BR_DEFCONFIG=cvitek_SG200X_${SDK_VER}_defconfig
+
 echo "${blue}Board: ${BOARD_SHORT}${end_color}"
 echo "${blue}Variant: ${VARIANT}${end_color}"
 echo "${blue}Storage: ${STORAGE_TYPE}${end_color}"
@@ -48,6 +50,9 @@ bs=${BUILDDIR}/sdk-prepare-patch-stamp
 if [ ! -e $bs ]; then
   echo "\n${green}Patching SDK for ${BOARD_SHORT}${end_color}\n"
   cd ${BUILDDIR} && ./host/prepare-host.sh
+  cd ${BUILDDIR}/buildroot && sed -i s/'BR2_PER_PACKAGE_DIRECTORIES=y'/'# BR2_PER_PACKAGE_DIRECTORIES is not set'/g configs/${BR_DEFCONFIG}
+  cd ${BUILDDIR}/buildroot && git add configs/${BR_DEFCONFIG}
+  cd ${BUILDDIR}/buildroot && git commit -m "disable per package directories"
   touch $bs
 fi
 
@@ -72,6 +77,11 @@ if [ ! -e $bs ]; then
   done
   if [ "X${VARIANT}" = "Xkvm" ]; then
     cp ${BUILDDIR}/install/soc_${SDK_BOARD_LINK}/nanokvm-latest.zip /output/
+  else
+    cp ${BUILDDIR}/install/soc_${SDK_BOARD_LINK}/*.bin /output/
+    rm -f /output/fw_payload*.bin
+    cd /output/ && zip ${BOARD_SHORT}-${VARIANT}_${STORAGE_TYPE}-fip.zip *.bin
+    rm -f /output/*.bin
   fi
   echo "\n${green}Image for ${BOARD_SHORT} is ${BOARD_SHORT}-${VARIANT}_${STORAGE_TYPE}.img.xz${end_color}\n"
   touch $bs
