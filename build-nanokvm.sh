@@ -266,6 +266,8 @@ if [ $shrink = y ]; then
   sed -i /'^BR2_PACKAGE_LCDTEST'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_ASCII_INVADERS'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_GNUCHESS'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_SL'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_XORCURSES'/d configs/${BR_DEFCONFIG}
 
   sed -i /'^BR2_PACKAGE_SSDP'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_PPPD'/d configs/${BR_DEFCONFIG}
