@@ -273,6 +273,13 @@ if [ $shrink = y ]; then
   sed -i /'^BR2_PACKAGE_PPPD'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_TCL'/d configs/${BR_DEFCONFIG}
 fi
+if [ $maixcdk = n -a $shrink = y ]; then
+  sed -i /'^BR2_PACKAGE_FFMPEG'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_LIBQRENCODE'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_LIBWEBSOCKETS'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_MPG123'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_OPENCV'/d configs/${BR_DEFCONFIG}
+fi
 
 if git checkout -b build-nanokvm ; then
   branchnanokvm=true
