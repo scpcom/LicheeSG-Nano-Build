@@ -53,6 +53,36 @@ if [ ! -e $bs ]; then
   cd ${BUILDDIR}/buildroot && sed -i s/'BR2_PER_PACKAGE_DIRECTORIES=y'/'# BR2_PER_PACKAGE_DIRECTORIES is not set'/g configs/${BR_DEFCONFIG}
   cd ${BUILDDIR}/buildroot && git add configs/${BR_DEFCONFIG}
   cd ${BUILDDIR}/buildroot && git commit -m "disable per package directories"
+  cd ${BUILDDIR}/host-tools && for d in gcc/arm-gnu-toolchain-11.3.rel1-* gcc/gcc-buildroot-9.3.0-* gcc/gcc-linaro-6.3.1-2017.05-* ; do
+    [ -e $d ] || continue
+    git rm -r $d
+  done
+  cd ${BUILDDIR}/host-tools && if [ "${SDK_VER}" != "glibc_riscv64" ]; then
+    git rm -r gcc/riscv64-linux-x86_64
+    sed -i s/CROSS_COMPILE_GLIBC_RISCV64/CROSS_COMPILE_MUSL_RISCV64/g ${BUILDDIR}/fsbl/Makefile
+  fi
+  cd ${BUILDDIR}/host-tools && if [ "${SDK_VER}" != "musl_riscv64" ]; then
+    git rm -r gcc/riscv64-linux-musl-x86_64
+  fi
+  cd ${BUILDDIR}/ramdisk && for f in rootfs/common_*/usr/share/fw_vcodec/*.bin ; do
+    [ -e $f ] || continue
+    d=`dirname $f`
+    mkdir -p .backup-$d
+    git mv $f .backup-$f
+  done
+  cd ${BUILDDIR}/ramdisk && for d in initramfs/uclibc_arm \
+           rootfs/common_* rootfs/public sysroot/sysroot-glibc-linaro-2.23-2017.05-* ; do
+    [ -e $d ] || continue
+    git rm -r $d
+  done
+  cd ${BUILDDIR}/ramdisk && for f in .backup-rootfs/common_*/usr/share/fw_vcodec/*.bin ; do
+    [ -e $f ] || continue
+    b=`basename $f`
+    d=`dirname $f | cut -d '-' -f 2-`
+    mkdir -p $d
+    git mv $f $d/$b
+  done
+  cd ${BUILDDIR}/ramdisk && rm -rf .backup-rootfs/
   touch $bs
 fi
 
