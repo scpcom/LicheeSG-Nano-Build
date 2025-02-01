@@ -256,6 +256,7 @@ if [ $shrink = y ]; then
   sed -i /'^BR2_PACKAGE_SL'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_XORCURSES'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_STRESS'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_EXPECT'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_TCL'/d configs/${BR_DEFCONFIG}
 fi
 if [ $maixcdk = n -a $shrink = y ]; then
