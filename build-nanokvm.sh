@@ -244,7 +244,6 @@ if [ $shrink = y ]; then
   sed -i /'^BR2_PACKAGE_AIRCRACK'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_MOSH'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_LRZSZ'/d configs/${BR_DEFCONFIG}
-  sed -i /'^BR2_PACKAGE_MTR'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_DHRYSTONE'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_COREMARK'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_RAMSPEED'/d configs/${BR_DEFCONFIG}
