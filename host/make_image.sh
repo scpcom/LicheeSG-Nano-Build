@@ -50,6 +50,7 @@ bs=${BUILDDIR}/sdk-prepare-patch-stamp
 if [ ! -e $bs ]; then
   echo "\n${green}Patching SDK for ${BOARD_SHORT}${end_color}\n"
   cd ${BUILDDIR} && ./host/prepare-host.sh
+  cd ${BUILDDIR}/buildroot && git am < /builder/buildroot-pkg-generic-cleanup-build-after-install.patch
   cd ${BUILDDIR}/buildroot && sed -i s/'BR2_PER_PACKAGE_DIRECTORIES=y'/'# BR2_PER_PACKAGE_DIRECTORIES is not set'/g configs/${BR_DEFCONFIG}
   cd ${BUILDDIR}/buildroot && git add configs/${BR_DEFCONFIG}
   cd ${BUILDDIR}/buildroot && git commit -m "disable per package directories"

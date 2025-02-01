@@ -1,0 +1,29 @@
+From eb2843f96bfe8c181a3e5d0a870ba132fe3d786e Mon Sep 17 00:00:00 2001
+From: scpcom <scpcom@gmx.de>
+Date: Sat, 1 Feb 2025 02:10:41 +0100
+Subject: [PATCH] buildroot: pkg-generic: cleanup build after install
+
+---
+ package/pkg-generic.mk | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/package/pkg-generic.mk b/package/pkg-generic.mk
+index c7419b00fb..3415163618 100644
+--- a/package/pkg-generic.mk
++++ b/package/pkg-generic.mk
+@@ -394,6 +394,12 @@ $(BUILD_DIR)/%/.stamp_installed:
+ 	@$(call pkg_size_after,$(BINARIES_DIR),-images)
+ 	@$(call pkg_size_after,$(HOST_DIR),-host)
+ 	@$(call check_bin_arch)
++	if [ "X$(findstring $($(PKG)_NAME), maix-cdk)" != "X" ] ; then \
++		rm -Rf $(@D)/examples/*/ ; \
++		rm -Rf $(@D)/projects/*/ ; \
++	elif [ "X$(findstring $($(PKG)_NAME), alsa-lib avahi bind libnl libselinux pcre2 python3 tcl util-linux host-libselinux host-pcre2 host-python3 host-util-linux)" = "X" ]; then \
++		rm -Rf $(@D)/*/ ; \
++	fi
+ 	$(Q)touch $@
+ 
+ # Remove package sources
+-- 
+2.34.1
+
