@@ -241,23 +241,10 @@ if [ $shrink = y ]; then
   sed -i /'^BR2_PACKAGE_HOST_GDB'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_GDB_'/d configs/${BR_DEFCONFIG}
 
-  sed -i /'^BR2_PACKAGE_BLUEZ'/d configs/${BR_DEFCONFIG}
-  sed -i /'^BR2_PACKAGE_LLDP'/d configs/${BR_DEFCONFIG}
-  sed -i /'^BR2_PACKAGE_AVAHI'/d configs/${BR_DEFCONFIG}
-  sed -i /'^BR2_PACKAGE_WIRELESS_TOOLS'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_AIRCRACK'/d configs/${BR_DEFCONFIG}
-  sed -i /'^BR2_PACKAGE_UTIL_LINUX_RFKILL'/d configs/${BR_DEFCONFIG}
-  sed -i /'^BR2_PACKAGE_IPMITOOL'/d configs/${BR_DEFCONFIG}
-  sed -i /'^BR2_PACKAGE_SOCAT'/d configs/${BR_DEFCONFIG}
-  sed -i /'^BR2_PACKAGE_TINC'/d configs/${BR_DEFCONFIG}
-  sed -i /'^BR2_PACKAGE_WIRELESS_REGDB'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_MOSH'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_LRZSZ'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_MTR'/d configs/${BR_DEFCONFIG}
-  sed -i /'^BR2_PACKAGE_WIREGUARD'/d configs/${BR_DEFCONFIG}
-  sed -i /'^BR2_PACKAGE_WPA_SUPPLICANT'/d configs/${BR_DEFCONFIG}
-  sed -i /'^BR2_PACKAGE_HOSTAPD'/d configs/${BR_DEFCONFIG}
-  sed -i /'^BR2_PACKAGE_HAVEGED'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_DHRYSTONE'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_COREMARK'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_RAMSPEED'/d configs/${BR_DEFCONFIG}
@@ -268,9 +255,7 @@ if [ $shrink = y ]; then
   sed -i /'^BR2_PACKAGE_GNUCHESS'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_SL'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_XORCURSES'/d configs/${BR_DEFCONFIG}
-
-  sed -i /'^BR2_PACKAGE_SSDP'/d configs/${BR_DEFCONFIG}
-  sed -i /'^BR2_PACKAGE_PPPD'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_STRESS'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_TCL'/d configs/${BR_DEFCONFIG}
 fi
 if [ $maixcdk = n -a $shrink = y ]; then
