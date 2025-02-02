@@ -257,6 +257,9 @@ if [ $shrink = y ]; then
   sed -i /'^BR2_PACKAGE_STRESS'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_EXPECT'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_TCL'/d configs/${BR_DEFCONFIG}
+
+  sed -i s/'BR2_PACKAGE_OPENCV4_BUILD_TESTS=y'/'# BR2_PACKAGE_OPENCV4_BUILD_TESTS is not set'/g configs/${BR_DEFCONFIG}
+  sed -i s/'BR2_PACKAGE_OPENCV4_BUILD_PERF_TESTS=y'/'# BR2_PACKAGE_OPENCV4_BUILD_PERF_TESTS is not set'/g configs/${BR_DEFCONFIG}
 fi
 if [ $maixcdk = n -a $shrink = y ]; then
   sed -i /'^BR2_PACKAGE_FFMPEG'/d configs/${BR_DEFCONFIG}
