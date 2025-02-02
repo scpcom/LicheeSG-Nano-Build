@@ -51,31 +51,25 @@ On Debian/Ubuntu you can install required packages with:
 Or you can use container:
 
 ```
-cd host/ubuntu
-docker build -t licheervnano-build-ubuntu .
-docker run --name licheervnano-build-ubuntu licheervnano-build-ubuntu
-docker export licheervnano-build-ubuntu | sqfstar licheervnano-build-ubuntu.sqfs
-singularity shell -e licheervnano-build-ubuntu.sqfs
+docker build -t builder -f host/Dockerfile .
+docker run --privileged -it --rm -v `pwd`/image:/output builder sh -e -c "BOARD_SHORT=licheervnano ./make_image.sh"
 ```
 
 # build it
 
 ```
-source build/cvisetup.sh
-# C906:
-defconfig sg2002_licheervnano_sd
-# A53:
-# defconfig sg2002_licheea53nano_sd
-build_all
+./build-licheervnano.sh
+```
+
+# build nanokvm
+
+```
+./build-nanokvm.sh
 ```
 
 # build fail
 
-on some system, qt5svg or qt5base will build failed on first build, please retry command:
-
-```
-build_all
-```
+on some system, qt5svg or qt5base will build failed on first build, please the build command.
 
 # how to modify image after build:
 
