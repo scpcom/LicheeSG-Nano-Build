@@ -148,6 +148,8 @@ else
 fi
 # enable usb disk, disable ncm
 sed -i s/'usb.ncm'/'usb.disk0'/g tools/common/sd_tools/genimage_rootless.cfg
+sed -i s/'usb.rndis0'/'usb.rndis'/g tools/common/sd_tools/genimage_rootless.cfg
+sed -i s/'usb.rndis'/'usb.rndis0'/g tools/common/sd_tools/genimage_rootless.cfg
 sed -i 's|touch ${output_dir}/input/usb.ncm|echo /dev/mmcblk0p3 > ${output_dir}/input/usb.disk0|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 # enable usb hid
 #if ! grep -q "usb.hid" tools/common/sd_tools/genimage_rootless.cfg ; then
@@ -162,6 +164,8 @@ fi
 if ! grep -q "usb.keyboard" tools/common/sd_tools/genimage_rootless.cfg ; then
   sed -i s/'\t\t\t"usb.disk0",'/'\t\t\t"usb.disk0",\n\t\t\t"usb.keyboard",'/g tools/common/sd_tools/genimage_rootless.cfg
 fi
+sed -i s/'usb.rndis0'/'usb.rndis'/g tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+sed -i s/'usb.rndis'/'usb.rndis0'/g tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 #if ! grep -q "usb.hid" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
 #  sed -i 's| \${output_dir}/input/usb.disk0$| ${output_dir}/input/usb.disk0\ntouch ${output_dir}/input/usb.hid|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 #fi
@@ -204,6 +208,10 @@ if [ -e ${BR_OUTPUT_DIR}/per-package/nanokvm-sg200x/target/kvmapp/system/init.d 
   rsync -r --verbose --copy-dirlinks --copy-links --hard-links ${BR_OUTPUT_DIR}/per-package/nanokvm-sg200x/target/kvmapp/system/init.d/ board/cvitek/SG200X/overlay/etc/init.d/
   rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
   rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
+fi
+if [ -e board/cvitek/SG200X/overlay/etc/init.d/S30gadget_nic -a ! \
+     -e board/cvitek/SG200X/overlay/etc/init.d/S30rndis ] ; then
+  git mv board/cvitek/SG200X/overlay/etc/init.d/S30gadget_nic board/cvitek/SG200X/overlay/etc/init.d/S30rndis
 fi
 
 if [ $maixcdk = y ]; then
@@ -306,6 +314,10 @@ fi
 cd -
 if git checkout build ; then
   true
+fi
+if [ -e board/cvitek/SG200X/overlay/etc/init.d/S30rndis -a ! \
+     -e board/cvitek/SG200X/overlay/etc/init.d/S30gadget_nic ] ; then
+  git mv board/cvitek/SG200X/overlay/etc/init.d/S30rndis board/cvitek/SG200X/overlay/etc/init.d/S30gadget_nic
 fi
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*ssh*
