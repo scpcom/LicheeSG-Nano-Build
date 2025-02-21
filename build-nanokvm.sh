@@ -223,6 +223,7 @@ if [ $maixcdk = y -a $shrink = y ]; then
 fi
 if [ $nanokvm = y ]; then
   sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_NANOKVM_SG200X=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
+  sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_SER2NET=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
 fi
 if [ $tailscale = y ]; then
   sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_TAILSCALE_RISCV64=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
