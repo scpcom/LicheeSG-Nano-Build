@@ -220,6 +220,7 @@ fi
 if [ $maixcdk = y -a $shrink = y ]; then
   sed -i s/'^BR2_PACKAGE_MAIX_CDK=y'/'BR2_PACKAGE_MAIX_CDK=y\n# BR2_PACKAGE_MAIX_CDK_ALL_PROJECTS is not set'/g configs/${BR_DEFCONFIG}
   sed -i s/'^BR2_PACKAGE_MAIX_CDK=y'/'BR2_PACKAGE_MAIX_CDK=y\n# BR2_PACKAGE_MAIX_CDK_ALL_EXAMPLES is not set'/g configs/${BR_DEFCONFIG}
+  sed -i s/'^BR2_PACKAGE_MAIX_CDK=y'/'BR2_PACKAGE_MAIX_CDK=y\n# BR2_PACKAGE_MAIX_CDK_ALL_DEPENDENCIES is not set'/g configs/${BR_DEFCONFIG}
 fi
 if [ $nanokvm = y ]; then
   sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_NANOKVM_SG200X=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
@@ -269,6 +270,10 @@ if [ $shrink = y ]; then
 
   sed -i s/'BR2_PACKAGE_OPENCV4_BUILD_TESTS=y'/'# BR2_PACKAGE_OPENCV4_BUILD_TESTS is not set'/g configs/${BR_DEFCONFIG}
   sed -i s/'BR2_PACKAGE_OPENCV4_BUILD_PERF_TESTS=y'/'# BR2_PACKAGE_OPENCV4_BUILD_PERF_TESTS is not set'/g configs/${BR_DEFCONFIG}
+
+  sed -i /'BR2_PACKAGE_FFMPEG'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_MPG123'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_OPENCV'/d configs/${BR_DEFCONFIG}
 fi
 if [ $maixcdk = n -a $shrink = y ]; then
   sed -i /'^BR2_PACKAGE_FFMPEG'/d configs/${BR_DEFCONFIG}
