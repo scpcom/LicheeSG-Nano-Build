@@ -325,7 +325,10 @@ if [ -e board/cvitek/SG200X/overlay/etc/init.d/S30rndis -a ! \
      -e board/cvitek/SG200X/overlay/etc/init.d/S30gadget_nic ] ; then
   git mv board/cvitek/SG200X/overlay/etc/init.d/S30rndis board/cvitek/SG200X/overlay/etc/init.d/S30gadget_nic
 fi
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*avahi*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*dnsmasq*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*ssdp*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*ssh*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
 git restore board/cvitek/SG200X/overlay/etc/init.d
