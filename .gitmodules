@@ -13,7 +13,7 @@
 [submodule "opensbi"]
 	path = opensbi
 	url = https://github.com/scpcom/opensbi
-	branch = licheervnano-0.9
+	branch = licheervnano-cvisdk-1.2
 [submodule "u-boot-2021.10"]
 	path = u-boot-2021.10
 	url = https://github.com/scpcom/u-boot
