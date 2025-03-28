@@ -18,7 +18,7 @@ index c7419b00fb..3415163618 100644
 +	if [ "X$(findstring $($(PKG)_NAME), maix-cdk)" != "X" ] ; then \
 +		rm -Rf $(@D)/examples/*/ ; \
 +		rm -Rf $(@D)/projects/*/ ; \
-+	elif [ "X$(findstring $($(PKG)_NAME), alsa-lib avahi bind libnl libselinux pcre2 python3 tcl util-linux host-libselinux host-pcre2 host-python3 host-util-linux)" = "X" ]; then \
++	elif [ "X$(findstring $($(PKG)_NAME), alsa-lib avahi bind harfbuzz libnl libselinux opencv4 pcre2 python3 tcl util-linux host-libselinux host-pcre2 host-python3 host-util-linux)" = "X" ]; then \
 +		rm -Rf $(@D)/*/ ; \
 +	fi
  	$(Q)touch $@
