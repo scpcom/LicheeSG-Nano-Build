@@ -11,14 +11,16 @@ diff --git a/package/pkg-generic.mk b/package/pkg-generic.mk
 index c7419b00fb..3415163618 100644
 --- a/package/pkg-generic.mk
 +++ b/package/pkg-generic.mk
-@@ -394,6 +394,12 @@ $(BUILD_DIR)/%/.stamp_installed:
+@@ -394,6 +394,14 @@ $(BUILD_DIR)/%/.stamp_installed:
  	@$(call pkg_size_after,$(BINARIES_DIR),-images)
  	@$(call pkg_size_after,$(HOST_DIR),-host)
  	@$(call check_bin_arch)
 +	if [ "X$(findstring $($(PKG)_NAME), maix-cdk)" != "X" ] ; then \
 +		rm -Rf $(@D)/examples/*/ ; \
 +		rm -Rf $(@D)/projects/*/ ; \
-+	elif [ "X$(findstring $($(PKG)_NAME), alsa-lib avahi bind harfbuzz libnl libselinux opencv4 pcre2 python3 tcl util-linux host-libselinux host-pcre2 host-python3 host-util-linux)" = "X" ]; then \
++	elif [ "X$(findstring $($(PKG)_NAME), opencv4)" != "X" ] ; then \
++		rm -Rf $(@D)/buildroot-build/ ; \
++	elif [ "X$(findstring $($(PKG)_NAME), alsa-lib avahi bind harfbuzz libnl libselinux pcre2 python3 tcl util-linux host-libselinux host-pcre2 host-python3 host-util-linux)" = "X" ]; then \
 +		rm -Rf $(@D)/*/ ; \
 +	fi
  	$(Q)touch $@
