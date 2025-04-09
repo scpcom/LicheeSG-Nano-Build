@@ -26,6 +26,8 @@
 - synced defconfig and dts from licheervnano to licheea53nano
 - updated build scripts to compile the firmware (including MaixCDK and NanoKVM) for a53 mode (ARM 32-bit and 64-bit)
 - added submodules to compile tpu sdk
+- added compatibility for generic gnu toolchain (gcc/glibc) on all components (except tpu)
+- created cvi_json-c and cvi_miniz open source replacement in middleware/modules/bin
 
 # download source
 
