@@ -3,8 +3,8 @@
 - updated build, fsbl, opensbi, u-boot, linux, middleware (cvi_mpi and SensorSupportList) and osdrv to sophgo weekly rls 2024.10.14
 - updated isp_tuning to sophgo weekly rls 2024.09.11
 - updated freertos to sophgo weekly rls 2024.06.6 and ramdisk to sophgo weekly rls 2024.07.20
-- merged mainline v5.10.230 into linux_5.10
-- updated buildroot to 2024.05.3
+- merged mainline v5.10.235 into linux_5.10
+- updated buildroot to 2025.02
 - added maix_mmf sources and media_server submodule to middleware/sample/test_mmf
 - imported rtsp_server from maixcdk to middleware/sample/test_mmf
 - added support for nanokvm
