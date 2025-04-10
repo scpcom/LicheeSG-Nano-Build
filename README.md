@@ -71,7 +71,7 @@ docker run --privileged -it --rm -v `pwd`/image:/output builder sh -e -c "BOARD_
 
 # build fail
 
-on some system, qt5svg or qt5base will build failed on first build, please the build command.
+on some systems, qt5svg or qt5base will fail on first build, please re-run the build command.
 
 # how to modify image after build:
 
