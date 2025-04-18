@@ -20,13 +20,26 @@ gctgts="riscv64-linux
 riscv64-linux-musl
 riscv64-elf"
 
-[ "X${tcurl}" = "X" ] && tcurl=https://github.com/scpcom/riscv-gnu-toolchain/releases/download/riscv64-gcc-thead_${tcdat}-${gcver}-${harch}
+tcset=riscv64-gcc-thead_${tcdat}-${gcver}-${harch}
+[ "X${tcurl}" = "X" ] && tcurl=https://github.com/scpcom/riscv-gnu-toolchain/releases/download/${tcset}
 
 cd $d
 for gctgt in $gctgts ; do
   gctar=${gctgt}-gcc-thead_${tcdat}-${gcver}-${harch}.tar.gz
   if [ ! -e ${gctar} ]; then
     wget -N ${tcurl}/${gctar}
+  fi
+  if [ -e ${tcset}.sha256 ]; then
+    gcsum=`sha256sum ${gctar} | cut -d ' ' -f 1`
+    if [ "X${gcsum}" = "X" ] ; then
+      echo "failed to get sha256 for ${gctar}"
+    elif grep -q '^'${gcsum}' .*'${gctar}'$' ${tcset}.sha256 ; then
+      echo "${gcsum} ${gctar} OK"
+    else
+      echo "${gcsum} ${gctar} WRONG CHECKSUM"
+    fi
+  else
+    echo "no sha256 file for ${gctar}"
   fi
 done
 cd ..
