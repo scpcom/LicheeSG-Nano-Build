@@ -122,6 +122,10 @@ if [ $tclib = musl ]; then
      ! -e ${gcrel}/sysroot/usr/include/sys/queue.h ]; then
     cp -p riscv64-linux-${harch}/sysroot/usr/include/sys/queue.h ${gcrel}/sysroot/usr/include/sys/
   fi
+  if [ -e riscv-glibc/misc/sys/queue.h -a \
+     ! -e ${gcrel}/sysroot/usr/include/sys/queue.h ]; then
+    cp -p riscv-glibc/misc/sys/queue.h ${gcrel}/sysroot/usr/include/sys/
+  fi
 
   cd ${gcrel}
 
