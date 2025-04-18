@@ -46,9 +46,6 @@
 	path = ramdisk
 	url = https://github.com/scpcom/sophgo-ramdisk
 	branch = licheesgnano
-[submodule "host-tools"]
-	path = host-tools
-	url = https://github.com/sophgo/host-tools
 [submodule "cnpy"]
 	path = cnpy
 	url = https://github.com/scpcom/cnpy
