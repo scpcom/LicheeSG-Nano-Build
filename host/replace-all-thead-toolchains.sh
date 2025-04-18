@@ -10,12 +10,12 @@ cd $d ; d=`pwd` ; cd - > /dev/null
 # 3. Download or copy the archives to the host folder
 tcurl=$1
 
-tcver=2.6.1
-tcdat=20230307
+tcver=2.8.1
+tcdat=20240502
 
 harch=`uname -m`
 
-gcver=10.2.0
+gcver=10.4.0
 gctgts="riscv64-linux
 riscv64-linux-musl
 riscv64-elf"

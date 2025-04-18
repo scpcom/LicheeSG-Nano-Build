@@ -4,14 +4,14 @@ cd $d ; d=`pwd` ; cd - > /dev/null
 
 lxver=5.10.4
 tclib=musl
-tcver=2.6.1
+tcver=2.8.1
 #tcdat=20220906
-tcdat=20230307
+tcdat=20240502
 
 harch=`uname -m`
 gctgt=riscv64-linux-musl
 gctup=riscv64-unknown-linux-musl
-gcver=10.2.0
+gcver=10.4.0
 gcrel=${gctgt}-${harch}
 gctar=${gctgt}-gcc-thead_${tcdat}-${gcver}-${harch}.tar.gz
 
@@ -46,7 +46,7 @@ cd $d
 
 if [ ! -e toolchain ]; then
   #git clone -b master-csky-open-v0.7.1 https://github.com/c-sky/riscv-gnu-toolchain toolchain
-  git clone -b xuantie-gnu-toolchain-v2.6.x https://github.com/scpcom/riscv-gnu-toolchain toolchain
+  git clone -b xuantie-gnu-toolchain-v2.8.x https://github.com/scpcom/riscv-gnu-toolchain toolchain
   tar czf xuantie-gnu-toolchain-source.tar.gz toolchain
 fi
 
