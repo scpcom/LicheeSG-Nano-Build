@@ -20,6 +20,8 @@ gctgts="riscv64-linux
 riscv64-linux-musl
 riscv64-elf"
 
+[ "X${tcurl}" = "X" ] && tcurl=https://github.com/scpcom/riscv-gnu-toolchain/releases/download/riscv64-gcc-thead_${tcdat}-${gcver}-${harch}
+
 cd $d
 for gctgt in $gctgts ; do
   gctar=${gctgt}-gcc-thead_${tcdat}-${gcver}-${harch}.tar.gz
