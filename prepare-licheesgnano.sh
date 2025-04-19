@@ -1,5 +1,11 @@
 #!/bin/bash -e
 
+if [ ! -e host-tools/gcc ]; then
+  bash -e host/replace-all-thead-toolchains.sh
+  #bash -e host/replace-all-linaro-toolchains.sh
+  #bash -e host/replace-all-arm-toolchains.sh
+fi
+
 if git -C linux_5.10 checkout -b build 2>/dev/null ; then
   ln -sf ../../../../build/output/sg2002_licheervnano_sd/cvi_board_memmap.h linux_5.10/scripts/dtc/include-prefixes/cvi_board_memmap.h
   git -C linux_5.10 add scripts/dtc/include-prefixes/cvi_board_memmap.h
