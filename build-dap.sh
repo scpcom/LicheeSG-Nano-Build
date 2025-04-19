@@ -1,0 +1,358 @@
+#!/bin/bash -e
+
+export SG_BOARD_FAMILY=sg200x
+export SG_BOARD_LINK=sg2002_licheervnano_sd
+
+sdkver=keep
+maixcdk=n
+dap=y
+shrink=y
+tailscale=n
+tpudemo=n
+tpusdk=n
+while [ "$#" -gt 0 ]; do
+	case "$1" in
+	--board=*|--board-link=*)
+		export SG_BOARD_LINK=`echo $1 | cut -d '=' -f 2-`
+		shift
+		;;
+	--sdk-ver=*|--sdkver=*)
+		sdkver=`echo $1 | cut -d '=' -f 2-`
+		shift
+		;;
+	--maix-cdk|--maixcdk)
+		shift
+		maixcdk=y
+		;;
+	--no-maix-cdk|--no-maixcdk)
+		shift
+		maixcdk=n
+		;;
+	--shrink)
+		shift
+		shrink=y
+		;;
+	--no-shrink)
+		shift
+		shrink=n
+		;;
+	--tailscale)
+		shift
+		tailscale=y
+		;;
+	--no-tailscale)
+		shift
+		tailscale=n
+		;;
+	--tpu-demo|--tpudemo)
+		shift
+		tpudemo=y
+		;;
+	--no-tpu-demo|--no-tpudemo)
+		shift
+		tpudemo=n
+		;;
+	--tpu-sdk|--tpusdk)
+		shift
+		tpusdk=y
+		;;
+	--no-tpu-sdk|--no-tpusdk)
+		shift
+		tpusdk=n
+		;;
+	*)
+		break
+		;;
+	esac
+done
+
+for p in / /usr/ /usr/local/ ; do
+  if echo $PATH | grep -q ${p}bin ; then
+    if ! echo $PATH | grep -q ${p}sbin ; then
+      export PATH=${p}sbin:$PATH
+    fi
+  fi
+done
+
+if echo ${SG_BOARD_LINK} | grep -q -E '^cv180' ; then
+  export SG_BOARD_FAMILY=cv180x
+fi
+if echo ${SG_BOARD_LINK} | grep -q -E '^sg200' ; then
+  export SG_BOARD_FAMILY=sg200x
+fi
+
+if [ -e prepare-licheesgnano.sh ]; then
+  bash -e prepare-licheesgnano.sh
+fi
+
+sdkcros=linux-gnu
+sdklibc=`echo $sdkver | cut -d '_' -f 1`
+sdkarch=`echo $sdkver | cut -d '_' -f 2`
+sdktool=`echo $sdkver | tr a-z A-Z`
+oldcros=$sdkcros
+oldlibc=$sdklibc
+oldarch=$sdkarch
+# Allow to switch from ARM 32-bit to 64-bit and vice versa
+if [ $sdkver = glibc_arm64 ]; then
+  oldarch=arm
+elif [ $sdkver = glibc_arm ]; then
+  oldarch=arm64
+fi
+# Allow to switch from RISC-V musl to glibc and vice versa
+if [ $sdkver = musl_riscv64 ]; then
+  sdkcros=linux-musl
+  oldlibc=glibc
+elif [ $sdkver = glibc_riscv64 ]; then
+  oldcros=linux-musl
+  oldlibc=musl
+fi
+oldtool=`echo ${oldlibc}_${oldarch} | tr a-z A-Z`
+[ $oldarch = riscv64 ] && oldarch=riscv
+[ $sdkarch = riscv64 ] && sdkarch=riscv
+
+cd build
+if [ $sdkcros != $oldcros ]; then
+  sed -i s/'-unknown-'${oldcros}'-'/'-unknown-'${sdkcros}'-'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+fi
+if [ $sdktool != $oldtool ]; then
+  sed -i s/'^CONFIG_TOOLCHAIN_'${oldtool}'=y'/'CONFIG_TOOLCHAIN_'${sdktool}'=y'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+fi
+if [ $sdkarch != $oldarch ]; then
+  sed -i s/'^CONFIG_ARCH="'${oldarch}'"'/'CONFIG_ARCH="'${sdkarch}'"'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+  [ -e boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${oldarch} -a \
+  ! -e boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch} ] && ln -s dts_${oldarch} boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch}
+fi
+
+sed -i /BMP/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
+sed -i /VIDCONSOLE/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
+sed -i /CVI_VO/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
+sed -i /DISPLAY/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
+sed -i /LOGO/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
+sed -i /VIDEO/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
+sed -i /ETH/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
+
+# Expand user space RAM from 128MB to 160MB
+sed -i s/'ION_SIZE = .* . SIZE_1M'/'ION_SIZE = 75 * SIZE_1M'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/memmap.py
+sed -i s/'BOOTLOGO_SIZE = .* . SIZE_1K'/'BOOTLOGO_SIZE = 5632 * SIZE_1K'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/memmap.py
+# board config for maixcdk
+if [ $maixcdk = y ]; then
+  if ! grep -q "board" tools/common/sd_tools/genimage_rootless.cfg ; then
+    sed -i s/'\t\t\t"usb.dev",'/'\t\t\t"usb.dev",\n\t\t\t"board",'/g tools/common/sd_tools/genimage_rootless.cfg
+  fi
+  if ! grep -q "board" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
+    sed -i 's| \${output_dir}/input/usb.dev$| ${output_dir}/input/usb.dev\necho "id=maixcam" > ${output_dir}/input/board\necho "panel=st7701_hd228001c31" >> ${output_dir}/input/board|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+  fi
+fi
+# set mipi sensor flag
+if echo ${SG_BOARD_LINK} | grep -q lichee ; then
+  sed -i /epsilon/d tools/common/sd_tools/genimage_rootless.cfg
+  sed -i /epsilon/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+else
+  if ! grep -q "epsilon" tools/common/sd_tools/genimage_rootless.cfg ; then
+    sed -i s/'\t\t\t"usb.dev",'/'\t\t\t"usb.dev",\n\t\t\t"epsilon",'/g tools/common/sd_tools/genimage_rootless.cfg
+  fi
+  if ! grep -q "epsilon" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
+    sed -i 's| \${output_dir}/input/usb.dev$| ${output_dir}/input/usb.dev\ntouch ${output_dir}/input/epsilon|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+  fi
+fi
+
+# enable usb disk, disable ncm
+#sed -i s/'usb.ncm'/'usb.disk0'/g tools/common/sd_tools/genimage_rootless.cfg
+#sed -i s/'usb.rndis0'/'usb.rndis'/g tools/common/sd_tools/genimage_rootless.cfg
+#sed -i s/'usb.rndis'/'usb.rndis0'/g tools/common/sd_tools/genimage_rootless.cfg
+#sed -i 's|touch ${output_dir}/input/usb.ncm|echo /dev/mmcblk0p3 > ${output_dir}/input/usb.disk0|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+# enable usb hid
+#sed -i s/'usb.rndis0'/'usb.rndis'/g tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+#sed -i s/'usb.rndis'/'usb.rndis0'/g tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+
+# set hostname prefix
+if ! grep -q "hostname.prefix" tools/common/sd_tools/genimage_rootless.cfg ; then
+  sed -i s/'\t\t\t"usb.dev",'/'\t\t\t"hostname.prefix",\n\t\t\t"usb.dev",'/g tools/common/sd_tools/genimage_rootless.cfg
+fi
+if ! grep -q "hostname.prefix" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
+  sed -i 's|^touch \${output_dir}/input/usb.dev$|echo -n dap > ${output_dir}/input/hostname.prefix\ntouch \${output_dir}/input/usb.dev|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+fi
+cd ..
+
+BR_OUTPUT_DIR=output
+
+source build/cvisetup.sh
+defconfig ${SG_BOARD_LINK}
+
+cd buildroot
+branchdap=false
+if git checkout -b build ; then
+  rm -f board/cvitek/SG200X/overlay/etc/init.d/uvc-gadget-server.elf
+  rm -f board/cvitek/SG200X/overlay/etc/init.d/uvc-gadget-server.tar.xz
+  git add board/cvitek/SG200X/overlay/etc/init.d
+  git commit -m "build"
+elif git branch -D build-dap ; then
+  true
+elif git checkout build-dap ; then
+  branchdap=true
+fi
+
+modoff="soph_fast_image.ko
+soph_fb.ko
+soph_ive.ko
+soph_jpeg.ko
+soph_mipi_rx.ko
+soph_mipi_tx.ko
+soph_rgn.ko
+soph_rtos_cmdqu.ko
+soph_saradc.ko
+soph_snsr_i2c.ko
+soph_tpu.ko
+soph_vc_driver.ko
+soph_vcodec.ko
+soph_vi.ko
+soph_vo.ko
+soph_vpss.ko"
+
+for m in $modoff; do
+  sed -i /$m/d board/cvitek/SG200X/overlay/etc/init.d/S00kmod
+done
+#rm -f board/cvitek/SG200X/overlay/etc/init.d/S03usb*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S04backlight
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S04fb
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S05tp
+#rm -f board/cvitek/SG200X/overlay/etc/init.d/S30eth
+#rm -f board/cvitek/SG200X/overlay/etc/init.d/S30gadget_nic
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S99*test
+rm -f board/cvitek/SG200X/overlay/etc/init.d/uvc_tool.sh
+
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*ssdp*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*usbhid*
+
+rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*
+rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/uvc*
+
+if [ $maixcdk = y ]; then
+  sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
+fi
+if [ $maixcdk = y -a $shrink = y ]; then
+  sed -i s/'^BR2_PACKAGE_MAIX_CDK=y'/'BR2_PACKAGE_MAIX_CDK=y\n# BR2_PACKAGE_MAIX_CDK_ALL_PROJECTS is not set'/g configs/${BR_DEFCONFIG}
+  sed -i s/'^BR2_PACKAGE_MAIX_CDK=y'/'BR2_PACKAGE_MAIX_CDK=y\n# BR2_PACKAGE_MAIX_CDK_ALL_EXAMPLES is not set'/g configs/${BR_DEFCONFIG}
+fi
+if [ $dap = y ]; then
+  sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MPD=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
+  sed -i s/'^BR2_PACKAGE_MPD=y'/'BR2_PACKAGE_MPD=y\nBR2_PACKAGE_MPD_MPG123=y'/g configs/${BR_DEFCONFIG}
+  sed -i s/'^BR2_PACKAGE_MPD=y'/'BR2_PACKAGE_MPD=y\nBR2_PACKAGE_MPD_FFMPEG=y'/g configs/${BR_DEFCONFIG}
+  sed -i s/'^BR2_PACKAGE_MPD=y'/'BR2_PACKAGE_MPD=y\nBR2_PACKAGE_MPD_AVAHI_SUPPORT=y'/g configs/${BR_DEFCONFIG}
+  sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_SHAIRPORT_SYNC=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
+fi
+if [ $tailscale = y ]; then
+  sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_TAILSCALE_RISCV64=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
+fi
+if [ $tpudemo = y ]; then
+  sed -i s/'^# BR2_PACKAGE_TPUDEMO_SG200X is not set'/'BR2_PACKAGE_TPUDEMO_SG200X=y'/g configs/${BR_DEFCONFIG}
+elif [ $tpudemo = n ]; then
+  sed -i s/'^BR2_PACKAGE_TPUDEMO_SG200X=y'/'# BR2_PACKAGE_TPUDEMO_SG200X is not set'/g configs/${BR_DEFCONFIG}
+fi
+if [ $tpusdk = y ]; then
+  sed -i s/'^# BR2_PACKAGE_SOPHGO_LIBRARY is not set'/'BR2_PACKAGE_SOPHGO_LIBRARY=y'/g configs/${BR_DEFCONFIG}
+elif [ $tpusdk = n ]; then
+  sed -i s/'^BR2_PACKAGE_SOPHGO_LIBRARY=y'/'# BR2_PACKAGE_SOPHGO_LIBRARY is not set'/g configs/${BR_DEFCONFIG}
+fi
+if [ $shrink = y ]; then
+  sed -i /'^BR2_PACKAGE_PYTHON_'/d configs/${BR_DEFCONFIG}
+
+  sed -i s/'^BR2_PACKAGE_PYTHON3_PY_PYC=y$'/'BR2_PACKAGE_PYTHON3_PY_PYC=y'\
+'\nBR2_PACKAGE_PYTHON_REQUESTS=y'\
+'\nBR2_PACKAGE_PYTHON_REQUESTS_OAUTHLIB=y'\
+'\nBR2_PACKAGE_PYTHON_REQUESTS_TOOLBELT=y'/g configs/${BR_DEFCONFIG}
+
+  sed -i /'^BR2_PACKAGE_GDB'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_HOST_GDB'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_GDB_'/d configs/${BR_DEFCONFIG}
+
+  sed -i /'^BR2_PACKAGE_AIRCRACK'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_MOSH'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_LRZSZ'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_DHRYSTONE'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_COREMARK'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_RAMSPEED'/d configs/${BR_DEFCONFIG}
+  #sed -i /'^BR2_PACKAGE_ALSA_UTILS'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_SQUASHFS'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_LCDTEST'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_ASCII_INVADERS'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_GNUCHESS'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_SL'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_XORCURSES'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_STRESS'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_EXPECT'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_TCL'/d configs/${BR_DEFCONFIG}
+
+  sed -i s/'BR2_PACKAGE_OPENCV4_BUILD_TESTS=y'/'# BR2_PACKAGE_OPENCV4_BUILD_TESTS is not set'/g configs/${BR_DEFCONFIG}
+  sed -i s/'BR2_PACKAGE_OPENCV4_BUILD_PERF_TESTS=y'/'# BR2_PACKAGE_OPENCV4_BUILD_PERF_TESTS is not set'/g configs/${BR_DEFCONFIG}
+
+  #sed -i /'BR2_PACKAGE_FFMPEG'/d configs/${BR_DEFCONFIG}
+  #sed -i /'BR2_PACKAGE_MPG123'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_OPENCV'/d configs/${BR_DEFCONFIG}
+fi
+if [ $dap = y -a $shrink = y ]; then
+  sed -i /'BR2_PACKAGE_BLUEZ'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_LLDPD'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_SSDP_RESPONDER'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_UVC_GADGET'/d configs/${BR_DEFCONFIG}
+fi
+if [ $maixcdk = n -a $shrink = y ]; then
+  #sed -i /'^BR2_PACKAGE_FFMPEG'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_LIBQRENCODE'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_LIBWEBSOCKETS'/d configs/${BR_DEFCONFIG}
+  #sed -i /'^BR2_PACKAGE_MPG123'/d configs/${BR_DEFCONFIG}
+  sed -i /'^BR2_PACKAGE_OPENCV'/d configs/${BR_DEFCONFIG}
+fi
+
+if git checkout -b build-dap ; then
+  branchdap=true
+fi
+if [ $branchdap = true ]; then
+  git add board/cvitek/SG200X/overlay/etc/init.d
+  git add configs/${BR_DEFCONFIG}
+  git commit -m "build-dap"
+fi
+cd ..
+
+if [ -e cviruntime -a -e flatbuffers ]; then
+  # small fix to keep fork of flatbuffers repository optional
+  sed -i s/'-Werror=unused-parameter"'/'-Werror=unused-parameter -Wno-class-memaccess"'/g flatbuffers/CMakeLists.txt
+  [ $tpusdk = y ] && export TPU_REL=1
+fi
+
+build_all
+
+cd build
+git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/memmap.py
+git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
+git restore tools/common/sd_tools/genimage_rootless.cfg
+git restore tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+cd ..
+
+installdir=`pwd`/install/soc_${SG_BOARD_LINK}
+cd buildroot
+cd ${BR_OUTPUT_DIR}/target
+cd -
+if git checkout build ; then
+  true
+fi
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*avahi*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*dnsmasq*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*ssdp*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*ssh*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
+git restore board/cvitek/SG200X/overlay/etc/init.d
+git restore configs/${BR_DEFCONFIG}
+rm -f ${BR_OUTPUT_DIR}/target/etc/tailscale_disabled
+rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*kvm*
+rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*tailscale*
+rm -f ${BR_OUTPUT_DIR}/target/usr/bin/tailscale
+rm -f ${BR_OUTPUT_DIR}/target/usr/sbin/tailscaled
+rm -rf ${BR_OUTPUT_DIR}/target/kvmapp/
+cd ..
+
+echo OK
