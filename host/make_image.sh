@@ -92,6 +92,8 @@ if [ ! -e $bs ]; then
   echo "\n${green}Building SDK for ${BOARD_SHORT}${end_color}\n"
   if [ "X${VARIANT}" = "Xkvm" ]; then
     cd ${BUILDDIR} && ./build-nanokvm.sh --board=${SDK_BOARD_LINK} --maixcdk
+  elif [ "X${VARIANT}" = "Xdap" ]; then
+    cd ${BUILDDIR} && ./build-dap.sh --board=${SDK_BOARD_LINK}
   else
     cd ${BUILDDIR} && ./build-licheervnano.sh --board=${SDK_BOARD_LINK} --maixcdk
   fi
