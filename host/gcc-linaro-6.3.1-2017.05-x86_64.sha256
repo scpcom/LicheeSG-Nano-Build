@@ -1,0 +1,5 @@
+2b6709b62277937a5866b24ceac82b40146abe93cf52a68603ca9305684026cb  gcc-linaro-6.3.1-2017.05-x86_64_aarch64-elf.tar.xz
+26b45fdfb1656f94fa2b5117494f5d338b619c1f453ee3f3e1d84d79e90f2403  gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.xz
+926b791cd689e8573c3cd912d10e30b7d12a08bb16b9b9eaf598e2074052dc5f  gcc-linaro-6.3.1-2017.05-x86_64_arm-linux-gnueabihf.tar.xz
+16e28aaaae4526d7393c33e296dab6a80a75ce47c0e4a15f6b1b2d1812ffbce0  sysroot-glibc-linaro-2.23-2017.05-aarch64-linux-gnu.tar.xz
+698a45aeecae22eb9e7e472346a67404bd41b01b999bb7a508c6d232017bad8d  sysroot-glibc-linaro-2.23-2017.05-arm-linux-gnueabihf.tar.xz
