@@ -110,6 +110,8 @@ if [ ! -e $bs ]; then
   done
   if [ "X${VARIANT}" = "Xkvm" ]; then
     cp ${BUILDDIR}/install/soc_${SDK_BOARD_LINK}/nanokvm-latest.zip /output/
+  elif [ "X${VARIANT}" = "Xdap" ]; then
+    true
   else
     cp ${BUILDDIR}/install/soc_${SDK_BOARD_LINK}/*.bin /output/
     rm -f /output/fw_payload*.bin
