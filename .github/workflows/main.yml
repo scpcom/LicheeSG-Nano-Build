@@ -60,7 +60,10 @@ jobs:
         storage: [sd]
         include:
           - boards: licheervnano
-            variant: [kvm, dap]
+            variant: kvm
+            storage: sd
+          - boards: licheervnano
+            variant: dap
             storage: sd
     runs-on: ubuntu-latest
     needs: build-docker-image
