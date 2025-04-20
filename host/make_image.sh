@@ -109,6 +109,8 @@ fi
 
 bs=${BUILDDIR}/sdk-output-stamp
 if [ ! -e $bs ]; then
+  cd ${BUILDDIR}/buildroot/output/cvitek_SG200X_${SDK_VER} && rm -f images/rootfs.*
+  cd ${BUILDDIR}/install/soc_${SDK_BOARD_LINK} && rm -f *.sd */*.sd
   echo "\n${green}Packing Image for ${BOARD_SHORT}${end_color}\n"
   for f in ${BUILDDIR}/install/soc_${SDK_BOARD_LINK}/images/*.img ; do
     [ -e $f ] || continue
