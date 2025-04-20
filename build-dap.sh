@@ -138,8 +138,17 @@ CONFIG_FB_CVITEK
 CONFIG_JFFS2_FS
 CONFIG_SQUASHFS"
 
+modcnf="CONFIG_STMMAC_PLATFORM
+CONFIG_DWMAC_CVITEK"
+
 for c in $offcnf ; do
   sed -i s/'^'$c'=.$'/'# '$c' is not set'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/${SG_BOARD_LINK}_defconfig
+done
+
+echo >> boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/${SG_BOARD_LINK}_defconfig
+
+for c in $modcnf ; do
+  echo $c'=m' >> boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/${SG_BOARD_LINK}_defconfig
 done
 
 sed -i /BMP/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
