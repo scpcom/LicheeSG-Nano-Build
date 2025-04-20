@@ -58,17 +58,19 @@ if [ ! -e $bs ]; then
   cd ${BUILDDIR}/buildroot && git commit -m "disable per package directories"
   cd ${BUILDDIR}/host-tools && for d in gcc/arm-gnu-toolchain-11.3.rel1-* gcc/gcc-buildroot-9.3.0-* gcc/gcc-linaro-6.3.1-2017.05-* ; do
     [ -e $d ] || continue
-    git rm -r $d
-    rm -rf $d
+    echo "Removing $d"
+    git rm -r $d || rm -rf $d
   done
   cd ${BUILDDIR}/host-tools && if [ "${SDK_VER}" != "glibc_riscv64" ]; then
-    git rm -r gcc/riscv64-linux-x86_64
-    rm -rf gcc/riscv64-linux-x86_64
+    d=gcc/riscv64-linux-x86_64
+    echo "Removing $d"
+    git rm -r $d || rm -rf $d
     sed -i s/CROSS_COMPILE_GLIBC_RISCV64/CROSS_COMPILE_MUSL_RISCV64/g ${BUILDDIR}/fsbl/Makefile
   fi
   cd ${BUILDDIR}/host-tools && if [ "${SDK_VER}" != "musl_riscv64" ]; then
-    git rm -r gcc/riscv64-linux-musl-x86_64
-    rm -rf gcc/riscv64-linux-musl-x86_64
+    d=gcc/riscv64-linux-musl-x86_64
+    echo "Removing $d"
+    git rm -r $d || rm -rf $d
   fi
   cd ${BUILDDIR}/ramdisk && for f in rootfs/common_*/usr/share/fw_vcodec/*.bin ; do
     [ -e $f ] || continue
