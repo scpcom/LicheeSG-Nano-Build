@@ -123,6 +123,25 @@ if [ $sdkarch != $oldarch ]; then
   ! -e boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch} ] && ln -s dts_${oldarch} boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch}
 fi
 
+offcnf="CONFIG_IP_VS
+CONFIG_WIREGUARD
+CONFIG_PACKET_DIAG
+CONFIG_UNIX_DIAG
+CONFIG_NETLINK_DIAG
+CONFIG_PACKET_DIAG
+CONFIG_NET_IPGRE
+CONFIG_VXLAN
+CONFIG_USB_SERIAL
+CONFIG_USB_ACM
+CONFIG_VIDEO_CVITEK
+CONFIG_FB_CVITEK
+CONFIG_JFFS2_FS
+CONFIG_SQUASHFS"
+
+for c in $offcnf ; do
+  sed -i s/'^'$c'=.$'/'# '$c' is not set'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/${SG_BOARD_LINK}_defconfig
+done
+
 sed -i /BMP/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
 sed -i /VIDCONSOLE/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
 sed -i /CVI_VO/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
@@ -325,6 +344,7 @@ build_all
 cd build
 git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/memmap.py
 git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/${SG_BOARD_LINK}_defconfig
 git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
 git restore tools/common/sd_tools/genimage_rootless.cfg
 git restore tools/common/sd_tools/sd_gen_burn_image_rootless.sh
