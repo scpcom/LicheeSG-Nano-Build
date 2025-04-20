@@ -50,6 +50,8 @@ bs=${BUILDDIR}/sdk-prepare-patch-stamp
 if [ ! -e $bs ]; then
   echo "\n${green}Patching SDK for ${BOARD_SHORT}${end_color}\n"
   cd ${BUILDDIR} && ./host/prepare-host.sh
+  cd ${BUILDDIR} && ./host/replace-all-thead-toolchains.sh
+  cd ${BUILDDIR} && rm -f host/riscv64-*.tar.*
   cd ${BUILDDIR}/buildroot && git am < /builder/buildroot-pkg-generic-cleanup-build-after-install.patch
   cd ${BUILDDIR}/buildroot && sed -i s/'BR2_PER_PACKAGE_DIRECTORIES=y'/'# BR2_PER_PACKAGE_DIRECTORIES is not set'/g configs/${BR_DEFCONFIG}
   cd ${BUILDDIR}/buildroot && git add configs/${BR_DEFCONFIG}
@@ -57,13 +59,16 @@ if [ ! -e $bs ]; then
   cd ${BUILDDIR}/host-tools && for d in gcc/arm-gnu-toolchain-11.3.rel1-* gcc/gcc-buildroot-9.3.0-* gcc/gcc-linaro-6.3.1-2017.05-* ; do
     [ -e $d ] || continue
     git rm -r $d
+    rm -rf $d
   done
   cd ${BUILDDIR}/host-tools && if [ "${SDK_VER}" != "glibc_riscv64" ]; then
     git rm -r gcc/riscv64-linux-x86_64
+    rm -rf gcc/riscv64-linux-x86_64
     sed -i s/CROSS_COMPILE_GLIBC_RISCV64/CROSS_COMPILE_MUSL_RISCV64/g ${BUILDDIR}/fsbl/Makefile
   fi
   cd ${BUILDDIR}/host-tools && if [ "${SDK_VER}" != "musl_riscv64" ]; then
     git rm -r gcc/riscv64-linux-musl-x86_64
+    rm -rf gcc/riscv64-linux-musl-x86_64
   fi
   cd ${BUILDDIR}/ramdisk && for f in rootfs/common_*/usr/share/fw_vcodec/*.bin ; do
     [ -e $f ] || continue
