@@ -167,9 +167,30 @@ build_all
 
 # build other variant
 cp -p build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig bak.config
+cp -v install/soc_${SG_BOARD_LINK}/fip.bin bak.fip
+cp -v install/soc_${SG_BOARD_LINK}/fip_spl.bin bak.fip_spl
+
+grep -E '^CONFIG_MIPI_PANEL_.*=y' build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig || true
+
+if ! grep -q -E 'CONFIG_MIPI_PANEL_ZCT2133V1=y' bak.config ; then
+  if grep -q -E '^CONFIG_MIPI_PANEL_.*=y' bak.config ; then
+    sed -i s/'^CONFIG_MIPI_PANEL_.*=y'/'CONFIG_MIPI_PANEL_ZCT2133V1=y'/g bak.config
+  else
+    echo 'CONFIG_MIPI_PANEL_ZCT2133V1=y' >> bak.config
+  fi
+  cat bak.config > build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+  grep -E '^CONFIG_MIPI_PANEL_.*=y' build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+  defconfig ${SG_BOARD_LINK}
+  clean_uboot
+  clean_opensbi
+  clean_fsbl
+  build_fsbl
+fi
+cp -v install/soc_${SG_BOARD_LINK}/fip.bin install/soc_${SG_BOARD_LINK}/zct2133v1.bin
 
 # 2.8inch
 cat bak.config | sed -e 's/CONFIG_MIPI_PANEL_ZCT2133V1/CONFIG_MIPI_PANEL_ST7701_HD228001C31/g' > build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+grep -E '^CONFIG_MIPI_PANEL_.*=y' build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
 defconfig ${SG_BOARD_LINK}
 clean_uboot
 clean_opensbi
@@ -179,6 +200,7 @@ cp -v install/soc_${SG_BOARD_LINK}/fip.bin install/soc_${SG_BOARD_LINK}/hd228001
 
 # 3inch
 cat bak.config | sed -e 's/CONFIG_MIPI_PANEL_ZCT2133V1/CONFIG_MIPI_PANEL_ST7701_D300FPC9307A/g' > build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+grep -E '^CONFIG_MIPI_PANEL_.*=y' build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
 defconfig ${SG_BOARD_LINK}
 clean_uboot
 clean_opensbi
@@ -188,6 +210,7 @@ cp -v install/soc_${SG_BOARD_LINK}/fip.bin install/soc_${SG_BOARD_LINK}/d300fpc9
 
 # 5inch
 cat bak.config | sed -e 's/CONFIG_MIPI_PANEL_ZCT2133V1/CONFIG_MIPI_PANEL_ST7701_DXQ5D0019B480854/g' > build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+grep -E '^CONFIG_MIPI_PANEL_.*=y' build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
 defconfig ${SG_BOARD_LINK}
 clean_uboot
 clean_opensbi
@@ -196,6 +219,8 @@ build_fsbl
 cp -v install/soc_${SG_BOARD_LINK}/fip.bin install/soc_${SG_BOARD_LINK}/dxq5d0019b480854.bin
 
 mv bak.config build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+mv bak.fip install/soc_${SG_BOARD_LINK}/fip.bin
+mv bak.fip_spl install/soc_${SG_BOARD_LINK}/fip_spl.bin
 
 cd build
 git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
