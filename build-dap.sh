@@ -156,14 +156,12 @@ else
   fi
 fi
 
-# enable usb disk, disable ncm
-#sed -i s/'usb.ncm'/'usb.disk0'/g tools/common/sd_tools/genimage_rootless.cfg
-#sed -i s/'usb.rndis0'/'usb.rndis'/g tools/common/sd_tools/genimage_rootless.cfg
-#sed -i s/'usb.rndis'/'usb.rndis0'/g tools/common/sd_tools/genimage_rootless.cfg
-#sed -i 's|touch ${output_dir}/input/usb.ncm|echo /dev/mmcblk0p3 > ${output_dir}/input/usb.disk0|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
-# enable usb hid
-#sed -i s/'usb.rndis0'/'usb.rndis'/g tools/common/sd_tools/sd_gen_burn_image_rootless.sh
-#sed -i s/'usb.rndis'/'usb.rndis0'/g tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+# disable gt9xx
+sed -i /gt9xx/d tools/common/sd_tools/genimage_rootless.cfg
+sed -i /gt9xx/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+# disable ncm
+sed -i /usb.ncm/d tools/common/sd_tools/genimage_rootless.cfg
+sed -i /usb.ncm/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 
 # set hostname prefix
 if ! grep -q "hostname.prefix" tools/common/sd_tools/genimage_rootless.cfg ; then
