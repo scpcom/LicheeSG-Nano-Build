@@ -256,7 +256,7 @@ soph_vo.ko
 soph_vpss.ko"
 
 for m in $modoff; do
-  sed -i /$m/d board/cvitek/SG200X/overlay/etc/init.d/S00kmod
+  sed -i s/'insmod '$m/'#insmod '$m/g board/cvitek/SG200X/overlay/etc/init.d/S00kmod
 done
 #rm -f board/cvitek/SG200X/overlay/etc/init.d/S03usb*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S04backlight
