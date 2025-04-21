@@ -142,22 +142,26 @@ modcnf="CONFIG_STMMAC_PLATFORM
 CONFIG_DWMAC_CVITEK"
 
 for c in $offcnf ; do
-  sed -i s/'^'$c'=.$'/'# '$c' is not set'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/${SG_BOARD_LINK}_defconfig
+  sed -i s/'^'$c'=.$'/'# '$c' is not set'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/*${SG_BOARD_LINK}_defconfig
 done
 
-echo >> boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/${SG_BOARD_LINK}_defconfig
+echo >> boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/*${SG_BOARD_LINK}_defconfig
 
 for c in $modcnf ; do
-  echo $c'=m' >> boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/${SG_BOARD_LINK}_defconfig
+  echo $c'=m' >> boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/*${SG_BOARD_LINK}_defconfig
 done
 
-sed -i /BMP/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
-sed -i /VIDCONSOLE/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
-sed -i /CVI_VO/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
-sed -i /DISPLAY/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
-sed -i /LOGO/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
-sed -i /VIDEO/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
-sed -i /ETH/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
+offubt="BMP
+VIDCONSOLE
+CVI_VO
+DISPLAY
+LOGO
+VIDEO
+ETH"
+
+for c in $offubt ; do
+  sed -i /ETH/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/*${SG_BOARD_LINK}_defconfig
+done
 
 # Expand user space RAM from 128MB to 160MB
 sed -i s/'ION_SIZE = .* . SIZE_1M'/'ION_SIZE = 75 * SIZE_1M'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/memmap.py
@@ -424,8 +428,8 @@ build_all
 cd build
 git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/memmap.py
 git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
-git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/${SG_BOARD_LINK}_defconfig
-git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/${SG_BOARD_LINK}_defconfig
+git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/*${SG_BOARD_LINK}_defconfig
+git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/*${SG_BOARD_LINK}_defconfig
 git restore tools/common/sd_tools/genimage_rootless.cfg
 git restore tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 cd ..
