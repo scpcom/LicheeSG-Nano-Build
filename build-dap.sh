@@ -336,6 +336,8 @@ fi
 EOF
 chmod ugo+rx board/cvitek/SG200X/overlay/etc/init.d/S99setupdap
 
+sed -i s/'^acm'/'#acm'/g board/cvitek/SG200X/overlay/etc/inittab
+
 if [ $maixcdk = y ]; then
   sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
 fi
@@ -418,6 +420,7 @@ if git checkout -b build-dap ; then
 fi
 if [ $branchdap = true ]; then
   git add board/cvitek/SG200X/overlay/etc/init.d
+  git add board/cvitek/SG200X/overlay/etc/inittab
   git add configs/${BR_DEFCONFIG}
   git commit -m "build-dap"
 fi
@@ -456,6 +459,7 @@ rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S05ethmod
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S99setupdap
 git restore board/cvitek/SG200X/overlay/etc/init.d
+git restore board/cvitek/SG200X/overlay/etc/inittab
 git restore configs/${BR_DEFCONFIG}
 rm -f ${BR_OUTPUT_DIR}/target/etc/tailscale_disabled
 rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*kvm*
