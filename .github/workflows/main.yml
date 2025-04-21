@@ -87,7 +87,7 @@ jobs:
   build-e-image:
     strategy:
       matrix:
-        boards: [licheervnano, duo256]
+        boards: [licheervnano, duo256, duos]
         variant: [e]
         storage: [sd]
     runs-on: ubuntu-latest
