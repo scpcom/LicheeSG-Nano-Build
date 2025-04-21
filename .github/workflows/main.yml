@@ -58,6 +58,10 @@ jobs:
         boards: [licheervnano]
         variant: [kvm, dap]
         storage: [sd]
+        include:
+          - boards: duos
+            variant: dap
+            storage: sd
     runs-on: ubuntu-latest
     needs: build-docker-image
     steps:
