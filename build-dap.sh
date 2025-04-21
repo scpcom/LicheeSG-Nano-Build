@@ -208,9 +208,9 @@ fi
 # disable rndis
 sed -i /usb.rndis/d tools/common/sd_tools/genimage_rootless.cfg
 sed -i /usb.rndis/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
-# enable usb.host
-sed -i /usb.dev/d tools/common/sd_tools/genimage_rootless.cfg
-sed -i /usb.dev/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+# enable usb.host and wifi.only
+sed -i s/usb.dev/wifi.only/g tools/common/sd_tools/genimage_rootless.cfg
+sed -i s/usb.dev/wifi.only/g tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 cd ..
 
 BR_OUTPUT_DIR=output
@@ -288,18 +288,40 @@ chmod ugo+rx board/cvitek/SG200X/overlay/etc/init.d/S05ethmod
 cat <<\EOF > board/cvitek/SG200X/overlay/etc/init.d/S99setupdap
 #!/bin/sh
 
+wifi_only() {
+	mkdir -p /etc/init.off
+	if [ -e /device_key_legacy ]
+	then
+		mv /etc/init.d/S02devicekey /etc/init.off/
+		mv /etc/init.d/S10uuid /etc/init.off/
+	fi
+	mv /etc/init.d/S03usbdev /etc/init.off/
+	mv /etc/init.d/S05ethmod /etc/init.off/
+	mv /etc/init.d/S30eth /etc/init.off/
+	mv /etc/init.d/S30gadget_nic /etc/init.off/
+}
+
 if [ "$1" = "start" ]
 then
 	. /etc/profile
 	printf "dap setup: "
 	if [ -e /etc/init.d/S95mpd ]
 	then
+		mkdir -p /etc/init.off
 		mv /etc/init.d/S95mpd /etc/init.d/S23mpd
 		mv /etc/init.d/S99local /etc/init.d/S22local
 		mv /etc/init.d/S50avahi-daemon /etc/init.d/S51avahi-daemon
+		mv /etc/init.d/S99resizefs /etc/init.off/
+		if [ -e /boot/wifi.only ]
+		then
+			wifi_only
+		fi
 	fi
 	echo "OK"
 	exit 0
+elif [ "$1" = "wifi-only" ]
+then
+	wifi_only
 fi
 EOF
 chmod ugo+rx board/cvitek/SG200X/overlay/etc/init.d/S99setupdap
