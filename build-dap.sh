@@ -255,6 +255,23 @@ rm -f board/cvitek/SG200X/overlay/etc/init.d/S*usbhid*
 rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*
 rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/uvc*
 
+cat <<\EOF > board/cvitek/SG200X/overlay/etc/init.d/S05ethmod
+#!/bin/sh
+
+if [ "$1" = "start" ]
+then
+	. /etc/profile
+	printf "load eth kernel module: "
+	cd /mnt/system/ko/
+	insmod stmmac-platform.ko
+	insmod dwmac-thead.ko
+	insmod dwmac-cvitek.ko
+	echo "OK"
+	exit 0
+fi
+EOF
+chmod ugo+rx board/cvitek/SG200X/overlay/etc/init.d/S05ethmod
+
 if [ $maixcdk = y ]; then
   sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
 fi
@@ -372,6 +389,7 @@ rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*ssdp*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*ssh*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S05ethmod
 git restore board/cvitek/SG200X/overlay/etc/init.d
 git restore configs/${BR_DEFCONFIG}
 rm -f ${BR_OUTPUT_DIR}/target/etc/tailscale_disabled
