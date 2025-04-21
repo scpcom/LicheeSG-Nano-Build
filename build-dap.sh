@@ -187,9 +187,15 @@ fi
 # disable gt9xx
 sed -i /gt9xx/d tools/common/sd_tools/genimage_rootless.cfg
 sed -i /gt9xx/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+# remove logo
+sed -i /logo.jpeg/d tools/common/sd_tools/genimage_rootless.cfg
+sed -i /logo.jpeg/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 # disable ncm
 sed -i /usb.ncm/d tools/common/sd_tools/genimage_rootless.cfg
 sed -i /usb.ncm/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+# enable wifi.ap
+sed -i s/wifi.sta/wifi.ap/g tools/common/sd_tools/genimage_rootless.cfg
+sed -i s/wifi.sta/wifi.ap/g tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 
 # set hostname prefix
 if ! grep -q "hostname.prefix" tools/common/sd_tools/genimage_rootless.cfg ; then
@@ -198,6 +204,13 @@ fi
 if ! grep -q "hostname.prefix" tools/common/sd_tools/sd_gen_burn_image_rootless.sh ; then
   sed -i 's|^touch \${output_dir}/input/usb.dev$|echo -n dap > ${output_dir}/input/hostname.prefix\ntouch \${output_dir}/input/usb.dev|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 fi
+
+# disable rndis
+sed -i /usb.rndis/d tools/common/sd_tools/genimage_rootless.cfg
+sed -i /usb.rndis/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+# enable usb.host
+sed -i /usb.dev/d tools/common/sd_tools/genimage_rootless.cfg
+sed -i /usb.dev/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 cd ..
 
 BR_OUTPUT_DIR=output
