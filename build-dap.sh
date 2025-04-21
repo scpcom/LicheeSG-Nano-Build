@@ -272,6 +272,25 @@ fi
 EOF
 chmod ugo+rx board/cvitek/SG200X/overlay/etc/init.d/S05ethmod
 
+cat <<\EOF > board/cvitek/SG200X/overlay/etc/init.d/S99setupdap
+#!/bin/sh
+
+if [ "$1" = "start" ]
+then
+	. /etc/profile
+	printf "dap setup: "
+	if [ -e /etc/init.d/S95mpd ]
+	then
+		mv /etc/init.d/S95mpd /etc/init.d/S23mpd
+		mv /etc/init.d/S99local /etc/init.d/S22local
+		mv /etc/init.d/S50avahi-daemon /etc/init.d/S51avahi-daemon
+	fi
+	echo "OK"
+	exit 0
+fi
+EOF
+chmod ugo+rx board/cvitek/SG200X/overlay/etc/init.d/S99setupdap
+
 if [ $maixcdk = y ]; then
   sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
 fi
@@ -390,6 +409,7 @@ rm -f board/cvitek/SG200X/overlay/etc/init.d/S*ssdp*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*ssh*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S05ethmod
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S99setupdap
 git restore board/cvitek/SG200X/overlay/etc/init.d
 git restore configs/${BR_DEFCONFIG}
 rm -f ${BR_OUTPUT_DIR}/target/etc/tailscale_disabled
