@@ -200,6 +200,9 @@ sed -i /usb.ncm/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 # enable wifi.ap
 sed -i s/wifi.sta/wifi.ap/g tools/common/sd_tools/genimage_rootless.cfg
 sed -i s/wifi.sta/wifi.ap/g tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+# enable wifi.only
+sed -i s/'\t\t\t"usb.dev",'/'\t\t\t"usb.dev",\n\t\t\t"wifi.only",'/g tools/common/sd_tools/genimage_rootless.cfg
+sed -i 's| \${output_dir}/input/usb.dev$| ${output_dir}/input/usb.dev\ntouch ${output_dir}/input/wifi.only|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 
 # set hostname prefix
 if ! grep -q "hostname.prefix" tools/common/sd_tools/genimage_rootless.cfg ; then
@@ -212,9 +215,9 @@ fi
 # disable rndis
 sed -i /usb.rndis/d tools/common/sd_tools/genimage_rootless.cfg
 sed -i /usb.rndis/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
-# enable usb.host and wifi.only
-sed -i s/usb.dev/wifi.only/g tools/common/sd_tools/genimage_rootless.cfg
-sed -i s/usb.dev/wifi.only/g tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+# enable usb.host
+sed -i s/usb.dev/usb.host/g tools/common/sd_tools/genimage_rootless.cfg
+sed -i s/usb.dev/usb.host/g tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 cd ..
 
 BR_OUTPUT_DIR=output
@@ -299,7 +302,10 @@ wifi_only() {
 		mv /etc/init.d/S02devicekey /etc/init.off/
 		mv /etc/init.d/S10uuid /etc/init.off/
 	fi
-	mv /etc/init.d/S03usbdev /etc/init.off/
+	if [ ! -e /mnt/system/usb-host.sh ]
+	then
+		mv /etc/init.d/S03usbdev /etc/init.off/
+	fi
 	mv /etc/init.d/S05ethmod /etc/init.off/
 	mv /etc/init.d/S30eth /etc/init.off/
 	mv /etc/init.d/S30gadget_nic /etc/init.off/
