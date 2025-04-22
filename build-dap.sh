@@ -138,6 +138,8 @@ CONFIG_FB_CVITEK
 CONFIG_JFFS2_FS
 CONFIG_SQUASHFS"
 
+yescnf="CONFIG_FB_SIMPLE"
+
 modcnf="CONFIG_STMMAC_PLATFORM
 CONFIG_DWMAC_CVITEK"
 
@@ -147,8 +149,16 @@ done
 
 echo >> boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/*${SG_BOARD_LINK}_defconfig
 
+for c in $yescnf ; do
+  if ! grep -q '^'$c'=y' boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/*${SG_BOARD_LINK}_defconfig ; then
+    echo $c'=y' >> boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/*${SG_BOARD_LINK}_defconfig
+  fi
+done
+
 for c in $modcnf ; do
-  echo $c'=m' >> boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/*${SG_BOARD_LINK}_defconfig
+  if ! grep -q '^'$c'=m' boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/*${SG_BOARD_LINK}_defconfig ; then
+    echo $c'=m' >> boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/*${SG_BOARD_LINK}_defconfig
+  fi
 done
 
 offubt="BMP
