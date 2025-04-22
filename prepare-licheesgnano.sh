@@ -52,4 +52,28 @@ KERNEL_TAG=`git -C ${KERNEL_PATH} describe --exact-match --tags HEAD 2>/dev/null
 [ "X$KERNEL_TAG" = "X" ] && git -C ${KERNEL_PATH} tag `date +%Y%m%d`
 sed -i s/'describe --exact-match HEAD'/'describe --exact-match --tags HEAD'/g build/Makefile
 
+if [ "${SG_BOARD_FAMILY}/${SG_BOARD_LINK}" != "/" ]; then
+  cd build/
+  git restore tools/common/sd_tools/genimage_rootless.cfg
+  if [ -e boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/genimage_rootless.cfg ] ;then
+    cp -p boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/genimage_rootless.cfg tools/common/sd_tools/
+  fi
+  logopart=0
+  if grep -q 'partition logo {' tools/common/sd_tools/genimage_rootless.cfg ; then
+    logopart=1
+  fi
+  cd ..
+
+  cd ramdisk/
+  git restore initramfs/*/init
+  [ $logopart = 0 ] || sed -i s/'mmcblk0p2'/'mmcblk0p3'/g initramfs/*/init
+  cd ..
+
+  cd buildroot/
+  git restore board/cvitek/SG200X/overlay/etc/init.d/S99resizefs
+  [ $logopart = 0 ] || sed -i s/'mmcblk0p2'/'mmcblk0p3'/g board/cvitek/SG200X/overlay/etc/init.d/S99resizefs
+  [ $logopart = 0 ] || sed -i s/'resizepart 2 '/'resizepart 3 '/g board/cvitek/SG200X/overlay/etc/init.d/S99resizefs
+  cd ..
+fi
+
 echo OK
