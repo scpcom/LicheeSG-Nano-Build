@@ -231,6 +231,10 @@ sed -i s/usb.dev/usb.host/g tools/common/sd_tools/genimage_rootless.cfg
 sed -i s/usb.dev/usb.host/g tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 cd ..
 
+cd ramdisk
+sed -i s/'^sleep 0'/'#sleep 0'/g initramfs/*/init
+cd ..
+
 BR_OUTPUT_DIR=output
 
 source build/cvisetup.sh
@@ -452,6 +456,10 @@ git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/linux/*${SG_BOARD_LINK}_d
 git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/*${SG_BOARD_LINK}_defconfig
 git restore tools/common/sd_tools/genimage_rootless.cfg
 git restore tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+cd ..
+
+cd ramdisk
+git restore initramfs/*/init
 cd ..
 
 installdir=`pwd`/install/soc_${SG_BOARD_LINK}
