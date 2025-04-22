@@ -193,7 +193,8 @@ sed -i /gt9xx/d tools/common/sd_tools/genimage_rootless.cfg
 sed -i /gt9xx/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 # remove logo
 sed -i /logo.jpeg/d tools/common/sd_tools/genimage_rootless.cfg
-sed -i /logo.jpeg/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+# copy logo is required for partition layout
+#sed -i /logo.jpeg/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 # disable ncm
 sed -i /usb.ncm/d tools/common/sd_tools/genimage_rootless.cfg
 sed -i /usb.ncm/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
