@@ -166,8 +166,7 @@ VIDCONSOLE
 CVI_VO
 DISPLAY
 LOGO
-VIDEO
-ETH"
+VIDEO"
 
 for c in $offubt ; do
   sed -i /$c/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/*${SG_BOARD_LINK}_defconfig
