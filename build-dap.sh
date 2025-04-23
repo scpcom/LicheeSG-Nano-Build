@@ -170,7 +170,7 @@ VIDEO
 ETH"
 
 for c in $offubt ; do
-  sed -i /ETH/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/*${SG_BOARD_LINK}_defconfig
+  sed -i /$c/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/*${SG_BOARD_LINK}_defconfig
 done
 
 # Expand user space RAM from 128MB to 160MB
