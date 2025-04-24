@@ -30,7 +30,13 @@ fi
 
 SDK_BOARD_LINK=${SDK_CHIP}_${SDK_BOARD}_${STORAGE_TYPE}
 
-BR_DEFCONFIG=cvitek_SG200X_${SDK_VER}_defconfig
+BR_BOARD=cvitek_SG200X_${SDK_VER}
+
+if [ "${SDK_VER}" = "glibc_arm64" ]; then
+  BR_BOARD=cvitek_SG200X_64bit
+fi
+
+BR_DEFCONFIG=${BR_BOARD}_defconfig
 
 echo "${blue}Board: ${BOARD_SHORT}${end_color}"
 echo "${blue}Variant: ${VARIANT}${end_color}"
@@ -51,6 +57,9 @@ if [ ! -e $bs ]; then
   echo "\n${green}Patching SDK for ${BOARD_SHORT}${end_color}\n"
   cd ${BUILDDIR} && ./host/prepare-host.sh
   cd ${BUILDDIR} && ./host/replace-all-thead-toolchains.sh
+  if [ "${SDK_VER}" = "glibc_arm64" ]; then
+    cd ${BUILDDIR} && ./host/replace-all-linaro-toolchains.sh
+  fi
   cd ${BUILDDIR} && rm -f host/riscv64-*.tar.*
   cd ${BUILDDIR}/buildroot && git am < /builder/buildroot-pkg-generic-cleanup-build-after-install.patch
   cd ${BUILDDIR}/buildroot && sed -i s/'BR2_PER_PACKAGE_DIRECTORIES=y'/'# BR2_PER_PACKAGE_DIRECTORIES is not set'/g configs/${BR_DEFCONFIG}
@@ -58,6 +67,7 @@ if [ ! -e $bs ]; then
   cd ${BUILDDIR}/buildroot && git commit -m "disable per package directories"
   cd ${BUILDDIR}/host-tools && for d in gcc/arm-gnu-toolchain-11.3.rel1-* gcc/gcc-buildroot-9.3.0-* gcc/gcc-linaro-6.3.1-2017.05-* ; do
     [ -e $d ] || continue
+    [ "${SDK_VER}" != "glibc_arm64" ] || if echo $d | grep -q gcc-linaro ; then continue ; fi
     echo "Removing $d"
     git rm -r $d || rm -rf $d
   done
@@ -81,6 +91,7 @@ if [ ! -e $bs ]; then
   cd ${BUILDDIR}/ramdisk && for d in initramfs/uclibc_arm \
            rootfs/common_* rootfs/public sysroot/sysroot-glibc-linaro-2.23-2017.05-* ; do
     [ -e $d ] || continue
+    [ "${SDK_VER}" != "glibc_arm64" ] || if echo $d | grep -q glibc-linaro ; then continue ; fi
     git rm -r $d
   done
   cd ${BUILDDIR}/ramdisk && for f in .backup-rootfs/common_*/usr/share/fw_vcodec/*.bin ; do
@@ -109,7 +120,7 @@ fi
 
 bs=${BUILDDIR}/sdk-output-stamp
 if [ ! -e $bs ]; then
-  cd ${BUILDDIR}/buildroot/output/cvitek_SG200X_${SDK_VER} && rm -f images/rootfs.*
+  cd ${BUILDDIR}/buildroot/output/${BR_BOARD} && rm -f images/rootfs.*
   cd ${BUILDDIR}/install/soc_${SDK_BOARD_LINK} && rm -f *.sd */*.sd
   echo "\n${green}Packing Image for ${BOARD_SHORT}${end_color}\n"
   for f in ${BUILDDIR}/install/soc_${SDK_BOARD_LINK}/images/*.img ; do
