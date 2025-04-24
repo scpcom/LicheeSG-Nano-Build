@@ -454,6 +454,26 @@ fi
 
 build_all
 
+# build other variant
+cp -p build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/*${SG_BOARD_LINK}_defconfig bak.u-boot-config
+cp -v install/soc_${SG_BOARD_LINK}/fip.bin bak.fip
+cp -v install/soc_${SG_BOARD_LINK}/fip_spl.bin bak.fip_spl
+
+# wifi only
+cat bak.u-boot-config | sed /ETH/d > build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/*${SG_BOARD_LINK}_defconfig
+echo '# CONFIG_NET is not set' >> build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/*${SG_BOARD_LINK}_defconfig
+grep -E '^CONFIG_.*ETH.*=y|CONFIG_.*NET.*=y' build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/*${SG_BOARD_LINK}_defconfig || true
+defconfig ${SG_BOARD_LINK}
+clean_uboot
+clean_opensbi
+clean_fsbl
+build_fsbl
+cp -v install/soc_${SG_BOARD_LINK}/fip.bin install/soc_${SG_BOARD_LINK}/wifi-only.bin
+
+mv bak.u-boot-config build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/*${SG_BOARD_LINK}_defconfig
+mv bak.fip install/soc_${SG_BOARD_LINK}/fip.bin
+mv bak.fip_spl install/soc_${SG_BOARD_LINK}/fip_spl.bin
+
 cd build
 git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/memmap.py
 git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
