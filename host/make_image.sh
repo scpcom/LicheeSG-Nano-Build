@@ -17,6 +17,7 @@ fi
 [ "X$VARIANT" = "X" ] && VARIANT="e"
 
 [ "X$SDK_VER" = "X" ] && SDK_VER="musl_riscv64"
+SDK_BOARD_FAMILY=sg200x
 SDK_CHIP="sg2002"
 SDK_BOARD="licheervnano"
 
@@ -26,6 +27,9 @@ SDK_BOARD=milkv_duos_${SDK_VER}
 elif [ "${BOARD_SHORT}" = "duo256" ]; then
 SDK_CHIP=sg2002
 SDK_BOARD=milkv_duo256m_${SDK_VER}
+elif [ "${BOARD_SHORT}" = "duo" ]; then
+SDK_CHIP=cv1800b
+SDK_BOARD=milkv_duo_${SDK_VER}
 elif [ "${BOARD_SHORT}" = "licheea53nano" ]; then
 [ $SDK_VER != "musl_riscv64" ] || SDK_VER="glibc_arm"
 SDK_CHIP=sg2002
@@ -34,13 +38,23 @@ fi
 
 SDK_BOARD_LINK=${SDK_CHIP}_${SDK_BOARD}_${STORAGE_TYPE}
 
-BR_BOARD=cvitek_SG200X_${SDK_VER}
+if echo ${SDK_BOARD_LINK} | grep -q -E '^cv180' ; then
+  SDK_BOARD_FAMILY=cv180x
+fi
+if echo ${SDK_BOARD_LINK} | grep -q -E '^sg200' ; then
+  SDK_BOARD_FAMILY=sg200x
+fi
+
+BR_CHIP=$(echo ${SDK_BOARD_FAMILY} | tr a-z A-Z)
+BR_SDK=${SDK_VER}
 
 if [ "${SDK_VER}" = "glibc_arm64" ]; then
-  BR_BOARD=cvitek_SG200X_64bit
+  BR_SDK=64bit
 elif [ "${SDK_VER}" = "glibc_arm" ]; then
-  BR_BOARD=cvitek_SG200X_32bit
+  BR_SDK=32bit
 fi
+
+BR_BOARD=cvitek_${BR_CHIP}_${BR_SDK}
 
 BR_DEFCONFIG=${BR_BOARD}_defconfig
 
