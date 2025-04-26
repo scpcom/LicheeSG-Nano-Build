@@ -7,7 +7,7 @@ sdkver=keep
 maixcdk=n
 tailscale=n
 tpudemo=c
-tpusdk=y
+tpusdk=c
 while [ "$#" -gt 0 ]; do
 	case "$1" in
 	--board=*|--board-link=*)
@@ -66,10 +66,13 @@ done
 
 if echo ${SG_BOARD_LINK} | grep -q -E '^cv180' ; then
   export SG_BOARD_FAMILY=cv180x
+  [ $tpusdk != c ] || tpusdk=n
 fi
 if echo ${SG_BOARD_LINK} | grep -q -E '^sg200' ; then
   export SG_BOARD_FAMILY=sg200x
 fi
+
+[ $tpusdk != c ] || tpusdk=y
 
 if [ -e prepare-licheesgnano.sh ]; then
   bash -e prepare-licheesgnano.sh
