@@ -26,6 +26,10 @@ SDK_BOARD=milkv_duos_${SDK_VER}
 elif [ "${BOARD_SHORT}" = "duo256" ]; then
 SDK_CHIP=sg2002
 SDK_BOARD=milkv_duo256m_${SDK_VER}
+elif [ "${BOARD_SHORT}" = "licheea53nano" ]; then
+[ $SDK_VER != "musl_riscv64" ] || SDK_VER="glibc_arm"
+SDK_CHIP=sg2002
+SDK_BOARD=licheea53nano
 fi
 
 SDK_BOARD_LINK=${SDK_CHIP}_${SDK_BOARD}_${STORAGE_TYPE}
@@ -34,6 +38,8 @@ BR_BOARD=cvitek_SG200X_${SDK_VER}
 
 if [ "${SDK_VER}" = "glibc_arm64" ]; then
   BR_BOARD=cvitek_SG200X_64bit
+elif [ "${SDK_VER}" = "glibc_arm" ]; then
+  BR_BOARD=cvitek_SG200X_32bit
 fi
 
 BR_DEFCONFIG=${BR_BOARD}_defconfig
@@ -41,6 +47,7 @@ BR_DEFCONFIG=${BR_BOARD}_defconfig
 echo "${blue}Board: ${BOARD_SHORT}${end_color}"
 echo "${blue}Variant: ${VARIANT}${end_color}"
 echo "${blue}Storage: ${STORAGE_TYPE}${end_color}"
+echo "${blue}Target: ${SDK_VER}${end_color}"
 echo "${blue}Link: ${SDK_BOARD_LINK}${end_color}"
 
 bs=${BUILDDIR}/sdk-prepare-checkout-stamp
@@ -57,7 +64,7 @@ if [ ! -e $bs ]; then
   echo "\n${green}Patching SDK for ${BOARD_SHORT}${end_color}\n"
   cd ${BUILDDIR} && ./host/prepare-host.sh
   cd ${BUILDDIR} && ./host/replace-all-thead-toolchains.sh
-  if [ "${SDK_VER}" = "glibc_arm64" ]; then
+  if [ "${SDK_VER}" = "glibc_arm64" -o "${SDK_VER}" = "glibc_arm" ]; then
     cd ${BUILDDIR} && ./host/replace-all-linaro-toolchains.sh
   fi
   cd ${BUILDDIR} && rm -f host/riscv64-*.tar.*
@@ -67,7 +74,7 @@ if [ ! -e $bs ]; then
   cd ${BUILDDIR}/buildroot && git commit -m "disable per package directories"
   cd ${BUILDDIR}/host-tools && for d in gcc/arm-gnu-toolchain-11.3.rel1-* gcc/gcc-buildroot-9.3.0-* gcc/gcc-linaro-6.3.1-2017.05-* ; do
     [ -e $d ] || continue
-    [ "${SDK_VER}" != "glibc_arm64" ] || if echo $d | grep -q gcc-linaro ; then continue ; fi
+    [ "${SDK_VER}" != "glibc_arm64" -a "${SDK_VER}" != "glibc_arm" ] || if echo $d | grep -q gcc-linaro ; then continue ; fi
     echo "Removing $d"
     git rm -r $d || rm -rf $d
   done
@@ -91,7 +98,7 @@ if [ ! -e $bs ]; then
   cd ${BUILDDIR}/ramdisk && for d in initramfs/uclibc_arm \
            rootfs/common_* rootfs/public sysroot/sysroot-glibc-linaro-2.23-2017.05-* ; do
     [ -e $d ] || continue
-    [ "${SDK_VER}" != "glibc_arm64" ] || if echo $d | grep -q glibc-linaro ; then continue ; fi
+    [ "${SDK_VER}" != "glibc_arm64" -a "${SDK_VER}" != "glibc_arm" ] || if echo $d | grep -q glibc-linaro ; then continue ; fi
     git rm -r $d
   done
   cd ${BUILDDIR}/ramdisk && for f in .backup-rootfs/common_*/usr/share/fw_vcodec/*.bin ; do
