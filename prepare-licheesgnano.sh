@@ -5,6 +5,13 @@ if [ "${SG_BOARD_FAMILY}/${SG_BOARD_LINK}" = "/" ]; then
   export SG_BOARD_LINK=sg2002_licheervnano_sd
 fi
 
+if [ "configs/${BR_DEFCONFIG}" = "configs/" ]; then
+  BR_DEFCONFIG=cvitek_SG200X_musl_riscv64_defconfig
+  if echo ${SG_BOARD_LINK} | grep -q glibc_arm64 ; then
+    BR_DEFCONFIG=cvitek_SG200X_64bit_defconfig
+  fi
+fi
+
 if [ ! -e host-tools/gcc ]; then
   bash -e host/replace-all-thead-toolchains.sh
   #bash -e host/replace-all-linaro-toolchains.sh
@@ -91,5 +98,20 @@ if [ "${SG_BOARD_FAMILY}/${SG_BOARD_LINK}" != "/" ]; then
   [ $logopart = 0 ] || sed -i s/'resizepart 2 '/'resizepart 3 '/g board/cvitek/SG200X/overlay/etc/init.d/S99resizefs
   cd ..
 fi
+
+cd buildroot/
+if echo ${SG_BOARD_LINK} | grep -q milkv_duos ; then
+  sed -i s/'BR2_PACKAGE_AIC8800_SDIO_FIRMWARE=y'/'BR2_PACKAGE_AIC8800_SDIO_FIRMWARE=y\nBR2_PACKAGE_AIC8800_SDIO_FIRMWARE_D80=y'/g configs/${BR_DEFCONFIG}
+  sed -i s/'BR2_PACKAGE_CVI_PINMUX_SG200X=y'/'BR2_PACKAGE_CVI_PINMUX_SG200X=y\nBR2_PACKAGE_DUO_PINMUX_DUOS=y'/g configs/${BR_DEFCONFIG}
+  sed -i s/'BR2_PACKAGE_CVI_PINMUX_SG200X=y'/'BR2_PACKAGE_CVI_PINMUX_SG200X=y\nBR2_PACKAGE_DUO_PINMUX=y'/g configs/${BR_DEFCONFIG}
+elif echo ${SG_BOARD_LINK} | grep -q milkv_duo256m ; then
+  sed -i s/'BR2_PACKAGE_CVI_PINMUX_SG200X=y'/'BR2_PACKAGE_CVI_PINMUX_SG200X=y\nBR2_PACKAGE_DUO_PINMUX_DUO256M=y'/g configs/${BR_DEFCONFIG}
+  sed -i s/'BR2_PACKAGE_CVI_PINMUX_SG200X=y'/'BR2_PACKAGE_CVI_PINMUX_SG200X=y\nBR2_PACKAGE_DUO_PINMUX=y'/g configs/${BR_DEFCONFIG}
+elif echo ${SG_BOARD_LINK} | grep -q milkv_duo ; then
+  sed -i s/'BR2_PACKAGE_AIC8800_SDIO_FIRMWARE=y'/'BR2_PACKAGE_AIC8800_SDIO_FIRMWARE=y\nBR2_PACKAGE_AIC8800_SDIO_FIRMWARE_D80=y'/g configs/${BR_DEFCONFIG}
+  sed -i s/'BR2_PACKAGE_CVI_PINMUX_SG200X=y'/'BR2_PACKAGE_CVI_PINMUX_SG200X=y\nBR2_PACKAGE_DUO_PINMUX_DUO=y'/g configs/${BR_DEFCONFIG}
+  sed -i s/'BR2_PACKAGE_CVI_PINMUX_SG200X=y'/'BR2_PACKAGE_CVI_PINMUX_SG200X=y\nBR2_PACKAGE_DUO_PINMUX=y'/g configs/${BR_DEFCONFIG}
+fi
+cd ..
 
 echo OK
