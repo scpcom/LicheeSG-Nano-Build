@@ -28,6 +28,7 @@
 - added submodules to compile tpu sdk
 - added compatibility for generic gnu toolchain (gcc/glibc) on all components (except tpu)
 - created cvi_json-c and cvi_miniz open source replacement in middleware/modules/bin
+- replaced host-tools by reproducible toolchain https://github.com/scpcom/riscv-gnu-toolchain/releases/tag/riscv64-gcc-thead_20230307-10.2.0-x86_64
 
 # download source
 
