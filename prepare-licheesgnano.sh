@@ -55,6 +55,24 @@ if git -C linux_5.10 checkout -b build 2>/dev/null ; then
     git -C linux_5.10 add -f arch/riscv/boot/dts/cvitek/$b
     ln -sf $d/$b linux_5.10/arch/arm/boot/dts/cvitek/$b
     git -C linux_5.10 add -f arch/arm/boot/dts/cvitek/$b
+    ln -sf $d/$b linux_5.10/arch/arm64/boot/dts/cvitek/$b
+    git -C linux_5.10 add -f arch/arm64/boot/dts/cvitek/$b
+  done
+  d=`pwd`/build/boards/default/dts/${SG_BOARD_FAMILY}_riscv
+  for f in $d/*.dtsi ; do
+    b=`basename $f`
+    [ -e $d ] || continue
+    ln -sf $d/$b linux_5.10/arch/riscv/boot/dts/cvitek/$b
+    git -C linux_5.10 add -f arch/riscv/boot/dts/cvitek/$b
+  done
+  d=`pwd`/build/boards/default/dts/${SG_BOARD_FAMILY}_arm
+  for f in $d/*.dtsi ; do
+    b=`basename $f`
+    [ -e $d ] || continue
+    ln -sf $d/$b linux_5.10/arch/arm/boot/dts/cvitek/$b
+    git -C linux_5.10 add -f arch/arm/boot/dts/cvitek/$b
+    ln -sf $d/$b linux_5.10/arch/arm64/boot/dts/cvitek/$b
+    git -C linux_5.10 add -f arch/arm64/boot/dts/cvitek/$b
   done
   git -C linux_5.10 commit -m "licheesgnano: symlink dts and memmap"
 fi
