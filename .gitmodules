@@ -63,6 +63,7 @@
 [submodule "cvimath"]
 	path = cvimath
 	url = https://github.com/scpcom/cvimath
+	branch = licheervnano-cvisdk
 [submodule "cviruntime"]
 	path = cviruntime
 	url = https://github.com/scpcom/cviruntime
