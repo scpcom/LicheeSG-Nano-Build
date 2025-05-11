@@ -157,6 +157,10 @@ elif [ $tpusdk = n ]; then
 fi
 cd ..
 
+if [ -e cvi_rtsp ]; then
+  # fix "fatal error: Can't find suitable multilib set"
+  sed -i s/'-march=rv64imafdcvxthead -mcmodel=medany -mabi=lp64dv'/'-march=rv64imafdcv0p7xthead -mcmodel=medany -mabi=lp64d'/g cvi_rtsp/Makefile.inc
+fi
 if [ -e cviruntime -a -e flatbuffers ]; then
   # small fix to keep fork of flatbuffers repository optional
   sed -i s/'-Werror=unused-parameter"'/'-Werror=unused-parameter -Wno-class-memaccess"'/g flatbuffers/CMakeLists.txt
