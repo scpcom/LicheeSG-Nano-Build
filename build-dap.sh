@@ -212,6 +212,9 @@ sed -i /usb.ncm/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 # enable wifi.ap
 sed -i s/wifi.sta/wifi.ap/g tools/common/sd_tools/genimage_rootless.cfg
 sed -i s/wifi.sta/wifi.ap/g tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+# copy wifi-only.bin
+sed -i 's|cp -fv ${output_dir}/fip.bin ${output_dir}/input/|cp -fv ${output_dir}/fip.bin ${output_dir}/input/\ncp -fv ${output_dir}/wifi-only.bin ${output_dir}/input/|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+sed -i 's|                        "fip.bin",|                        "fip.bin",\n                        "wifi-only.bin",|g' tools/common/sd_tools/genimage_rootless.cfg
 # enable wifi.only
 sed -i s/'\t\t\t"usb.dev",'/'\t\t\t"usb.dev",\n\t\t\t"wifi.only",'/g tools/common/sd_tools/genimage_rootless.cfg
 sed -i 's| \${output_dir}/input/usb.dev$| ${output_dir}/input/usb.dev\ntouch ${output_dir}/input/wifi.only|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
@@ -325,6 +328,14 @@ wifi_only() {
 	mv /etc/init.d/S05ethmod /etc/init.off/
 	mv /etc/init.d/S30eth /etc/init.off/
 	mv /etc/init.d/S30gadget_nic /etc/init.off/
+	if [ -e /boot/fip.bin -a ! -e /boot/wifi-eth.bin ]
+	then
+		cp -p /boot/fip.bin /boot/wifi-eth.bin
+	fi
+	if [ -e /boot/wifi-only.bin ]
+	then
+		cp -p /boot/wifi-only.bin /boot/fip.bin
+	fi
 }
 
 if [ "$1" = "start" ]
@@ -455,7 +466,8 @@ if [ -e cviruntime -a -e flatbuffers ]; then
   [ $tpusdk = y ] && export TPU_REL=1
 fi
 
-build_all
+build_uboot
+build_fsbl
 
 # build other variant
 cp -p build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/*${SG_BOARD_LINK}_defconfig bak.u-boot-config
@@ -476,6 +488,8 @@ cp -v install/soc_${SG_BOARD_LINK}/fip.bin install/soc_${SG_BOARD_LINK}/wifi-onl
 mv bak.u-boot-config build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/*${SG_BOARD_LINK}_defconfig
 mv bak.fip install/soc_${SG_BOARD_LINK}/fip.bin
 mv bak.fip_spl install/soc_${SG_BOARD_LINK}/fip_spl.bin
+
+build_all
 
 cd build
 git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/memmap.py
