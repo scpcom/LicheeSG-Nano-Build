@@ -38,10 +38,6 @@
 	path = osdrv
 	url = https://github.com/scpcom/sophgo-osdrv
 	branch = licheervnano-cvisdk
-[submodule "oss"]
-	path = oss
-	url = https://github.com/scpcom/sophgo-oss
-	branch = licheervnano
 [submodule "ramdisk"]
 	path = ramdisk
 	url = https://github.com/scpcom/sophgo-ramdisk
