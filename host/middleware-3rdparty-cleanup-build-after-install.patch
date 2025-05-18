@@ -1,0 +1,24 @@
+From 01e55308bda85e4aefd6868447eeeffde69f38ec Mon Sep 17 00:00:00 2001
+From: scpcom <scpcom@gmx.de>
+Date: Sun, 18 May 2025 19:49:52 +0200
+Subject: [PATCH] middleware: 3rdparty: cleanup build after install
+
+---
+ 3rdparty/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/3rdparty/Makefile b/3rdparty/Makefile
+index 0ed1605..c87c253 100644
+--- a/3rdparty/Makefile
++++ b/3rdparty/Makefile
+@@ -7,6 +7,7 @@ all:
+ 	@echo "#################################################"
+ 	@for x in `find ./ -maxdepth 2 -mindepth 2 -name "Makefile" `; \
+ 	    do cd `dirname $$x`; if [ $$? ]; then make || exit 1; cd -; fi; done
++	@rm -rf ./tmp
+ 
+ clean:
+ 	@for x in `find ./ -maxdepth 2 -mindepth 2 -name "Makefile" `; \
+-- 
+2.34.1
+

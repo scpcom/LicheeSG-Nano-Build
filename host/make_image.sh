@@ -103,7 +103,7 @@ if [ ! -e $bs ]; then
     echo "Removing $d"
     git rm -r $d || rm -rf $d
   fi
-  cd ${BUILDDIR}/middleware && git am < /builder/middleware-3rdparty-opencv-cleanup-build-after-insta.patch
+  cd ${BUILDDIR}/middleware && git am < /builder/middleware-3rdparty-cleanup-build-after-install.patch
   cd ${BUILDDIR}/ramdisk && for f in rootfs/common_*/usr/share/fw_vcodec/*.bin ; do
     [ -e $f ] || continue
     d=`dirname $f`
