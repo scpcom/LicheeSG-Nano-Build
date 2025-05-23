@@ -13,7 +13,7 @@ RUN apt-get update \
         device-tree-compiler dosfstools e2fsprogs fdisk flex fuse2fs gawk  \
         git gperf kmod libexpat-dev \
         libgmp-dev liblzma-dev libmpc-dev libmpfr-dev libncurses-dev libssl-dev \
-        libtool mmdebstrap ninja-build openssl parted \
+        libtool mmdebstrap ninja-build openssl parted tcl \
         patchutils python3 python3-dev  \
         python-is-python3 python3-jinja2 pkg-config xxd \
         python3-setuptools shellcheck swig gnupg \
