@@ -1,0 +1,25 @@
+From d70d4170abfca5d45da36aa7f3edc9063b7970b5 Mon Sep 17 00:00:00 2001
+From: scpcom <scpcom@gmx.de>
+Date: Sun, 18 May 2025 20:26:56 +0200
+Subject: [PATCH] middleware: 3rdparty: deinit submodules after install
+
+---
+ 3rdparty/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/3rdparty/Makefile b/3rdparty/Makefile
+index c87c253..be80497 100644
+--- a/3rdparty/Makefile
++++ b/3rdparty/Makefile
+@@ -7,6 +7,8 @@ all:
+ 	@echo "#################################################"
+ 	@for x in `find ./ -maxdepth 2 -mindepth 2 -name "Makefile" `; \
+ 	    do cd `dirname $$x`; if [ $$? ]; then make || exit 1; cd -; fi; done
++	@for g in `find ./ -name .git -type f `; \
++	    do if [ -e `dirname $$g` ] ; then git submodule deinit --force `dirname $$g` ; fi; done
+ 	@rm -rf ./tmp
+ 
+ clean:
+-- 
+2.34.1
+

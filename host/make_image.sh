@@ -104,6 +104,7 @@ if [ ! -e $bs ]; then
     git rm -r $d || rm -rf $d
   fi
   cd ${BUILDDIR}/middleware && git am < /builder/middleware-3rdparty-cleanup-build-after-install.patch
+  cd ${BUILDDIR}/middleware && git am < /builder/middleware-3rdparty-deinit-submodules-after-install.patch
   cd ${BUILDDIR}/ramdisk && for f in rootfs/common_*/usr/share/fw_vcodec/*.bin ; do
     [ -e $f ] || continue
     d=`dirname $f`
