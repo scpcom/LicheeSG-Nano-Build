@@ -159,6 +159,9 @@ if [ ! -e $bs ]; then
     cd /output/ && zip ${BOARD_SHORT}-${VARIANT}_${STORAGE_TYPE}-fip.zip *.bin
     rm -f /output/*.bin
   fi
+  if [ "${BOARD_SHORT}-${VARIANT}_${STORAGE_TYPE}" = "licheervnano-e_sd" ]; then
+    cd ${BUILDDIR}/oss && zip -r /output/oss.zip oss_release_tarball run_build.sh
+  fi
   echo "\n${green}Image for ${BOARD_SHORT} is ${BOARD_SHORT}-${VARIANT}_${STORAGE_TYPE}.img.xz${end_color}\n"
   touch $bs
 fi
