@@ -5,6 +5,7 @@ export SG_BOARD_LINK=sg2002_licheea53nano_sd
 
 sdkver=keep
 maixcdk=n
+osstar=y
 tailscale=n
 tpudemo=c
 tpusdk=y
@@ -25,6 +26,14 @@ while [ "$#" -gt 0 ]; do
 	--no-maix-cdk|--no-maixcdk)
 		shift
 		maixcdk=n
+		;;
+	--oss-tar|--osstar)
+		shift
+		osstar=y
+		;;
+	--no-oss-tar|--no-osstar)
+		shift
+		osstar=n
 		;;
 	--tailscale)
 		shift
@@ -173,6 +182,9 @@ if [ -e cviruntime -a -e flatbuffers ]; then
   # small fix to keep fork of flatbuffers repository optional
   sed -i s/'-Werror=unused-parameter"'/'-Werror=unused-parameter -Wno-class-memaccess"'/g flatbuffers/CMakeLists.txt
   [ $tpusdk = y ] && export TPU_REL=1
+fi
+if [ $osstar = y ]; then
+  export OSS_TARBALL_REL=1
 fi
 
 build_all
