@@ -160,8 +160,15 @@ if [ "X$sdkver" != "X" ]; then
     else
       sed -i s/'^CONFIG_ARCH="'${oldarch}'"'/'CONFIG_ARCH="'${sdkarch}'"'/g boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
     fi
-    [ -e boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${oldarch} -a \
-    ! -e boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch} ] && ln -s dts_${oldarch} boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch}
+    if [ -e boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${oldarch} -a \
+       ! -e boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch} ]; then
+      #ln -s dts_${oldarch} boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch}
+      mkdir -p boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch}
+      for f in boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${oldarch}/*.dts ; do
+        b=`basename $f`
+        ln -s ..//dts_${oldarch}/$b boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts_${sdkarch}/$b
+      done
+    fi
   fi
   cd ..
 fi
