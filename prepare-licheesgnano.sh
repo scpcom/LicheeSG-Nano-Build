@@ -96,12 +96,23 @@ sed -i s/'describe --exact-match HEAD'/'describe --exact-match --tags HEAD'/g bu
 if [ "${SG_BOARD_FAMILY}/${SG_BOARD_LINK}" != "/" ]; then
   cd build/
   git restore tools/common/sd_tools/genimage_rootless.cfg
+  git restore tools/common/sd_tools/sd_gen_burn_image_rootless.sh
   if [ -e boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/genimage_rootless.cfg ] ;then
     cp -p boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/genimage_rootless.cfg tools/common/sd_tools/
   fi
   logopart=0
   if grep -q 'partition logo {' tools/common/sd_tools/genimage_rootless.cfg ; then
     logopart=1
+  fi
+  storagetype=sd
+  if grep -q -E '^CONFIG_STORAGE_TYPE_emmc=y' boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig ; then
+    storagetype=emmc
+  fi
+  if [ $storagetype != sd ]; then
+    sed -i 's|rawimages/boot\.sd|rawimages/boot.'$storagetype'|g' tools/common/sd_tools/genimage_rootless.cfg
+    sed -i 's|rawimages/boot\.sd|rawimages/boot.'$storagetype'|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+    sed -i 's|rootfs\.sd|rootfs.'$storagetype'|g' tools/common/sd_tools/genimage_rootless.cfg
+    sed -i 's|rawimages/rootfs\.sd|rawimages/rootfs.'$storagetype'|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
   fi
   cd ..
 
