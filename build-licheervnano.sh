@@ -248,6 +248,27 @@ clean_fsbl
 build_fsbl
 cp -v install/soc_${SG_BOARD_LINK}/fip.bin install/soc_${SG_BOARD_LINK}/d240si31.bin
 
+# dsi to hdmi
+cat bak.config | sed -e 's/CONFIG_MIPI_PANEL_ZCT2133V1/CONFIG_MIPI_PANEL_LT9611_1024X768_60HZ/g' > build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+grep -E '^CONFIG_MIPI_PANEL_.*=y' build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+defconfig ${SG_BOARD_LINK}
+clean_uboot
+clean_opensbi
+clean_fsbl
+build_fsbl
+cp -v install/soc_${SG_BOARD_LINK}/fip.bin install/soc_${SG_BOARD_LINK}/lt9611-1024x768.bin
+
+# dsi to hdmi
+cat bak.config | sed -e 's/CONFIG_MIPI_PANEL_ZCT2133V1/CONFIG_MIPI_PANEL_LT9611_1280X720_60HZ/g' > build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+grep -E '^CONFIG_MIPI_PANEL_.*=y' build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
+defconfig ${SG_BOARD_LINK}
+clean_uboot
+clean_opensbi
+clean_fsbl
+build_fsbl
+grep -E '^CONFIG_MIPI_PANEL_.*=y' build/.config
+cp -v install/soc_${SG_BOARD_LINK}/fip.bin install/soc_${SG_BOARD_LINK}/lt9611-1280x720.bin
+
 mv bak.config build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
 mv bak.fip install/soc_${SG_BOARD_LINK}/fip.bin
 mv bak.fip_spl install/soc_${SG_BOARD_LINK}/fip_spl.bin
