@@ -1,5 +1,34 @@
 # LicheeSG-Nano-Build
 
+Builds for Sophgo cv181x/sg200x based boards such as MilkV Duo256/DuoS and Sipeed LicheeRvNano/NanoKVM. See also: https://github.com/scpcom/sophgo-sg200x-debian
+
+# Running
+
+This contains a drop-in replacement for [Sipeed NanoKVM](https://github.com/sipeed/NanoKVM). Download
+
+`licheervnano-kvm_sd.img.xz`
+
+from
+
+https://github.com/scpcom/LicheeSG-Nano-Build/releases/
+
+and burn the image to microSD card with something like Balena Etcher.
+
+# Compatibility
+
+Should work with:
+
+[Some(?) NanoKVM products:](https://classic.sipeed.com/nanokvm)
+
+1. Cube
+2. Lite
+
+May work with:
+
+Sophgo cv181x/sg200x based boards such as MilkV Duo256/DuoS. Try different releases.
+
+# Changes from Upstream
+
 - updated build, fsbl, opensbi, u-boot, linux, middleware (cvi_mpi and SensorSupportList) and osdrv to sophgo weekly rls 2024.10.14
 - updated isp_tuning to sophgo weekly rls 2024.09.11
 - updated freertos to sophgo weekly rls 2024.06.6 and ramdisk to sophgo weekly rls 2024.07.20
@@ -30,7 +59,11 @@
 - created cvi_json-c and cvi_miniz open source replacement in middleware/modules/bin
 - replaced host-tools by reproducible toolchain https://github.com/scpcom/riscv-gnu-toolchain/releases/tag/riscv64-gcc-thead_20230307-10.2.0-x86_64
 
-# download source
+# Compiling and building yourself
+
+If you don't want to use the prebuilt packages, you can compile yourself.
+
+## download source
 
 ```
 git clone https://github.com/scpcom/LicheeSG-Nano-Build --depth=1
@@ -58,23 +91,23 @@ docker build -t builder -f host/Dockerfile .
 docker run --privileged -it --rm -v `pwd`/image:/output builder sh -e -c "BOARD_SHORT=licheervnano ./make_image.sh"
 ```
 
-# build it
+## build it
 
 ```
 ./build-licheervnano.sh
 ```
 
-# build nanokvm
+## build nanokvm
 
 ```
 ./build-nanokvm.sh
 ```
 
-# build fail
+## build fail
 
 on some systems, qt5svg or qt5base will fail on first build, please re-run the build command.
 
-# how to modify image after build:
+## how to modify image after build:
 
 ```
 # first partition
@@ -87,7 +120,7 @@ cd mountpoint
 touch xxx
 ```
 
-# logo
+## logo
 
 ```
 ./host/make_logo.sh input.jpeg logo.jpeg
