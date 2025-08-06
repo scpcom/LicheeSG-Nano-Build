@@ -22,6 +22,7 @@ Should work with:
 
 1. Cube
 2. Lite
+3. PCIe
 
 May work with:
 
