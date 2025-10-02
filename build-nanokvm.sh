@@ -182,6 +182,7 @@ if [ -e ${BR_OUTPUT_DIR}/per-package/nanokvm-sg200x/target/kvmapp/system/init.d 
   rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
   rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
   rm -f board/cvitek/SG200X/overlay/etc/init.d/S*usbhid*
+  rm -f board/cvitek/SG200X/overlay/etc/init.d/S*usbkeyboard*
 fi
 if [ -e board/cvitek/SG200X/overlay/etc/init.d/S30gadget_nic -a ! \
      -e board/cvitek/SG200X/overlay/etc/init.d/S30rndis ] ; then
@@ -313,12 +314,14 @@ rm -f board/cvitek/SG200X/overlay/etc/init.d/S*ssdp*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*ssh*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*usbhid*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*usbkeyboard*
 git restore board/cvitek/SG200X/overlay/etc/init.d
 git restore configs/${BR_DEFCONFIG}
 rm -f ${BR_OUTPUT_DIR}/target/etc/tailscale_disabled
 rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*kvm*
 rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*tailscale*
 rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*usbhid*
+rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*usbkeyboard*
 rm -f ${BR_OUTPUT_DIR}/target/usr/bin/tailscale
 rm -f ${BR_OUTPUT_DIR}/target/usr/sbin/tailscaled
 rm -rf ${BR_OUTPUT_DIR}/target/kvmapp/
