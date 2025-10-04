@@ -16,17 +16,17 @@ and burn the image to microSD card with something like Balena Etcher.
 
 # Compatibility
 
-Should work with:
+Works with:
 
-[Some(?) NanoKVM products:](https://classic.sipeed.com/nanokvm)
+[RISC-V NanoKVM products:](https://classic.sipeed.com/nanokvm)
 
 1. Cube
 2. Lite
 3. PCIe
 
-May work with:
+Also works with:
 
-Sophgo cv181x/sg200x based boards such as MilkV Duo256/DuoS. Try different releases.
+Sophgo cv181x/sg200x based boards such as LicheeRV Nano and MilkV Duo256/DuoS. Try different image releases.
 
 # Changes from Upstream
 
