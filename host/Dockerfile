@@ -29,4 +29,4 @@ FROM builder as build_image
 WORKDIR /builder
 ADD host/ /builder/
 
-CMD /bin/bash
+CMD ["/bin/bash"]
