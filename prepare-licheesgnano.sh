@@ -114,7 +114,7 @@ if [ "${SG_BOARD_FAMILY}/${SG_BOARD_LINK}" != "/" ]; then
     sed -i 's|rootfs\.sd|rootfs.'$storagetype'|g' tools/common/sd_tools/genimage_rootless.cfg
     sed -i 's|rawimages/rootfs\.sd|rawimages/rootfs.'$storagetype'|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
     sed -i s/'\.img$'/'.zip'/g tools/common/sd_tools/sd_gen_burn_image_rootless.sh
-    sed -i 's|^genimage$|cp -fv ${output_dir}/upgrade.zip ${output_dir}/images/${image}|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
+    sed -i 's|^genimage$|mkdir -p ${output_dir}/images\ncp -fv ${output_dir}/upgrade.zip ${output_dir}/images/${image}|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
     sed -i /'please use win32diskimager or dd'/d tools/common/sd_tools/sd_gen_burn_image_rootless.sh
   fi
   cd ..
