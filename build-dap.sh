@@ -407,6 +407,7 @@ if [ $shrink = y ]; then
   #sed -i /'BR2_PACKAGE_FFMPEG'/d configs/${BR_DEFCONFIG}
   #sed -i /'BR2_PACKAGE_MPG123'/d configs/${BR_DEFCONFIG}
   sed -i /'BR2_PACKAGE_OPENCV'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_QT5'/d configs/${BR_DEFCONFIG}
 fi
 if [ $dap = y -a $shrink = y ]; then
   sed -i /'BR2_PACKAGE_BLUEZ'/d configs/${BR_DEFCONFIG}
