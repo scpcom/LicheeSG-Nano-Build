@@ -6,6 +6,7 @@ export SG_BOARD_LINK=sg2002_licheea53nano_sd
 sdkver=keep
 maixcdk=n
 osstar=y
+qt5=y
 tailscale=n
 tpudemo=c
 tpusdk=y
@@ -26,6 +27,14 @@ while [ "$#" -gt 0 ]; do
 	--no-maix-cdk|--no-maixcdk)
 		shift
 		maixcdk=n
+		;;
+        --qt5)
+		shift
+		qt5=y
+		;;
+	--no-qt5)
+		shift
+		qt5=n
 		;;
 	--oss-tar|--osstar)
 		shift
@@ -127,6 +136,9 @@ if [ $tpusdk = y ]; then
   sed -i s/'^# BR2_PACKAGE_SOPHGO_LIBRARY is not set'/'BR2_PACKAGE_SOPHGO_LIBRARY=y'/g configs/${BR_DEFCONFIG}
 elif [ $tpusdk = n ]; then
   sed -i s/'^BR2_PACKAGE_SOPHGO_LIBRARY=y'/'# BR2_PACKAGE_SOPHGO_LIBRARY is not set'/g configs/${BR_DEFCONFIG}
+fi
+if [ $qt5 = n ]; then
+  sed -i /'BR2_PACKAGE_QT5'/d configs/${BR_DEFCONFIG}
 fi
 cd ..
 
