@@ -132,11 +132,11 @@ bs=${BUILDDIR}/sdk-compile-stamp
 if [ ! -e $bs ]; then
   echo "\n${green}Building SDK for ${BOARD_SHORT}${end_color}\n"
   if [ "X${VARIANT}" = "Xkvm" ]; then
-    cd ${BUILDDIR} && ./build-nanokvm.sh --board=${SDK_BOARD_LINK} --maixcdk
+    cd ${BUILDDIR} && ./build-nanokvm.sh --board=${SDK_BOARD_LINK} --maixcdk --no-qt5
   elif [ "X${VARIANT}" = "Xdap" ]; then
-    cd ${BUILDDIR} && ./build-dap.sh --board=${SDK_BOARD_LINK}
+    cd ${BUILDDIR} && ./build-dap.sh --board=${SDK_BOARD_LINK} --no-qt5
   else
-    cd ${BUILDDIR} && ./build-licheervnano.sh --board=${SDK_BOARD_LINK} --maixcdk
+    cd ${BUILDDIR} && ./build-licheervnano.sh --board=${SDK_BOARD_LINK} --maixcdk --no-qt5
   fi
   touch $bs
 fi
