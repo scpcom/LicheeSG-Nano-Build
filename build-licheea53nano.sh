@@ -28,7 +28,7 @@ while [ "$#" -gt 0 ]; do
 		shift
 		maixcdk=n
 		;;
-        --qt5)
+	--qt5)
 		shift
 		qt5=y
 		;;
