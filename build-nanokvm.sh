@@ -249,6 +249,16 @@ if [ $shrink = y ]; then
   sed -i /'BR2_PACKAGE_FFMPEG'/d configs/${BR_DEFCONFIG}
   sed -i /'BR2_PACKAGE_MPG123'/d configs/${BR_DEFCONFIG}
   sed -i /'BR2_PACKAGE_OPENCV'/d configs/${BR_DEFCONFIG}
+
+  sed -i /'BR2_PACKAGE_BITSTREAM_VERA'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_CANTARELL'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_DEJAVU'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_FONT_AWESOME'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_INCONSOLATA'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_LIBERATION'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_WQY_ZENHEI'/d configs/${BR_DEFCONFIG}
+
+  sed -i /'BR2_PACKAGE_ICU'/d configs/${BR_DEFCONFIG}
   sed -i /'BR2_PACKAGE_QT5'/d configs/${BR_DEFCONFIG}
 fi
 if [ $maixcdk = n -a $shrink = y ]; then
