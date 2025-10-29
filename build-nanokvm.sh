@@ -177,6 +177,15 @@ elif git branch -D build-nanokvm ; then
 elif git checkout build-nanokvm ; then
   branchnanokvm=true
 fi
+
+# nanokvm only uses S00kmod, S01fs and S03usbdev
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S07fs2
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S07kmod2
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S08usbdev
+rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S07fs2
+rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S07kmod2
+rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S08usbdev
+
 if [ -e ${BR_OUTPUT_DIR}/per-package/nanokvm-sg200x/target/kvmapp/system/init.d ]; then
   rsync -r --verbose --copy-dirlinks --copy-links --hard-links ${BR_OUTPUT_DIR}/per-package/nanokvm-sg200x/target/kvmapp/system/init.d/ board/cvitek/SG200X/overlay/etc/init.d/
   rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
@@ -324,6 +333,7 @@ rm -f board/cvitek/SG200X/overlay/etc/init.d/S*kvm*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*ssdp*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*ssh*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*tailscale*
+rm -f board/cvitek/SG200X/overlay/etc/init.d/S*usbdev*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*usbhid*
 rm -f board/cvitek/SG200X/overlay/etc/init.d/S*usbkeyboard*
 git restore board/cvitek/SG200X/overlay/etc/init.d
@@ -331,6 +341,7 @@ git restore configs/${BR_DEFCONFIG}
 rm -f ${BR_OUTPUT_DIR}/target/etc/tailscale_disabled
 rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*kvm*
 rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*tailscale*
+rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*usbdev*
 rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*usbhid*
 rm -f ${BR_OUTPUT_DIR}/target/etc/init.d/S*usbkeyboard*
 rm -f ${BR_OUTPUT_DIR}/target/usr/bin/tailscale
