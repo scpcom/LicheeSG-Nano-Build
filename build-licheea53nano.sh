@@ -196,6 +196,8 @@ build_fip_variant MIPI_PANEL_MTD700920B
 build_fip_variant MIPI_PANEL_ST7701_HD228001C31
 # 2.8inch alt0
 build_fip_variant MIPI_PANEL_ST7701_HD228001C31_ALT0
+# 2.28 inch lhcm
+build_fip_variant MIPI_PANEL_ST7701_LHCM228TS003A
 # 3inch
 build_fip_variant MIPI_PANEL_ST7701_D300FPC9307A
 # 3.1inch
