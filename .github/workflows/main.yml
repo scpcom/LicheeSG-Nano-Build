@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-docker-image:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -94,7 +94,7 @@ jobs:
         boards: [licheervnano, duo256, duos]
         variant: [e]
         storage: [sd]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build-image
     steps:
       - name: Set up QEMU
