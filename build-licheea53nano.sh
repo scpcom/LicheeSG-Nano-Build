@@ -124,6 +124,7 @@ cd buildroot
 if [ $maixcdk = y ]; then
   sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
   sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MAIX_PY=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
+  sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MAIXCAM_SG200X=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
 fi
 if [ $tailscale = y ]; then
   sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_TAILSCALE_RISCV64=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
