@@ -225,7 +225,16 @@ git restore tools/common/sd_tools/genimage_rootless.cfg
 git restore tools/common/sd_tools/sd_gen_burn_image_rootless.sh
 cd ..
 
+installdir=`pwd`/install/soc_${SG_BOARD_LINK}
 cd buildroot
+cd ${BR_OUTPUT_DIR}/target
+if [ -e maixapp/apps/app.info ]; then
+  rm -f ${installdir}/maixcam-latest.zip
+  ln -s maixapp latest
+  zip -r --symlinks ${installdir}/maixcam-latest.zip latest/*
+  rm latest
+fi
+cd -
 git restore configs/${BR_DEFCONFIG}
 cd ..
 
