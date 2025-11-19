@@ -5,6 +5,7 @@ export SG_BOARD_LINK=sg2002_licheea53nano_sd
 
 sdkver=keep
 maixcdk=n
+maixpy=n
 osstar=y
 qt5=y
 tailscale=n
@@ -27,6 +28,16 @@ while [ "$#" -gt 0 ]; do
 	--no-maix-cdk|--no-maixcdk)
 		shift
 		maixcdk=n
+		maixpy=n
+		;;
+	--maix-py|--maixpy)
+		shift
+		maixcdk=y
+		maixpy=y
+		;;
+	--no-maix-py|--no-maixpy)
+		shift
+		maixpy=n
 		;;
 	--qt5)
 		shift
@@ -123,8 +134,10 @@ defconfig ${SG_BOARD_LINK}
 cd buildroot
 if [ $maixcdk = y ]; then
   sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
-  sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MAIX_PY=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
   sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MAIXCAM_SG200X=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
+fi
+if [ $maixpy = y ]; then
+  sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MAIX_PY=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
 fi
 if [ $tailscale = y ]; then
   sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_TAILSCALE_RISCV64=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
