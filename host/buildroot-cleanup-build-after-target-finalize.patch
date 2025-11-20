@@ -1,0 +1,24 @@
+From f15f86a9990c35620c976c421589911f55ed5ce9 Mon Sep 17 00:00:00 2001
+From: builder <builder@localhost.localdomain>
+Date: Thu, 20 Nov 2025 17:31:56 +0000
+Subject: [PATCH] buildroot: cleanup build after target-finalize
+
+---
+ Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Makefile b/Makefile
+index e3081d9e..a77a8a96 100644
+--- a/Makefile
++++ b/Makefile
+@@ -818,6 +818,7 @@ endif # merged /usr
+ 			$(call qstrip,$(BR2_ROOTFS_POST_BUILD_SCRIPT_ARGS))$(sep))
+ 
+ 	touch $(TARGET_DIR)/usr
++	rm -rf $(O)/build/*/*/
+ 
+ # Note: this will run in the filesystem context, so will use a copy
+ # of target/, not the real one, so the files are still available on
+-- 
+2.43.0
+
