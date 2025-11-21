@@ -243,9 +243,10 @@ cd buildroot
 cd ${BR_OUTPUT_DIR}/target
 if [ -e maixapp/apps/app.info ]; then
   rm -f ${installdir}/maixcam-latest.zip
-  ln -s maixapp latest
-  zip -r --symlinks ${installdir}/maixcam-latest.zip latest/*
-  rm latest
+  zip -r --symlinks ${installdir}/maixcam-latest.zip \
+    maixapp/* \
+    usr/lib/python3*/*-packages/maix* \
+    usr/lib/python3*/*-packages/Maix*
 fi
 cd -
 git restore configs/${BR_DEFCONFIG}
