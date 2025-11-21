@@ -137,7 +137,7 @@ if [ ! -e $bs ]; then
   elif [ "X${VARIANT}" = "Xdap" ]; then
     cd ${BUILDDIR} && ./build-dap.sh --board=${SDK_BOARD_LINK} --no-qt5
   else
-    cd ${BUILDDIR} && ./build-licheervnano.sh --board=${SDK_BOARD_LINK} --maixcdk --no-qt5
+    cd ${BUILDDIR} && ./build-licheervnano.sh --board=${SDK_BOARD_LINK} --maixcdk --maixpy --no-qt5
   fi
   touch $bs
 fi
