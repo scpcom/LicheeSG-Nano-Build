@@ -161,6 +161,7 @@ if [ ! -e $bs ]; then
     rm -f /output/*.bin
   fi
   if [ "${BOARD_SHORT}-${VARIANT}_${STORAGE_TYPE}" = "licheervnano-e_sd" ]; then
+    cp ${BUILDDIR}/install/soc_${SDK_BOARD_LINK}/maixcam-latest.zip /output/
     cd ${BUILDDIR}/oss && zip -r /output/oss.zip oss_release_tarball run_build.sh
   fi
   echo "\n${green}Image for ${BOARD_SHORT} is ${BOARD_SHORT}-${VARIANT}_${STORAGE_TYPE}.img.xz${end_color}\n"
