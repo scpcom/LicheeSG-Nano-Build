@@ -228,6 +228,15 @@ build_fip_variant MIPI_PANEL_LT9611_1024X768_60HZ
 # dsi to hdmi
 build_fip_variant MIPI_PANEL_LT9611_1280X720_60HZ
 
+if echo ${SG_BOARD_LINK} | grep -q milkv_duos ; then
+  # 8inch
+  build_fip_variant MIPI_PANEL_MILKV_8HD
+  # 8inch 2lane
+  build_fip_variant MIPI_PANEL_MILKV_8HD_2LANE
+  # 4inch
+  build_fip_variant MIPI_PANEL_MILKV_ST7796S
+fi
+
 mv bak.config build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
 mv bak.fip install/soc_${SG_BOARD_LINK}/fip.bin
 mv bak.fip_spl install/soc_${SG_BOARD_LINK}/fip_spl.bin
