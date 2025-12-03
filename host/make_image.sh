@@ -144,6 +144,7 @@ fi
 
 bs=${BUILDDIR}/sdk-output-stamp
 if [ ! -e $bs ]; then
+  cd ${BUILDDIR}/buildroot && rm -rf dl
   cd ${BUILDDIR}/buildroot/output/${BR_BOARD} && rm -f images/rootfs.*
   cd ${BUILDDIR}/install/soc_${SDK_BOARD_LINK} && rm -f *.sd */*.sd
   echo "\n${green}Packing Image for ${BOARD_SHORT}${end_color}\n"
