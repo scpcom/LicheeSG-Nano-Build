@@ -1,8 +1,9 @@
 # Todo
-- [] GPIO via evdev events?
-- [] Deep Sleep to save battery?
-- [] Autorun example
-- [] Fix all Todo in this document
+- [ ] Download and mount the image to modify it (see https://unix.stackexchange.com/questions/316401/how-to-mount-a-disk-image-from-the-command-line)
+- [ ] GPIO via evdev events?
+- [ ] Deep Sleep to save battery?
+- [ ] Autorun example
+- [ ] Fix all Todo in this document
 
 # Best practice
 
