@@ -1,11 +1,23 @@
 # Todo
-- [] GPIO events?
-- [] Deep Sleep?
+- [] GPIO via evdev events?
+- [] Deep Sleep to save battery?
 - [] Autorun example
+- [] Fix all Todo in this document
 
 # Best practice
 
 Using the  LicheeSG-Nano-Build project with a LicheeRV Nano board opens up some interesting possibilities. However, the documentation may not be sufficient for several use cases. This document contains best practise solutions for some of them, as well as noteworthy information for getting started.
+
+## References
+
+The information in this document has been collected via the following references:
+
+- Official docs: https://wiki.sipeed.com/hardware/en/lichee/RV_Nano/1_intro.html
+  - It may also be worth translating the chinese docs, these contain more information
+- Article with a huge amount of information about hardware: https://medium.com/@ret7020/licheerv-nano-ai-board-first-steps-d05e7999dd29
+  - Repository with some more info https://github.com/ret7020/LicheeRVNano?tab=readme-ov-file
+- Discussions in the following issues
+  - https://github.com/scpcom/LicheeSG-Nano-Build/issues/19
 
 ## Hardware introduction
 
@@ -25,6 +37,15 @@ Especially the vector extensions are hard to use the right way with default gcc 
 At least for glibc every code can be compiled with a default compiler. But this is only a side project in the debian repo:
 https://github.com/scpcom/sophgo-sg200x-debian/tree/generic-toolchain
 (it uses the same code branches, just the build environment/process is different)
+
+
+## Basic setup
+
+
+```bash
+MICRO_SD_DEV="" # e.g. /dev/sdb
+xzcat licheervnano-e_sd.img.xz | sudo dd of=$MICRO_SD_DEV bs=100M status=progress conv=fsync
+```
 
 ## Device mode (OTG) vs host mode
 
@@ -123,4 +144,109 @@ WiFi_EN_Pin=506 # GPIO A26
 echo ${WiFi_EN_Pin} > /sys/class/gpio/export  # WiFi_EN
 echo out > /sys/class/gpio/gpio${WiFi_EN_Pin}/direction
 echo 0 > /sys/class/gpio/gpio${WiFi_EN_Pin}/value
+```
+
+
+## LCD Support
+
+The LicheeRV has a connector for specific LC-Displays including a touch connector. Only very specific 31-pin / 6-pin LCDs can be connected. There are some officially supported displays, but they are hardly available. However, there is one 2.28" display that is readily available (e.g. via Aliexpress) and is supported out of the box with the latest image including touch support.
+
+### Hardware
+
+The LCD model number is 
+
+`LHCM228TS003A`
+
+Here are some Links to vendors (last update: 2025-12-04):
+
+- Focus Display Store: https://aliexpress.com/item/1005006185077108.html
+- Ecyberspaces: https://aliexpress.com/item/1005009508131601.html
+- Maithoga: https://aliexpress.com/item/1005009881951326.html
+- SURENOO (no touch?): https://aliexpress.com/item/1005009261668372.html
+- B2B Baidu: https://b2b.baidu.com/land?id=39559f991fdef58e6c72b9f770bae1d810
+
+**Connectors**
+The connectors are a bit fiddly to get working, but this picture shows how it can be connected:
+
+- Todo: add photo of connected display -
+
+### Configuration
+
+
+To enable the display, you need to change the `/boot/uEnv.txt`:
+
+```
+panel=st7701_hd228001c31
+```
+
+You might also want to turn on framebuffer support (which is required by some UI toolkits to paint onto the screen):
+```
+touch /boot/fb
+```
+
+### Controlling the display
+
+After your display is connected and set up, you might want to control the brightness or other values:
+
+Turn off display / disable backlight:
+- The backlight is turned of while the display theretically is still fully functional
+- This will not change the touch capabilities of the screen, so touch will still work when display is turned off
 ```bash
+echo 0 > /sys/class/pwm/pwmchip8/pwm2/enable
+```
+
+Change Brightness (there is no information of how the display will react with changes in the long run, so be careful with non-default values): 
+- default: `2000`
+- minimum tested: `0`
+- maximum tested: `2500` 
+```bash
+echo 1000 > /sys/class/pwm/pwmchip8/pwm2/duty_cycle
+```
+
+Resetting/shutting down the LCD itself maybe done via some GPIO operation. The pin for reset is called LCD0_RESET (= PWR_GPIO0 = GPIOE 0 = gpiochip480 offset 0)
+
+This seems to work to:
+- Reset/turn off LCD: `devmem 0x30010a4 32 0x04`
+- Back to normal (may need to send LCD init cmds after re-enabling it): `devmem 0x30010a4 32 0x00`
+
+### Initialize PWM
+
+You probably won't need this, because the display works out of the box, but for the sake of completeness:
+
+If the PWM is not initialized, yet you can do it with (this is normally done by `/etc/init.d/S04backlight`):
+
+```bash
+devmem 0x030010AC 32 0x04 # PINMUX PWM10
+
+echo 2 > /sys/class/pwm/pwmchip8/export
+
+echo 2500 > /sys/class/pwm/pwmchip8/pwm2/duty_cycle
+echo 10000 > /sys/class/pwm/pwmchip8/pwm2/period
+echo 1 > /sys/class/pwm/pwmchip8/pwm2/enable
+```
+
+`devmem` is just a tool for mmio (32 bit in this case).
+
+## Audio support
+
+The board has an integrated audio chip, but it might be much more comfortable to just use an external USB-C to 3.5mm Audio Adapter (e.g. the Apple USB-C Adapter is cheap and has acceptable quality).
+
+To test audio output, you can copy over a file (e.g. via SSH) and then run:
+
+```bash
+aplay --device=hw:2,0 /root/sample-3s.wav
+```
+
+The `hw:2,0` is required to select the correct audio device, it might differ depending on your choice. To find the right device, you might use 
+
+```bash
+aplay -l
+lsusb
+```
+
+
+## Low power modes
+
+There is very little information about saving battery in the first place like hibernation or sleep modes. In fact the only resource I found is https://maixhub.com/discussion/100487 with the following conclusion:
+
+> Yes, there is a low power mode. The device has three cores, one of which is an 8051 MCU core. This core can handle low power operations when Linux is not running, if it can be programmed. However, due to insufficient documentation, I couldn’t find any information on how to manage the 8051 core.
