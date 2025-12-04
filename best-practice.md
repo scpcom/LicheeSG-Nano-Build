@@ -21,7 +21,7 @@ The information in this document has been collected via the following references
 
 ## Hardware introduction
 
-The hardware is pretty powerful for an embedded device, much more than the usual ESP32 boards while still being a pretty small form factor. More details on the hardware can be found here:
+The hardware is pretty powerful for an embedded device, much more than the usual ESP32 boards while still maintaining a pretty small form factor. More details on the hardware can be found here:
 
 - https://wiki.sipeed.com/hardware/en/lichee/RV_Nano/1_intro.html
 
@@ -41,13 +41,36 @@ https://github.com/scpcom/sophgo-sg200x-debian/tree/generic-toolchain
 
 ## Basic setup
 
+### Flashing the image
 
 ```bash
 MICRO_SD_DEV="" # e.g. /dev/sdb
 xzcat licheervnano-e_sd.img.xz | sudo dd of=$MICRO_SD_DEV bs=100M status=progress conv=fsync
 ```
 
+### Wifi
+Depending on the Hardware version you are using, the LicheeRV Nano has integrated WiFi, which often is the only way besides using an usb-to-serial adapter to get a shell.
+
+Edit the file `/boot/wpa_supplicant.conf` and change `NAME` and `PASSWORD` accordingly:
+
+```
+ctrl_interface=/var/run/wpa_supplicant
+ap_scan=1
+network={
+  ssid="NAME"
+  psk="PASSWORD"
+}
+```
+
 ## Device mode (OTG) vs host mode
+
+Depending on your use case, you might either control other devices with the lichee (device mode) or need to connect devices to the LicheeRV (host mode). In host mode you need to power the LicheeRV via `VSYS` pin.
+
+### Power without USB-C (and via `VSYS`)
+
+To power the LicheeRV without connecting a USB-C power supply, you have to connect a 5V power supply to the `VSYS` (+) pin as well as `GND` (-). The LicheeRV is pretty picky with voltages, so be sure to supply between 4.8V and 5.15V - with less it will not power on and more might damage the device permanently.
+
+A device that comes in handy (especially when also using a battery) may be the `TP4057` (the 5V version), which is small, can deliver up to 5.10V and supports battery undervoltage and overvoltage protection. 
 
 ### Device mode (OTG) as default
 
@@ -105,24 +128,10 @@ If you are planning to autorun applications (e.g. to run a UI right from the sta
 - Todo: example -
 
 
-## Wifi (enable, disable)
+## Disabling WiFi for saving battery
 
-Depending on the Hardware version you are using, the LicheeRV Nano has integrated Wifi, which often is the only way besides using an usb-to-serial adapter to get a shell.
+To save battery, disabling WiFi might be an option. Here are some commands that might help.
 
-### Enable Wifi
-
-Edit the file `boot/wpa_supplicant.conf` and change `NAME` and `PASSWORD` accordingly:
-
-```
-ctrl_interface=/var/run/wpa_supplicant
-ap_scan=1
-network={
-  ssid="NAME"
-  psk="PASSWORD"
-}
-```
-
-### Disable Wifi (e.g. to save battery
 
 Stop the wifi service:
 
