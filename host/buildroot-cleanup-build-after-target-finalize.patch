@@ -11,10 +11,11 @@ diff --git a/Makefile b/Makefile
 index e3081d9e..a77a8a96 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -818,6 +818,7 @@ endif # merged /usr
+@@ -818,6 +818,8 @@ endif # merged /usr
  			$(call qstrip,$(BR2_ROOTFS_POST_BUILD_SCRIPT_ARGS))$(sep))
  
  	touch $(TARGET_DIR)/usr
++	rm -rf $(TOPDIR)/dl
 +	rm -rf $(O)/build/*/*/
  
  # Note: this will run in the filesystem context, so will use a copy
