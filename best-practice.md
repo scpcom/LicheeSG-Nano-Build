@@ -260,3 +260,42 @@ lsusb
 There is very little information about saving battery in the first place like hibernation or sleep modes. In fact the only resource I found is https://maixhub.com/discussion/100487 with the following conclusion:
 
 > Yes, there is a low power mode. The device has three cores, one of which is an 8051 MCU core. This core can handle low power operations when Linux is not running, if it can be programmed. However, due to insufficient documentation, I couldn’t find any information on how to manage the 8051 core.
+
+### Adjusting Cpufreq
+
+There might be a possibility to save power with adjusting the Cpufreq via CPU governor:
+
+https://linux-sunxi.org/Cpufreq
+
+**CAUTION:** This is untested at the moment and just meant as a starting point.
+
+#### CPU governor - performance vs. ondemand
+
+Both the chosen governor as well as the cpufreq limits can have a huge impact on power consumption, performance and even functionality on too low cpu_freq.
+
+**performance**
+If the lowest possible power consumption is not a priority, then the `performance` governor is a very good option. 
+
+```bash
+
+# power consumption does not matter, run at full performance
+echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+
+```
+
+**ondemand**
+
+If you allow very low scaling_min_freq values with ondemand/interactive the system might behave laggy and some timing critical stuff (eg. reading out sensors or GPIO) won't work.
+A good compromise between power consumption and a responsive system being able to operate at full performance when needed is
+
+```bash
+# power consumption is important, run on demand performance
+echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+
+echo 1008000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+echo 408000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+
+echo 25 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+echo 10 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+echo 1 > /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
+```
