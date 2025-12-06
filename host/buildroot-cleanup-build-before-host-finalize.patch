@@ -1,0 +1,26 @@
+From 54f72344427e0f72610b0e3861a10eba5f660097 Mon Sep 17 00:00:00 2001
+From: scpcom <scpcom@gmx.de>
+Date: Sat, 6 Dec 2025 01:30:12 +0100
+Subject: [PATCH] buildroot: cleanup build before host-finalize
+
+---
+ Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Makefile b/Makefile
+index e3081d9e67..7480ef10f5 100644
+--- a/Makefile
++++ b/Makefile
+@@ -719,6 +719,9 @@ STAGING_DIR_FILES_LISTS = $(sort $(wildcard $(BUILD_DIR)/*/.files-list-staging.t
+ .PHONY: host-finalize
+ host-finalize: $(PACKAGES) $(HOST_DIR) $(HOST_DIR_SYMLINK)
+ 	@$(call MESSAGE,"Finalizing host directory")
++	rm -rf $(TOPDIR)/dl
++	#rm -rf $(O)/per-package/*/host/*/sysroot
++	rm -rf $(O)/per-package/*/host/usr/lib/go*
+ 	$(call per-package-rsync,$(sort $(PACKAGES)),host,$(HOST_DIR),copy)
+ 	$(Q)PARALLEL_JOBS=$(PARALLEL_JOBS) \
+ 		PER_PACKAGE_DIR=$(PER_PACKAGE_DIR) \
+-- 
+2.34.1
+
