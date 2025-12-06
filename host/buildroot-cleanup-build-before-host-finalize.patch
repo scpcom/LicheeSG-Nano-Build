@@ -11,11 +11,13 @@ diff --git a/Makefile b/Makefile
 index e3081d9e67..7480ef10f5 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -719,6 +719,9 @@ STAGING_DIR_FILES_LISTS = $(sort $(wildcard $(BUILD_DIR)/*/.files-list-staging.t
+@@ -719,6 +719,11 @@ STAGING_DIR_FILES_LISTS = $(sort $(wildcard $(BUILD_DIR)/*/.files-list-staging.t
  .PHONY: host-finalize
  host-finalize: $(PACKAGES) $(HOST_DIR) $(HOST_DIR_SYMLINK)
  	@$(call MESSAGE,"Finalizing host directory")
 +	rm -rf $(TOPDIR)/dl
++	#rm -rf $(O)/host/*/sysroot
++	rm -rf $(O)/host/usr/lib/go*
 +	#rm -rf $(O)/per-package/*/host/*/sysroot
 +	rm -rf $(O)/per-package/*/host/usr/lib/go*
  	$(call per-package-rsync,$(sort $(PACKAGES)),host,$(HOST_DIR),copy)
