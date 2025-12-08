@@ -170,7 +170,8 @@ if [ $osstar = y ]; then
   export OSS_TARBALL_REL=1
 fi
 
-build_all
+build_uboot
+build_fsbl
 
 # build other variant
 mkdir -p install/soc_${SG_BOARD_LINK}/configs
@@ -240,6 +241,8 @@ fi
 mv bak.config build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
 mv bak.fip install/soc_${SG_BOARD_LINK}/fip.bin
 mv bak.fip_spl install/soc_${SG_BOARD_LINK}/fip_spl.bin
+
+build_all
 
 cd build
 git restore boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
