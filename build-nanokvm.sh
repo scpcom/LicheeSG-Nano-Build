@@ -4,7 +4,7 @@ export SG_BOARD_FAMILY=sg200x
 export SG_BOARD_LINK=sg2002_licheervnano_sd
 
 sdkver=keep
-maixcdk=n
+maixcdk=y
 nanokvm=y
 osstar=n
 shrink=y
