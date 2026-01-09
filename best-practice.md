@@ -135,8 +135,8 @@ case $1 in
     	start)
         # Logic for command like /etc/init.d/S99my_app start
         devmem 0x03001068 32 0x6
-		    devmem 0x03001064 32 0x6
-		    /root/my_app /dev/ttyS1 500000 &
+        devmem 0x03001064 32 0x6
+        /root/my_app /dev/ttyS1 500000 &
         ;;
     	stop)
         # Logic for command like /etc/init.d/S99my_app stop
