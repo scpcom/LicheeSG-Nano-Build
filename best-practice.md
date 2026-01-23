@@ -18,6 +18,8 @@ The information in this document has been collected via the following references
   - Repository with some more info https://github.com/ret7020/LicheeRVNano?tab=readme-ov-file
 - Discussions in the following issues
   - https://github.com/scpcom/LicheeSG-Nano-Build/issues/19
+- 8051 core simple run example
+  - https://github.com/ret7020/sg2002-8051
 
 ## Hardware introduction
 
