@@ -2,7 +2,6 @@
 - [ ] Download and mount the image to modify it (see https://unix.stackexchange.com/questions/316401/how-to-mount-a-disk-image-from-the-command-line)
 - [ ] GPIO via evdev events?
 - [ ] Deep Sleep to save battery?
-- [ ] Autorun example
 - [ ] Fix all Todo in this document
 
 # Best practice
@@ -19,6 +18,8 @@ The information in this document has been collected via the following references
   - Repository with some more info https://github.com/ret7020/LicheeRVNano?tab=readme-ov-file
 - Discussions in the following issues
   - https://github.com/scpcom/LicheeSG-Nano-Build/issues/19
+- 8051 core simple run example
+  - https://github.com/ret7020/sg2002-8051
 
 ## Hardware introduction
 
@@ -128,6 +129,34 @@ If you are planning to autorun applications (e.g. to run a UI right from the sta
 
 - Todo: example -
 
+Also you can manage autorun placing sh files inside `/etc/init.d`. Create file with name `S<prior><name>`. Replace `<prior>` with priority of process and `<name>` can be random. Simple example:
+
+```sh
+#!/bin/sh
+case $1 in
+    	start)
+        # Logic for command like /etc/init.d/S99my_app start
+        devmem 0x03001068 32 0x6
+        devmem 0x03001064 32 0x6
+        /root/my_app /dev/ttyS1 500000 &
+        ;;
+    	stop)
+        # Logic for command like /etc/init.d/S99my_app stop
+        ;;
+    	*)
+        exit 1
+        ;;
+esac
+```
+
+By default `init.d` will start your run with `start` argument, but you can ignore argument processing, for example such way:
+
+```sh
+#!/bin/sh
+devmem 0x03001068 32 0x6
+devmem 0x03001064 32 0x6
+/root/my_app /dev/ttyS1 500000 &
+```
 
 ## Disabling WiFi for saving battery
 
@@ -260,3 +289,7 @@ lsusb
 There is very little information about saving battery in the first place like hibernation or sleep modes. In fact the only resource I found is https://maixhub.com/discussion/100487 with the following conclusion:
 
 > Yes, there is a low power mode. The device has three cores, one of which is an 8051 MCU core. This core can handle low power operations when Linux is not running, if it can be programmed. However, due to insufficient documentation, I couldn’t find any information on how to manage the 8051 core.
+
+## Pinmux configuration
+
+You can use `devmem` command in user-space after Linux boot to configure pins functions but also you can do it via U-boot init code inside `build/boards/sg200x/sg2002_licheervnano_sd/u-boot/cvi_board_init.c` via `mmio_write_32` functions
