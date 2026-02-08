@@ -122,6 +122,8 @@ if [ ! -e $bs ]; then
     cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/scpcom|'${GIT_USER_URL}'|g' package/nanokvm-sg200x/nanokvm-sg200x.mk
     cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/lxowalle|'${GIT_USER_URL}'|g' package/aic8800-sdio-firmware/aic8800-sdio-firmware.mk
     cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/milkv-duo|'${GIT_USER_URL}'|g' package/duo-pinmux/duo-pinmux.mk
+    cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/0x754C|'${GIT_USER_URL}'|g' package/lcdtest/lcdtest.mk
+    cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/0x754C|'${GIT_USER_URL}'|g' package/tpudemo-sg200x/tpudemo-sg200x.mk
     cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/sipeed|'${GIT_USER_URL}'|g' package/maix-cdk/maix-cdk.mk
     cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/sipeed|'${GIT_USER_URL}'|g' package/maix-py/maix-py.mk
     cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/sipeed|'${GIT_USER_URL}'|g' package/nanokvm-server/nanokvm-server.mk
@@ -129,12 +131,14 @@ if [ ! -e $bs ]; then
     cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/wlhe|'${GIT_USER_URL}'|g' package/uvc-gadget/uvc-gadget.mk
     cd ${BUILDDIR}/buildroot && git add package/aic8800-sdio-firmware/aic8800-sdio-firmware.mk
     cd ${BUILDDIR}/buildroot && git add package/duo-pinmux/duo-pinmux.mk
+    cd ${BUILDDIR}/buildroot && git add package/lcdtest/lcdtest.mk
     cd ${BUILDDIR}/buildroot && git add package/maix-cdk/maix-cdk.mk
     cd ${BUILDDIR}/buildroot && git add package/maix-py/maix-py.mk
     cd ${BUILDDIR}/buildroot && git add package/maixcam-sg200x/maixcam-sg200x.mk
     cd ${BUILDDIR}/buildroot && git add package/nanokvm-server/nanokvm-server.mk
     cd ${BUILDDIR}/buildroot && git add package/nanokvm-sg200x/nanokvm-sg200x.mk
     cd ${BUILDDIR}/buildroot && git add package/overlayfs-tools/overlayfs-tools.mk
+    cd ${BUILDDIR}/buildroot && git add package/tpudemo-sg200x/tpudemo-sg200x.mk
     cd ${BUILDDIR}/buildroot && git add package/uvc-gadget/uvc-gadget.mk
     cd ${BUILDDIR}/buildroot && git commit -m "update package urls"
     cd ${BUILDDIR}/tdl_sdk && sed -i 's|GIT_REPOSITORY https://github.com/google/googletest|GIT_REPOSITORY '${GIT_USER_URL}'/googletest|g' cmake/thirdparty.cmake
