@@ -37,6 +37,7 @@ for gctgt in $gctgts ; do
       echo "${gcsum} ${gctar} OK"
     else
       echo "${gcsum} ${gctar} WRONG CHECKSUM"
+      exit 1
     fi
   else
     echo "no sha256 file for ${gctar}"
