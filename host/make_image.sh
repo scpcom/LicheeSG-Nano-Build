@@ -4,6 +4,20 @@ red="\e[0;31m"
 blue="\e[0;34m"
 end_color="\e[0m"
 
+[ "X$GIT_SOURCE_HOST" != "X" ] || GIT_SOURCE_HOST=github.com
+[ "X$GIT_TARGET_HOST" != "X" ] || GIT_TARGET_HOST=$GIT_HOST
+[ "X$GIT_SOURCE_USER" != "X" ] || GIT_SOURCE_USER=scpcom
+[ "X$GIT_TARGET_USER" != "X" ] || GIT_TARGET_USER=$GIT_USER
+[ "X$GIT_TARGET_USER" != "X" ] || GIT_TARGET_USER=$GIT_SOURCE_USER
+
+if [ "X$GIT_TARGET_HOST" = "X" ]; then
+  GIT_TARGET_HOST=$GIT_SOURCE_HOST
+fi
+
+GIT_SOURCE_USER_URL=https://$GIT_SOURCE_HOST/$GIT_SOURCE_USER
+GIT_TARGET_USER_URL=https://$GIT_TARGET_HOST/$GIT_TARGET_USER
+GIT_USER_URL=$GIT_TARGET_USER_URL
+
 [ "X$GIT_REF" = "X" ] && GIT_REF="develop"
 
 BUILDDIR="/cvi_mmf_sdk"
@@ -67,15 +81,25 @@ echo "${blue}Link: ${SDK_BOARD_LINK}${end_color}"
 bs=${BUILDDIR}/sdk-prepare-checkout-stamp
 if [ ! -e $bs ]; then
   echo "\n${green}Checking out SDK for ${BOARD_SHORT}${end_color}\n"
-  git clone -b develop https://github.com/scpcom/LicheeSG-Nano-Build ${BUILDDIR}
+  git clone -b develop ${GIT_TARGET_USER_URL}/LicheeSG-Nano-Build ${BUILDDIR}
   cd ${BUILDDIR} && git checkout ${GIT_REF}
-  cd ${BUILDDIR} && git submodule update --init --recursive --depth=1
+  if [ "${GIT_TARGET_HOST}" != "${GIT_SOURCE_HOST}" -o "${GIT_TARGET_USER}" != "${GIT_SOURCE_USER}" ]; then
+    [ -e ${BUILDDIR}/host/mirror-clone.sh ] || cp /builder/mirror-clone.sh ${BUILDDIR}/host/
+    cd ${BUILDDIR} && GIT_HOST=$GIT_TARGET_HOST GIT_USER=$GIT_TARGET_USER ./host/mirror-clone.sh
+  else
+    cd ${BUILDDIR} && git submodule update --init --recursive --depth=1
+  fi
+  git clone -b main --depth=1 ${GIT_USER_URL}/buildroot-dl.git ${BUILDDIR}/buildroot/dl
+  cd ${BUILDDIR}/buildroot/dl && git checkout b953bc0
+  cd ${BUILDDIR}/buildroot/dl && [ "${GIT_REF}" = "develop" ] || rm -rf .git
   touch $bs
 fi
 
 bs=${BUILDDIR}/sdk-prepare-patch-stamp
 if [ ! -e $bs ]; then
   echo "\n${green}Patching SDK for ${BOARD_SHORT}${end_color}\n"
+  [ "${TOOLCHAIN_URL}" = "X" ] || sed -i 's|^tcurl=.*|tcurl=${TOOLCHAIN_URL}|g' ${BUILDDIR}/host/replace-all-linaro-toolchains.sh
+  [ "${TOOLCHAIN_URL}" = "X" ] || sed -i 's|^tcurl=.*|tcurl=${TOOLCHAIN_URL}|g' ${BUILDDIR}/host/replace-all-thead-toolchains.sh
   cd ${BUILDDIR} && ./host/prepare-host.sh
   cd ${BUILDDIR} && ./host/replace-all-thead-toolchains.sh
   if [ "${SDK_VER}" = "glibc_arm64" -o "${SDK_VER}" = "glibc_arm" ]; then
@@ -88,6 +112,35 @@ if [ ! -e $bs ]; then
   cd ${BUILDDIR}/buildroot && sed -i s/'BR2_PER_PACKAGE_DIRECTORIES=y'/'# BR2_PER_PACKAGE_DIRECTORIES is not set'/g configs/${BR_DEFCONFIG}
   cd ${BUILDDIR}/buildroot && git add configs/${BR_DEFCONFIG}
   cd ${BUILDDIR}/buildroot && git commit -m "disable per package directories"
+  if [ "${GIT_TARGET_HOST}" != "${GIT_SOURCE_HOST}" -o "${GIT_TARGET_USER}" != "${GIT_SOURCE_USER}" ]; then
+    #cd ${BUILDDIR}/buildroot && sed -i 's|^MAIX_CDK_RELEASES_URL = .*|MAIX_CDK_RELEASES_URL = '${GIT_RELEASES_URL}'|g' package/maix-cdk/maix-cdk.mk
+    #cd ${BUILDDIR}/buildroot && sed -i 's|https://scpcom.github.io|'${USER_SITE_URL}'|g' package/nanokvm-server/nanokvm-server.mk
+    #cd ${BUILDDIR}/buildroot && sed -i 's|https://scpcom.github.io|'${USER_SITE_URL}'|g' package/nanokvm-sg200x/nanokvm-sg200x.mk
+    cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/scpcom|'${GIT_USER_URL}'|g' package/maixcam-sg200x/maixcam-sg200x.mk
+    cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/scpcom|'${GIT_USER_URL}'|g' package/maix-cdk/maix-cdk.mk
+    cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/scpcom|'${GIT_USER_URL}'|g' package/nanokvm-server/nanokvm-server.mk
+    cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/scpcom|'${GIT_USER_URL}'|g' package/nanokvm-sg200x/nanokvm-sg200x.mk
+    cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/lxowalle|'${GIT_USER_URL}'|g' package/aic8800-sdio-firmware/aic8800-sdio-firmware.mk
+    cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/milkv-duo|'${GIT_USER_URL}'|g' package/duo-pinmux/duo-pinmux.mk
+    cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/sipeed|'${GIT_USER_URL}'|g' package/maix-cdk/maix-cdk.mk
+    cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/sipeed|'${GIT_USER_URL}'|g' package/maix-py/maix-py.mk
+    cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/sipeed|'${GIT_USER_URL}'|g' package/nanokvm-server/nanokvm-server.mk
+    cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/kmxz|'${GIT_USER_URL}'|g' package/overlayfs-tools/overlayfs-tools.mk
+    cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/wlhe|'${GIT_USER_URL}'|g' package/uvc-gadget/uvc-gadget.mk
+    cd ${BUILDDIR}/buildroot && git add package/aic8800-sdio-firmware/aic8800-sdio-firmware.mk
+    cd ${BUILDDIR}/buildroot && git add package/duo-pinmux/duo-pinmux.mk
+    cd ${BUILDDIR}/buildroot && git add package/maix-cdk/maix-cdk.mk
+    cd ${BUILDDIR}/buildroot && git add package/maix-py/maix-py.mk
+    cd ${BUILDDIR}/buildroot && git add package/maixcam-sg200x/maixcam-sg200x.mk
+    cd ${BUILDDIR}/buildroot && git add package/nanokvm-server/nanokvm-server.mk
+    cd ${BUILDDIR}/buildroot && git add package/nanokvm-sg200x/nanokvm-sg200x.mk
+    cd ${BUILDDIR}/buildroot && git add package/overlayfs-tools/overlayfs-tools.mk
+    cd ${BUILDDIR}/buildroot && git add package/uvc-gadget/uvc-gadget.mk
+    cd ${BUILDDIR}/buildroot && git commit -m "update package urls"
+    cd ${BUILDDIR}/tdl_sdk && sed -i 's|GIT_REPOSITORY https://github.com/google/googletest|GIT_REPOSITORY '${GIT_USER_URL}'/googletest|g' cmake/thirdparty.cmake
+    cd ${BUILDDIR}/tdl_sdk && sed -i 's|GIT_REPOSITORY https://github.com/nothings/stb|GIT_REPOSITORY '${GIT_USER_URL}'/stb|g' cmake/thirdparty.cmake
+    cd ${BUILDDIR}/tdl_sdk && sed -i 's|GIT_REPOSITORY https://gitlab.com/libeigen/eigen|GIT_REPOSITORY '${GIT_USER_URL}'/eigen|g' cmake/thirdparty.cmake
+  fi
   cd ${BUILDDIR}/host-tools && for d in gcc/arm-gnu-toolchain-11.3.rel1-* gcc/gcc-buildroot-9.3.0-* gcc/gcc-linaro-6.3.1-2017.05-* ; do
     [ -e $d ] || continue
     [ "${SDK_VER}" != "glibc_arm64" -a "${SDK_VER}" != "glibc_arm" ] || if echo $d | grep -q gcc-linaro ; then continue ; fi
