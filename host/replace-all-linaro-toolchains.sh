@@ -40,6 +40,7 @@ for gctgt in $gctgts ; do
       echo "${gcsum} ${gctar} OK"
     else
       echo "${gcsum} ${gctar} WRONG CHECKSUM"
+      exit 1
     fi
   else
     echo "no sha256 file for ${gctar}"
@@ -52,6 +53,7 @@ for gctgt in $gctgts ; do
       echo "${srsum} ${srtar} OK"
     else
       echo "${srsum} ${srtar} WRONG CHECKSUM"
+      exit 1
     fi
   elif [ "${srtar}" != "none" ]; then
     echo "no sha256 file for ${srtar}"
