@@ -78,7 +78,7 @@ find -name .git | while read g ; do
     fi
     if [ "$s" != "$u" ]; then
       submodule_update=true
-      git submodule set-url $n $u
+      git submodule set-url $m $u || git submodule set-url -- $n $u
     fi
   done
   echo "cd $d && git submodule update --init --depth=1"
