@@ -202,7 +202,15 @@ fi
 
 bs=${BUILDDIR}/sdk-output-stamp
 if [ ! -e $bs ]; then
-  cd ${BUILDDIR}/buildroot && rm -rf dl
+  cd ${BUILDDIR}/buildroot && [ "$GIT_REF" = "develop" ] || rm -rf dl
+  cd ${BUILDDIR}/buildroot && rm -rf dl/aic8800-sdio-firmware/
+  cd ${BUILDDIR}/buildroot && rm -rf dl/duo-pinmux/
+  cd ${BUILDDIR}/buildroot && rm -rf dl/maixcam-sg200x/
+  cd ${BUILDDIR}/buildroot && rm -rf dl/maix-cdk/
+  cd ${BUILDDIR}/buildroot && rm -rf dl/nanokvm-server/
+  cd ${BUILDDIR}/buildroot && rm -rf dl/nanokvm-sg200x/
+  cd ${BUILDDIR}/buildroot && rm -rf dl/overlayfs-tools/
+  cd ${BUILDDIR}/buildroot && rm -rf dl/uvc-gadget/
   cd ${BUILDDIR}/buildroot/output/${BR_BOARD} && rm -f images/rootfs.*
   cd ${BUILDDIR}/install/soc_${SDK_BOARD_LINK} && rm -f *.sd */*.sd
   echo "\n${green}Packing Image for ${BOARD_SHORT}${end_color}\n"
