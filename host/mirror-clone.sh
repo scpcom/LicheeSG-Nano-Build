@@ -47,10 +47,23 @@ find -name .git | while read g ; do
     u=$(grep -E '\[submodule "'$m'"\]|url = ' .gitmodules | grep -A1 -E '\[submodule "'$m'"\]' | grep 'url = ' | cut -d '=' -f 2- | cut -d ' ' -f 2-)
     s=$u
     u=$(echo $u | sed 's|'$GIT_SOURCE_USER_URL'|'$GIT_TARGET_USER_URL'|g')
+    u=$(echo $u | sed 's|'https://github.com/openssl'|'$GIT_TARGET_USER_URL'|g')
     u=$(echo $u | sed 's|'https://boringssl.googlesource.com'|'$GIT_TARGET_USER_URL'|g')
     u=$(echo $u | sed 's|'https://github.com/krb5'|'$GIT_TARGET_USER_URL'|g')
     u=$(echo $u | sed 's|'https://github.com/pyca/cryptography'|'$GIT_TARGET_USER_URL'/pyca-cryptography|g')
     u=$(echo $u | sed 's|'https://github.com/FreeRTOS'|'$GIT_TARGET_USER_URL'|g')
+    u=$(echo $u | sed 's|'https://github.com/riscv-collab'|'$GIT_TARGET_USER_URL'|g')
+    u=$(echo $u | sed 's|'https://github.com/ucb-bar'|'$GIT_TARGET_USER_URL'|g')
+    u=$(echo $u | sed 's|'https://git.cryptomilk.org/projects'|'$GIT_TARGET_USER_URL'|g')
+    u=$(echo $u | sed 's|'https://github.com/kkos'|'$GIT_TARGET_USER_URL'|g')
+    u=$(echo $u | sed 's|'https://github.com/google'|'$GIT_TARGET_USER_URL'|g')
+    u=$(echo $u | sed 's|'https://github.com/hillbig'|'$GIT_TARGET_USER_URL'|g')
+    u=$(echo $u | sed 's|'https://github.com/y-256'|'$GIT_TARGET_USER_URL'|g')
+    #u=$(echo $u | sed 's|'https://gitlab.com/qemu-project'|'$GIT_TARGET_USER_URL'|g')
+    u=$(echo $u | sed 's|'https://gitlab.com/qemu-project/berkeley-softfloat-3'|'$GIT_TARGET_USER_URL'/berkeley-softfloat-3|g')
+    u=$(echo $u | sed 's|'https://gitlab.com/qemu-project/berkeley-testfloat-3'|'$GIT_TARGET_USER_URL'/berkeley-testfloat-3|g')
+    u=$(echo $u | sed 's|'https://gitlab.com/qemu-project/opensbi.git'|'$GIT_TARGET_USER_URL'/opensbi.git|g')
+    u=$(echo $u | sed 's|'https://gitlab.com/qemu-project/u-boot.git'|'$GIT_TARGET_USER_URL'/u-boot.git|g')
     b=$(grep -E '\[submodule ".*"\]|branch = ' .gitmodules | grep -A1 -E '\[submodule "'$m'"\]' | grep 'branch = ' | cut -d '=' -f 2- | cut -d ' ' -f 2-)
     if [ "X$b" = "X" ]; then
       echo "cd $d && git submodule set-url $n $u"
