@@ -29,7 +29,13 @@ find -name .git | while read g ; do
     a=$(basename $d)
     u=$(git remote get-url origin)
     b=$(git branch | grep -v detached | tr -d ' *')
-    echo "cd $c && git clone -b $b $u $a"
+    if [ "${c}" = "." ]; then
+      c=$(dirname $(pwd))
+      a=$(basename $(pwd))
+      echo "git clone -b $b $u $a && cd $a"
+    else
+      echo "cd $c && git clone -b $b $u $a"
+    fi
   fi
   cd - > /dev/null
   [ -e $d/.gitmodules ] || continue
