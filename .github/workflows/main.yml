@@ -133,7 +133,7 @@ jobs:
           ls -lah
           ls -lah image-files-*/
       - name: publish artifacts
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.4.2
         with:
           append_body: true
           files: |
