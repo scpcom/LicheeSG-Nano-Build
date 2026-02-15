@@ -102,7 +102,7 @@ jobs:
       - name: Get Board Configs
         uses: actions/checkout@v4
       - name: Build Images
-        uses: addnab/docker-run-action@v3
+        uses: scpcom/docker-run-action@v4
         with:
           image: ghcr.io/scpcom/licheesg-nano-image:${{ github.ref_name }}
           options: --privileged -v ${{ github.workspace }}/images/:/output
