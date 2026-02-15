@@ -129,8 +129,11 @@ if [ ! -e $bs ]; then
     cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/sipeed|'${GIT_USER_URL}'|g' package/nanokvm-server/nanokvm-server.mk
     cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/kmxz|'${GIT_USER_URL}'|g' package/overlayfs-tools/overlayfs-tools.mk
     cd ${BUILDDIR}/buildroot && sed -i 's|https://github.com/wlhe|'${GIT_USER_URL}'|g' package/uvc-gadget/uvc-gadget.mk
+    cd ${BUILDDIR}/buildroot && sed -i 's|https://codeberg.org/IPMITool|'${GIT_USER_URL}'|g' package/ipmitool/ipmitool.mk
+    cd ${BUILDDIR}/buildroot && sed -i 's|https://git.kernel.org/pub/scm/linux/kernel/git/abelloni|'${GIT_USER_URL}'|g' package/rtc-tools/rtc-tools.mk
     cd ${BUILDDIR}/buildroot && git add package/aic8800-sdio-firmware/aic8800-sdio-firmware.mk
     cd ${BUILDDIR}/buildroot && git add package/duo-pinmux/duo-pinmux.mk
+    cd ${BUILDDIR}/buildroot && git add package/ipmitool/ipmitool.mk
     cd ${BUILDDIR}/buildroot && git add package/lcdtest/lcdtest.mk
     cd ${BUILDDIR}/buildroot && git add package/maix-cdk/maix-cdk.mk
     cd ${BUILDDIR}/buildroot && git add package/maix-py/maix-py.mk
@@ -138,6 +141,7 @@ if [ ! -e $bs ]; then
     cd ${BUILDDIR}/buildroot && git add package/nanokvm-server/nanokvm-server.mk
     cd ${BUILDDIR}/buildroot && git add package/nanokvm-sg200x/nanokvm-sg200x.mk
     cd ${BUILDDIR}/buildroot && git add package/overlayfs-tools/overlayfs-tools.mk
+    cd ${BUILDDIR}/buildroot && git add package/rtc-tools/rtc-tools.mk
     cd ${BUILDDIR}/buildroot && git add package/tpudemo-sg200x/tpudemo-sg200x.mk
     cd ${BUILDDIR}/buildroot && git add package/uvc-gadget/uvc-gadget.mk
     cd ${BUILDDIR}/buildroot && git commit -m "update package urls"
