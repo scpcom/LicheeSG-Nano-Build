@@ -1,6 +1,5 @@
 # Todo
 - [ ] Download and mount the image to modify it (see https://unix.stackexchange.com/questions/316401/how-to-mount-a-disk-image-from-the-command-line)
-- [ ] GPIO via evdev events?
 - [ ] Deep Sleep to save battery?
 - [ ] Fix all Todo in this document
 
@@ -94,19 +93,11 @@ After a reboot you can connect your devices.
 
 ## GPIO handling
 
-If you would like to connect hardware buttons to the LicheeRV, you might need GPIO pins to handle events.
+If you would like to use GPIO on the LicheeRV Nano, below is some useful information about how to get started. 
+It has to be stated that depending on your device config many of the available GPIO PINs are already reserved for
+internal purposes (e.g. WiFi or Bluetooth) and cannot be used without limitations.
 
-Here is some useful information about how to get started:
-
-
-**1. Find the right number**
-```
-352 to 383: GPIO E0 to E31
-384 to 415: GPIO D0 to D31
-416 to 447: GPIO C0 to C31
-448 to 479: GPIO B0 to B31
-480 to 511: GPIO A0 to A31
-```
+To interact with GPIO you have to `export` the pin, specify the `direction` and then get or set the `value`. 
 
 **GPIO `A22` Output example:**
 ```bash
@@ -121,6 +112,69 @@ echo 502 > /sys/class/gpio/export
 echo in > /sys/class/gpio/gpio502/direction
 cat /sys/class/gpio/gpio502/value
 ```
+
+### LicheeRV GPIO Overview
+
+Below is a GPIO Overview with the following columns:
+
+- `Name`: PIN label on the PCB
+- `Pin Num`: Number in order of PCB counting scheme
+- `Dev num`: Linux device number for `sys/class` - `32 * <name-letter-mapping> + <name-number>`, e.g. `32 * A + 29` => `32 * 15 + 29 = 509`
+  - Usually the `<name-letter-mapping>` is A=0, B=1, C=2, etc. but here it is some kind of a fixed or reversed scheme I could not find a reference to: 
+    - P=11
+    - B=14
+    - A=15
+- `Mem. Addr.`: Memory address to set GPIO modes
+- `UART` / `PWM` / `SPI` / `I2C` / `AUX`: Specific GPIO functions referring to the column name
+- `Notes`: Specifically refers to `scpcom/LicheeSG-Nano-Build` with the default image config for `licheervnano-e_sd.img.xz`.
+
+
+
+| Name | Pin Num | Dev num | Mem         | UART      | PWM    | SPI       | I2C      | AUX       | Usage notes                 |
+|------|---------|---------|-------------|-----------|--------|-----------|----------|-----------|-----------------------------|
+| A17  | 19      | 497     | 0x0300_1040 | UART0 RX  | PWM 5  |           |          |           | Reserved for Serial (RX)    |
+| A16  | 18      | 496     | 0x0300_1044 | UART0 TX  | PWM 4  |           |          |           | Reserved for Serial (TX)    |
+| A15  | 17      | 495     | 0x0300_103C |           |        |           | I2C5 SCL |           | Reserved for I2C5 (Bitbang) |
+| A24  | 25      | 504     | 0x0300_1060 |           |        | SPI4 CS   |          | EMMC D1   | Usable¹                     |
+| A23  | 24      | 503     | 0x0300_105C |           |        | SPI4 MISO |          | EMMC CMD  | Not usable²                 |
+| A27  | 23      | 507     | 0x0300_1058 |           |        |           | I2C5 SDA | EMMC D3   | Reserved for I2C5 (Bitbang) |
+| A25  | 22      | 505     | 0x0300_1054 |           |        | SPI4 MOSI |          | EMMC D0   | Not usable²                 |
+| A22  | 21      | 502     | 0x0300_1050 |           |        | SPI4 SCK  |          | EMMC CLK  | Usable¹                     |
+| A26  | 20      | 506     | 0x0300_104C |           |        |           |          | EMMC D2   | Reserved for WiFi EN        |
+| A19  | 26      | 499     | 0x0300_1064 | UART1 TX  | PWM 7  |           |          | JTAG TMS  | Untested                    |
+| A18  | 27      | 498     | 0x0300_1068 | UART1 RX  | PWM 6  |           |          | JTAG TCK  | Untested                    |
+| A29  | 29      | 508     | 0x0300_1074 | UART2 RX  |        |           |          | JTAG TDO  | Untested                    |
+| B3   | 59      | 451     | 0x0300_10F8 |           |        |           |          | ADC1      | Untested                    |
+| A28  | 28      | 509     | 0x0300_1070 | UART2 TX  |        |           |          | JTAG TDI  | Untested                    |
+| P18  | 51      | 370     | 0x0300_10D0 | UART3 CTS | PWM 4³ | SPI2 CS   | I2C1 SCL | SDIO1 D3  | Reserved for WiFi           |
+| P19  | 52      | 371     | 0x0300_10D4 | UART3 TX  | PWM 5³ |           |          | SDIO1 D2  | Reserved for WiFi           |
+| P21  | 54      | 373     | 0x0300_10DC | UART3 RTS | PWM 7³ | SPI2 MISO | I2C1 SDA | SDIO1 D0  | Reserved for WiFi           |
+| P22  | 55      | 374     | 0x0300_10E0 |           | PWM 8  | SPI2 MOSI | I2C3 SCL | SDIO1 CMD | Reserved for WiFi           |
+| P23  | 56      | 375     | 0x0300_10E4 |           | PWM 9  | SPI2 SCK  | I2C3 SDA | SDIO1 CLK | Reserved for WiFi           |
+| P20  | 53      | 372     | 0x0300_10D8 | UART3 RX  | PWM 6³ |           |          | SDIO1 D1  | Reserved for WiFi           |
+| A14  | 15      | 494     | 0x0300_1038 |           |        |           |          |           | Untested                    |
+
+
+
+- ¹ This GPIO can be used for input and output (e.g. push buttons) via the commands below
+- ² This GPIO cannot be used for input and output by default, and it is unclear what is preventing it to work as expected
+- ³ PWM has duplicate numbering for A and P in the diagram - it is unclear, what this implicates
+
+
+To prepare a GPIO pin for a e.g. a push button, you can use the following commands:
+
+```sh
+devmem <mem> b 0x03
+echo <dev num> > /sys/class/gpio/export
+watch -n 1 -t cat /sys/class/gpio/gpio<dev num>/value
+
+
+# Example for A24:
+devmem 0x03001060 b 0x03
+echo 504 > /sys/class/gpio/export
+watch -n 1 -t cat /sys/class/gpio/gpio504/value
+```
+
 
 
 ## Autorun applications
@@ -289,6 +343,45 @@ lsusb
 There is very little information about saving battery in the first place like hibernation or sleep modes. In fact the only resource I found is https://maixhub.com/discussion/100487 with the following conclusion:
 
 > Yes, there is a low power mode. The device has three cores, one of which is an 8051 MCU core. This core can handle low power operations when Linux is not running, if it can be programmed. However, due to insufficient documentation, I couldn’t find any information on how to manage the 8051 core.
+
+### Adjusting Cpufreq
+
+There might be a possibility to save power with adjusting the Cpufreq via CPU governor:
+
+https://linux-sunxi.org/Cpufreq
+
+**CAUTION:** This is untested at the moment and just meant as a starting point.
+
+#### CPU governor - performance vs. ondemand
+
+Both the chosen governor as well as the cpufreq limits can have a huge impact on power consumption, performance and even functionality on too low cpu_freq.
+
+**performance**
+If the lowest possible power consumption is not a priority, then the `performance` governor is a very good option. 
+
+```bash
+
+# power consumption does not matter, run at full performance
+echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+
+```
+
+**ondemand**
+
+If you allow very low scaling_min_freq values with ondemand/interactive the system might behave laggy and some timing critical stuff (eg. reading out sensors or GPIO) won't work.
+A good compromise between power consumption and a responsive system being able to operate at full performance when needed is
+
+```bash
+# power consumption is important, run on demand performance
+echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+
+echo 1008000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+echo 408000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+
+echo 25 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+echo 10 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+echo 1 > /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
+```
 
 ## Pinmux configuration
 
