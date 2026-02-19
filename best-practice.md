@@ -139,18 +139,18 @@ Below is a GPIO Overview with the following columns:
 | A27  | 23      | 507     | 0x0300_1058 |           |        |           | I2C5 SDA | EMMC D3   | Reserved for I2C5 (Bitbang) |
 | A25  | 22      | 505     | 0x0300_1054 |           |        | SPI4 MOSI |          | EMMC D0   | Not usable²                 |
 | A22  | 21      | 502     | 0x0300_1050 |           |        | SPI4 SCK  |          | EMMC CLK  | Usable¹                     |
-| A26  | 20      | 506     | 0x0300_104C |           |        |           |          | EMMC D2   | Untested                    |
+| A26  | 20      | 506     | 0x0300_104C |           |        |           |          | EMMC D2   | Reserved for WiFi EN        |
 | A19  | 26      | 499     | 0x0300_1064 | UART1 TX  | PWM 7  |           |          | JTAG TMS  | Untested                    |
 | A18  | 27      | 498     | 0x0300_1068 | UART1 RX  | PWM 6  |           |          | JTAG TCK  | Untested                    |
 | A29  | 29      | 508     | 0x0300_1074 | UART2 RX  |        |           |          | JTAG TDO  | Untested                    |
 | B3   | 59      | 451     | 0x0300_10F8 |           |        |           |          | ADC1      | Untested                    |
 | A28  | 28      | 509     | 0x0300_1070 | UART2 TX  |        |           |          | JTAG TDI  | Untested                    |
-| P18  | 51      | 370     | 0x0300_10D0 | UART3 CTS | PWM 4³ | SPI2 CS   | I2C1 SCL | SDIO1 D3  | Untested                    |
-| P19  | 52      | 371     | 0x0300_10D4 | UART3 TX  | PWM 5³ |           |          | SDIO1 D2  | Untested                    |
-| P21  | 54      | 373     | 0x0300_10DC | UART3 RTS | PWM 7³ | SPI2 MISO | I2C1 SDA | SDIO1 D0  | Untested                    |
-| P22  | 55      | 374     | 0x0300_10E0 |           | PWM 8  | SPI2 MOSI | I2C3 SCL | SDIO1 CMD | Untested                    |
-| P23  | 56      | 375     | 0x0300_10E4 |           | PWM 9  | SPI2 SCK  | I2C3 SDA | SDIO1 CLK | Untested                    |
-| P20  | 53      | 372     | 0x0300_10D8 | UART3 RX  | PWM 6³ |           |          | SDIO1 D1  | Untested                    |
+| P18  | 51      | 370     | 0x0300_10D0 | UART3 CTS | PWM 4³ | SPI2 CS   | I2C1 SCL | SDIO1 D3  | Reserved for WiFi           |
+| P19  | 52      | 371     | 0x0300_10D4 | UART3 TX  | PWM 5³ |           |          | SDIO1 D2  | Reserved for WiFi           |
+| P21  | 54      | 373     | 0x0300_10DC | UART3 RTS | PWM 7³ | SPI2 MISO | I2C1 SDA | SDIO1 D0  | Reserved for WiFi           |
+| P22  | 55      | 374     | 0x0300_10E0 |           | PWM 8  | SPI2 MOSI | I2C3 SCL | SDIO1 CMD | Reserved for WiFi           |
+| P23  | 56      | 375     | 0x0300_10E4 |           | PWM 9  | SPI2 SCK  | I2C3 SDA | SDIO1 CLK | Reserved for WiFi           |
+| P20  | 53      | 372     | 0x0300_10D8 | UART3 RX  | PWM 6³ |           |          | SDIO1 D1  | Reserved for WiFi           |
 | A14  | 15      | 494     | 0x0300_1038 |           |        |           |          |           | Untested                    |
 
 
