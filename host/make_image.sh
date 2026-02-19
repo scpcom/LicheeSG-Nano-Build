@@ -89,8 +89,8 @@ if [ ! -e $bs ]; then
   else
     cd ${BUILDDIR} && git submodule update --init --recursive --depth=1
   fi
-  git clone -b main --depth=1 ${GIT_USER_URL}/buildroot-dl.git ${BUILDDIR}/buildroot/dl
-  cd ${BUILDDIR}/buildroot/dl && git checkout f5c041b
+  git clone -b licheesgnano --depth=1 ${GIT_USER_URL}/buildroot-dl.git ${BUILDDIR}/buildroot/dl
+  cd ${BUILDDIR}/buildroot/dl && git checkout 2b444b0
   cd ${BUILDDIR}/buildroot/dl && [ "${GIT_REF}" = "develop" ] || rm -rf .git
   touch $bs
 fi
