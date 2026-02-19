@@ -136,16 +136,16 @@ Below is a GPIO Overview with the following columns:
 | A16  | 18      | 496     | 0x0300_1044 | UART0 TX  | PWM 4  |           |          |           | Reserved for Serial (TX)    |
 | A15  | 17      | 495     | 0x0300_103C |           |        |           | I2C5 SCL |           | Reserved for I2C5 (Bitbang) |
 | A24  | 25      | 504     | 0x0300_1060 |           |        | SPI4 CS   |          | EMMC D1   | Usable¹                     |
-| A23  | 24      | 503     | 0x0300_105C |           |        | SPI4 MISO |          | EMMC CMD  | Not usable²                 |
+| A23  | 24      | 503     | 0x0300_105C |           |        | SPI4 MISO |          | EMMC CMD  | Not usable² (SPI4 emul.?)   |
 | A27  | 23      | 507     | 0x0300_1058 |           |        |           | I2C5 SDA | EMMC D3   | Reserved for I2C5 (Bitbang) |
-| A25  | 22      | 505     | 0x0300_1054 |           |        | SPI4 MOSI |          | EMMC D0   | Not usable²                 |
+| A25  | 22      | 505     | 0x0300_1054 |           |        | SPI4 MOSI |          | EMMC D0   | Not usable² (SPI4 emul.?)   |
 | A22  | 21      | 502     | 0x0300_1050 |           |        | SPI4 SCK  |          | EMMC CLK  | Usable¹                     |
 | A26  | 20      | 506     | 0x0300_104C |           |        |           |          | EMMC D2   | Reserved for WiFi EN        |
-| A19  | 26      | 499     | 0x0300_1064 | UART1 TX  | PWM 7  |           |          | JTAG TMS  | Untested                    |
-| A18  | 27      | 498     | 0x0300_1068 | UART1 RX  | PWM 6  |           |          | JTAG TCK  | Untested                    |
-| A29  | 29      | 508     | 0x0300_1074 | UART2 RX  |        |           |          | JTAG TDO  | Untested                    |
+| A19  | 26      | 499     | 0x0300_1064 | UART1 TX  | PWM 7  |           |          | JTAG TMS  | Reserved for Bluetooth      |
+| A18  | 27      | 498     | 0x0300_1068 | UART1 RX  | PWM 6  |           |          | JTAG TCK  | Reserved for Bluetooth      |
+| A29  | 29      | 508     | 0x0300_1074 | UART2 RX  |        |           |          | JTAG TDO  | Reserved for Bluetooth      |
 | B3   | 59      | 451     | 0x0300_10F8 |           |        |           |          | ADC1      | Untested                    |
-| A28  | 28      | 509     | 0x0300_1070 | UART2 TX  |        |           |          | JTAG TDI  | Untested                    |
+| A28  | 28      | 509     | 0x0300_1070 | UART2 TX  |        |           |          | JTAG TDI  | Reserved for Bluetooth      |
 | P18  | 51      | 370     | 0x0300_10D0 | UART3 CTS | PWM 4³ | SPI2 CS   | I2C1 SCL | SDIO1 D3  | Reserved for WiFi           |
 | P19  | 52      | 371     | 0x0300_10D4 | UART3 TX  | PWM 5³ |           |          | SDIO1 D2  | Reserved for WiFi           |
 | P21  | 54      | 373     | 0x0300_10DC | UART3 RTS | PWM 7³ | SPI2 MISO | I2C1 SDA | SDIO1 D0  | Reserved for WiFi           |
