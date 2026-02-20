@@ -270,6 +270,10 @@ if [ $shrink = y ]; then
   sed -i /'BR2_PACKAGE_ICU'/d configs/${BR_DEFCONFIG}
   sed -i /'BR2_PACKAGE_QT5'/d configs/${BR_DEFCONFIG}
 fi
+if [ $nanokvm = y -a $shrink = y ]; then
+  sed -i /'BR2_PACKAGE_LFTP'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_VSFTPD'/d configs/${BR_DEFCONFIG}
+fi
 if [ $maixcdk = n -a $shrink = y ]; then
   sed -i /'^BR2_PACKAGE_FFMPEG'/d configs/${BR_DEFCONFIG}
   sed -i /'^BR2_PACKAGE_LIBQRENCODE'/d configs/${BR_DEFCONFIG}
