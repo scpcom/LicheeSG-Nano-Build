@@ -411,6 +411,8 @@ if [ $shrink = y ]; then
 fi
 if [ $dap = y -a $shrink = y ]; then
   sed -i /'BR2_PACKAGE_BLUEZ'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_LFTP'/d configs/${BR_DEFCONFIG}
+  sed -i /'BR2_PACKAGE_VSFTPD'/d configs/${BR_DEFCONFIG}
   sed -i /'BR2_PACKAGE_LLDPD'/d configs/${BR_DEFCONFIG}
   sed -i /'BR2_PACKAGE_SSDP_RESPONDER'/d configs/${BR_DEFCONFIG}
   sed -i /'BR2_PACKAGE_UVC_GADGET'/d configs/${BR_DEFCONFIG}
