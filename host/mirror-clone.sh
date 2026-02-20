@@ -46,7 +46,9 @@ find -name .git | while read g ; do
     n=$(grep -E '\[submodule "'$m'"\]|path = ' .gitmodules | grep -A1 -E '\[submodule "'$m'"\]' | grep 'path = ' | cut -d '=' -f 2- | cut -d ' ' -f 2-)
     u=$(grep -E '\[submodule "'$m'"\]|url = ' .gitmodules | grep -A1 -E '\[submodule "'$m'"\]' | grep 'url = ' | cut -d '=' -f 2- | cut -d ' ' -f 2-)
     s=$u
+    u=$(echo $u | sed 's|git@github.com:|https://github.com/|g')
     u=$(echo $u | sed 's|'$GIT_SOURCE_USER_URL'|'$GIT_TARGET_USER_URL'|g')
+    u=$(echo $u | sed 's|'https://github.com/sipeed'|'$GIT_TARGET_USER_URL'|g')
     u=$(echo $u | sed 's|'https://github.com/openssl'|'$GIT_TARGET_USER_URL'|g')
     u=$(echo $u | sed 's|'https://boringssl.googlesource.com'|'$GIT_TARGET_USER_URL'|g')
     u=$(echo $u | sed 's|'https://github.com/krb5'|'$GIT_TARGET_USER_URL'|g')
