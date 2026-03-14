@@ -126,6 +126,13 @@ else
     sed -i 's| \${output_dir}/input/usb.dev$| ${output_dir}/input/usb.dev\ntouch ${output_dir}/input/epsilon|g' tools/common/sd_tools/sd_gen_burn_image_rootless.sh
   fi
 fi
+
+# reduce sd/wifi frequency
+if echo ${SG_BOARD_LINK} | grep -q lichee ; then
+  sed -i 's|max-frequency = <50000000>;|max-frequency = <25000000>;|g' boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts*/*.dts
+  sed -i /'sd-uhs-ddr50;'/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts*/*.dts
+  sed -i /'sd-uhs-sdr104;'/d boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/dts*/*.dts
+fi
 cd ..
 
 source build/cvisetup.sh
