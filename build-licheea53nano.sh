@@ -11,6 +11,7 @@ qt5=y
 tailscale=n
 tpudemo=c
 tpusdk=y
+panelvariants=n
 while [ "$#" -gt 0 ]; do
 	case "$1" in
 	--board=*|--board-link=*)
@@ -78,6 +79,10 @@ while [ "$#" -gt 0 ]; do
 	--no-tpu-sdk|--no-tpusdk)
 		shift
 		tpusdk=n
+		;;
+	--panel-variants)
+		shift
+		panelvariants=y
 		;;
 	*)
 		break
@@ -213,36 +218,38 @@ if ! grep -q -E 'CONFIG_MIPI_PANEL_ZCT2133V1=y' bak.config ; then
 fi
 cp -v install/soc_${SG_BOARD_LINK}/fip.bin install/soc_${SG_BOARD_LINK}/zct2133v1.bin
 
-# 7inch
-build_fip_variant MIPI_PANEL_MTD700920B
-# 2.8inch
-build_fip_variant MIPI_PANEL_ST7701_HD228001C31
-# 2.8inch alt0
-build_fip_variant MIPI_PANEL_ST7701_HD228001C31_ALT0
-# 2.28 inch lhcm
-build_fip_variant MIPI_PANEL_ST7701_LHCM228TS003A
-# 3inch
-build_fip_variant MIPI_PANEL_ST7701_D300FPC9307A
-# 3.1inch
-build_fip_variant MIPI_PANEL_ST7701_D310T9362V1
-# 5inch
-build_fip_variant MIPI_PANEL_ST7701_DXQ5D0019B480854
-# 5inch new
-build_fip_variant MIPI_PANEL_ST7701_DXQ5D0019_V0
-# 2.4inch
-build_fip_variant MIPI_PANEL_D240SI31
-# dsi to hdmi
-build_fip_variant MIPI_PANEL_LT9611_1024X768_60HZ
-# dsi to hdmi
-build_fip_variant MIPI_PANEL_LT9611_1280X720_60HZ
+if [ $panelvariants = y ]; then
+	# 7inch
+	build_fip_variant MIPI_PANEL_MTD700920B
+	# 2.8inch
+	build_fip_variant MIPI_PANEL_ST7701_HD228001C31
+	# 2.8inch alt0
+	build_fip_variant MIPI_PANEL_ST7701_HD228001C31_ALT0
+	# 2.28 inch lhcm
+	build_fip_variant MIPI_PANEL_ST7701_LHCM228TS003A
+	# 3inch
+	build_fip_variant MIPI_PANEL_ST7701_D300FPC9307A
+	# 3.1inch
+	build_fip_variant MIPI_PANEL_ST7701_D310T9362V1
+	# 5inch
+	build_fip_variant MIPI_PANEL_ST7701_DXQ5D0019B480854
+	# 5inch new
+	build_fip_variant MIPI_PANEL_ST7701_DXQ5D0019_V0
+	# 2.4inch
+	build_fip_variant MIPI_PANEL_D240SI31
+	# dsi to hdmi
+	build_fip_variant MIPI_PANEL_LT9611_1024X768_60HZ
+	# dsi to hdmi
+	build_fip_variant MIPI_PANEL_LT9611_1280X720_60HZ
 
-if echo ${SG_BOARD_LINK} | grep -q milkv_duos ; then
-  # 8inch
-  build_fip_variant MIPI_PANEL_MILKV_8HD
-  # 8inch 2lane
-  build_fip_variant MIPI_PANEL_MILKV_8HD_2LANE
-  # 4inch
-  build_fip_variant MIPI_PANEL_MILKV_ST7796S
+	if echo ${SG_BOARD_LINK} | grep -q milkv_duos ; then
+	# 8inch
+	build_fip_variant MIPI_PANEL_MILKV_8HD
+	# 8inch 2lane
+	build_fip_variant MIPI_PANEL_MILKV_8HD_2LANE
+	# 4inch
+	build_fip_variant MIPI_PANEL_MILKV_ST7796S
+	fi
 fi
 
 mv bak.config build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig
