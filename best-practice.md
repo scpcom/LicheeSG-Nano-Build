@@ -1,5 +1,4 @@
 # Todo
-- [ ] Download and mount the image to modify it (see https://unix.stackexchange.com/questions/316401/how-to-mount-a-disk-image-from-the-command-line)
 - [ ] Deep Sleep to save battery?
 - [ ] Autorun example
 - [ ] Fix all Todo in this document
@@ -96,10 +95,15 @@ If you would like to use GPIO on the LicheeRV Nano, below is some useful informa
 It has to be stated that depending on your device config many of the available GPIO PINs are already reserved for
 internal purposes (e.g. WiFi or Bluetooth) and cannot be used without limitations.
 
-To interact with GPIO you have to `export` the pin, specify the `direction` and then get or set the `value`. 
+Usually, the GPIO initialization takes place in the bootloader ([U-BOOT](https://github.com/scpcom/u-boot/blob/licheervnano-2021.10/board/cvitek/cvi_board_init.c)), but it can also be changed during runtime with 
+the `devmem` utility. This tool basically write a value to a memory address, which then causes the LicheeRV Nano
+to change settings or modes for specific hardware.
+
+To interact with GPIO you have to then `export` the pin, specify the `direction` and then get or set the `value`. 
 
 **GPIO `A22` Output example:**
 ```bash
+devmem 0x03001050 b 0x03
 echo 502 > /sys/class/gpio/export
 echo out > /sys/class/gpio/gpio502/direction
 echo 1 > /sys/class/gpio/gpio502/value
@@ -107,6 +111,7 @@ echo 1 > /sys/class/gpio/gpio502/value
 
 **GPIO `A22` Input example:**
 ```bash
+devmem 0x03001050 b 0x03
 echo 502 > /sys/class/gpio/export
 echo in > /sys/class/gpio/gpio502/direction
 cat /sys/class/gpio/gpio502/value
@@ -129,29 +134,29 @@ Below is a GPIO Overview with the following columns:
 
 
 
-| Name | Pin Num | Dev num | Mem         | UART      | PWM    | SPI       | I2C      | AUX       | Usage notes                 |
-|------|---------|---------|-------------|-----------|--------|-----------|----------|-----------|-----------------------------|
-| A17  | 19      | 497     | 0x0300_1040 | UART0 RX  | PWM 5  |           |          |           | Reserved for Serial (RX)    |
-| A16  | 18      | 496     | 0x0300_1044 | UART0 TX  | PWM 4  |           |          |           | Reserved for Serial (TX)    |
-| A15  | 17      | 495     | 0x0300_103C |           |        |           | I2C5 SCL |           | Reserved for I2C5 (Bitbang) |
-| A24  | 25      | 504     | 0x0300_1060 |           |        | SPI4 CS   |          | EMMC D1   | Usable¹                     |
-| A23  | 24      | 503     | 0x0300_105C |           |        | SPI4 MISO |          | EMMC CMD  | Not usable² (SPI4 emul.?)   |
-| A27  | 23      | 507     | 0x0300_1058 |           |        |           | I2C5 SDA | EMMC D3   | Reserved for I2C5 (Bitbang) |
-| A25  | 22      | 505     | 0x0300_1054 |           |        | SPI4 MOSI |          | EMMC D0   | Not usable² (SPI4 emul.?)   |
-| A22  | 21      | 502     | 0x0300_1050 |           |        | SPI4 SCK  |          | EMMC CLK  | Usable¹                     |
-| A26  | 20      | 506     | 0x0300_104C |           |        |           |          | EMMC D2   | Reserved for WiFi EN        |
-| A19  | 26      | 499     | 0x0300_1064 | UART1 TX  | PWM 7  |           |          | JTAG TMS  | Reserved for Bluetooth      |
-| A18  | 27      | 498     | 0x0300_1068 | UART1 RX  | PWM 6  |           |          | JTAG TCK  | Reserved for Bluetooth      |
-| A29  | 29      | 508     | 0x0300_1074 | UART2 RX  |        |           |          | JTAG TDO  | Reserved for Bluetooth      |
-| B3   | 59      | 451     | 0x0300_10F8 |           |        |           |          | ADC1      | Untested                    |
-| A28  | 28      | 509     | 0x0300_1070 | UART2 TX  |        |           |          | JTAG TDI  | Reserved for Bluetooth      |
-| P18  | 51      | 370     | 0x0300_10D0 | UART3 CTS | PWM 4³ | SPI2 CS   | I2C1 SCL | SDIO1 D3  | Reserved for WiFi           |
-| P19  | 52      | 371     | 0x0300_10D4 | UART3 TX  | PWM 5³ |           |          | SDIO1 D2  | Reserved for WiFi           |
-| P21  | 54      | 373     | 0x0300_10DC | UART3 RTS | PWM 7³ | SPI2 MISO | I2C1 SDA | SDIO1 D0  | Reserved for WiFi           |
-| P22  | 55      | 374     | 0x0300_10E0 |           | PWM 8  | SPI2 MOSI | I2C3 SCL | SDIO1 CMD | Reserved for WiFi           |
-| P23  | 56      | 375     | 0x0300_10E4 |           | PWM 9  | SPI2 SCK  | I2C3 SDA | SDIO1 CLK | Reserved for WiFi           |
-| P20  | 53      | 372     | 0x0300_10D8 | UART3 RX  | PWM 6³ |           |          | SDIO1 D1  | Reserved for WiFi           |
-| A14  | 15      | 494     | 0x0300_1038 |           |        |           |          |           | Untested                    |
+| Name | Pin Num | Dev num | Mem        | UART      | PWM    | SPI       | I2C      | AUX       | Usage notes                 |
+|------|---------|---------|------------|-----------|--------|-----------|----------|-----------|-----------------------------|
+| A17  | 19      | 497     | 0x03001040 | UART0 RX  | PWM 5  |           |          |           | Reserved for Serial (RX)    |
+| A16  | 18      | 496     | 0x03001044 | UART0 TX  | PWM 4  |           |          |           | Reserved for Serial (TX)    |
+| A15  | 17      | 495     | 0x0300103C |           |        |           | I2C5 SCL |           | Reserved for I2C5 (Bitbang) |
+| A24  | 25      | 504     | 0x03001060 |           |        | SPI4 CS   |          | EMMC D1   | Usable¹                     |
+| A23  | 24      | 503     | 0x0300105C |           |        | SPI4 MISO |          | EMMC CMD  | Not usable² (SPI4 emul.?)   |
+| A27  | 23      | 507     | 0x03001058 |           |        |           | I2C5 SDA | EMMC D3   | Reserved for I2C5 (Bitbang) |
+| A25  | 22      | 505     | 0x03001054 |           |        | SPI4 MOSI |          | EMMC D0   | Not usable² (SPI4 emul.?)   |
+| A22  | 21      | 502     | 0x03001050 |           |        | SPI4 SCK  |          | EMMC CLK  | Usable¹                     |
+| A26  | 20      | 506     | 0x0300104C |           |        |           |          | EMMC D2   | Reserved for WiFi EN        |
+| A19  | 26      | 499     | 0x03001064 | UART1 TX  | PWM 7  |           |          | JTAG TMS  | Reserved for Bluetooth      |
+| A18  | 27      | 498     | 0x03001068 | UART1 RX  | PWM 6  |           |          | JTAG TCK  | Reserved for Bluetooth      |
+| A29  | 29      | 508     | 0x03001074 | UART2 RX  |        |           |          | JTAG TDO  | Reserved for Bluetooth      |
+| B3   | 59      | 451     | 0x030010F8 |           |        |           |          | ADC1      | Usable¹                     |
+| A28  | 28      | 509     | 0x03001070 | UART2 TX  |        |           |          | JTAG TDI  | Reserved for Bluetooth      |
+| P18  | 51      | 370     | 0x030010D0 | UART3 CTS | PWM 4³ | SPI2 CS   | I2C1 SCL | SDIO1 D3  | Reserved for WiFi           |
+| P19  | 52      | 371     | 0x030010D4 | UART3 TX  | PWM 5³ |           |          | SDIO1 D2  | Reserved for WiFi           |
+| P21  | 54      | 373     | 0x030010DC | UART3 RTS | PWM 7³ | SPI2 MISO | I2C1 SDA | SDIO1 D0  | Reserved for WiFi           |
+| P22  | 55      | 374     | 0x030010E0 |           | PWM 8  | SPI2 MOSI | I2C3 SCL | SDIO1 CMD | Reserved for WiFi           |
+| P23  | 56      | 375     | 0x030010E4 |           | PWM 9  | SPI2 SCK  | I2C3 SDA | SDIO1 CLK | Reserved for WiFi           |
+| P20  | 53      | 372     | 0x030010D8 | UART3 RX  | PWM 6³ |           |          | SDIO1 D1  | Reserved for WiFi           |
+| A14  | 15      | 494     | 0x03001038 |           |        |           |          |           | Not usable² (user led?)     |
 
 
 
@@ -178,15 +183,43 @@ watch -n 1 -t cat /sys/class/gpio/gpio504/value
 
 ## Autorun applications
 
-If you are planning to autorun applications (e.g. to run a UI right from the start), you can just put an entry in the `/etc/rc.local` script:
+If you are planning to autorun applications (e.g. to run a UI right from the start), you can just put an entry in the `/etc/rc.local` script. 
+It has been a good practise to control the autorun by creating or removing a marker file in `/boot`, so let's say you'd like to autorun a script
+`audioplayer`, here is an example on how you could implement this:
 
-- Todo: example -
+
+```sh
+# create the marker file
+touch /boot/audioplayer
+
+# append autorun of /root/audioplayer to /etc/rc.local
+cat <<EOF >> "/etc/rc.local"
+
+# audioplayer autorun
+if [ -e /boot/audioplayer ]
+then
+  /root/audioplayer
+fi
+EOF
+```
+
+After this you can easily enable and disable the autorun:
+
+```sh
+# disable autorun
+rm /boot/audioplayer
+
+# enable autorun
+touch /boot/audioplayer
+```
 
 
 ## Disabling WiFi for saving battery
 
-To save battery, disabling WiFi might be an option. Here are some commands that might help.
+To save battery, disabling WiFi might be an option. 
 
+CAUTION: Beware that disabling the WiFi will kick you out of an SSH session,
+so you need to either have a serial connection to perform this or some kind of UI on a Display to re-enable WiFi.
 
 Stop the wifi service:
 
@@ -232,10 +265,9 @@ Here are some Links to vendors (last update: 2025-12-04):
 **Connectors**
 The connectors are a bit fiddly to get working, but this picture shows how it can be connected:
 
-- Todo: add photo of connected display -
+An example project with this display is https://github.com/nanowave-player/nanowave-ui which also contains more information about this topic.
 
 ### Configuration
-
 
 To enable the display, you need to change the `/boot/uEnv.txt`:
 
@@ -325,31 +357,40 @@ https://linux-sunxi.org/Cpufreq
 
 #### CPU governor - performance vs. ondemand
 
-Both the chosen governor as well as the cpufreq limits can have a huge impact on power consumption, performance and even functionality on too low cpu_freq.
+Both the chosen governor and the cpufreq limits can have a huge impact on power consumption, performance and even functionality on too low cpu_freq.
 
-**performance**
-If the lowest possible power consumption is not a priority, then the `performance` governor is a very good option. 
+It turned out that the LicheeRV Nano does not support the default way of setting the governor - however, the following information is kept until a better solution is documented:
 
-```bash
+<details>
+  <summary>Non-working information about CPU governor</summary>
 
-# power consumption does not matter, run at full performance
-echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+  
+  **performance**
+  If the lowest possible power consumption is NOT a priority, then the `performance` governor is a very good option.
+  
+  ```bash
+  
+  # power consumption does not matter, run at full performance
+  echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+  
+  ```
+  
+  **ondemand**
+  
+  If you allow very low scaling_min_freq values with ondemand/interactive the system might behave laggy and some timing critical stuff (eg. reading out sensors or GPIO) won't work.
+  A good compromise between power consumption and a responsive system being able to operate at full performance when needed is
+  
+  ```bash
+  # power consumption is important, run on demand performance
+  echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+  
+  echo 1008000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+  echo 408000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+  
+  echo 25 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+  echo 10 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+  echo 1 > /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
+  ```
 
-```
+</details>
 
-**ondemand**
-
-If you allow very low scaling_min_freq values with ondemand/interactive the system might behave laggy and some timing critical stuff (eg. reading out sensors or GPIO) won't work.
-A good compromise between power consumption and a responsive system being able to operate at full performance when needed is
-
-```bash
-# power consumption is important, run on demand performance
-echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-
-echo 1008000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-echo 408000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-
-echo 25 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
-echo 10 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
-echo 1 > /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
-```
