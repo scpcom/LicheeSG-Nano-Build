@@ -1,8 +1,3 @@
-# Todo
-- [ ] Deep Sleep to save battery?
-- [ ] Autorun example
-- [ ] Fix all Todo in this document
-
 # Best practice
 
 Using the  LicheeSG-Nano-Build project with a LicheeRV Nano board opens up some interesting possibilities. However, the documentation may not be sufficient for several use cases. This document contains best practise solutions for some of them, as well as noteworthy information for getting started.
