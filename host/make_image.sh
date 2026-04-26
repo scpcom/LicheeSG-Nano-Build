@@ -148,6 +148,7 @@ if [ ! -e $bs ]; then
     cd ${BUILDDIR}/tdl_sdk && sed -i 's|GIT_REPOSITORY https://github.com/google/googletest|GIT_REPOSITORY '${GIT_USER_URL}'/googletest|g' cmake/thirdparty.cmake
     cd ${BUILDDIR}/tdl_sdk && sed -i 's|GIT_REPOSITORY https://github.com/nothings/stb|GIT_REPOSITORY '${GIT_USER_URL}'/stb|g' cmake/thirdparty.cmake
     cd ${BUILDDIR}/tdl_sdk && sed -i 's|GIT_REPOSITORY https://gitlab.com/libeigen/eigen|GIT_REPOSITORY '${GIT_USER_URL}'/eigen|g' cmake/thirdparty.cmake
+    cd ${BUILDDIR}/tdl_sdk && sed -i 's|GIT_REPOSITORY https://github.com/nlohmann/json|GIT_REPOSITORY '${GIT_USER_URL}'/json|g' cmake/thirdparty.cmake
     cd ${BUILDDIR}/tdl_sdk && sed -i 's|GIT_REPOSITORY https://github.com/scpcom/kissfft|GIT_REPOSITORY '${GIT_USER_URL}'/kissfft|g' cmake/thirdparty.cmake
     cd ${BUILDDIR}/tdl_sdk && sed -i 's|GIT_REPOSITORY https://github.com/scpcom/kaldi-native-fbank|GIT_REPOSITORY '${GIT_USER_URL}'/kaldi-native-fbank|g' cmake/thirdparty.cmake
   fi
