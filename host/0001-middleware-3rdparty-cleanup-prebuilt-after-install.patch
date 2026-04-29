@@ -1,0 +1,24 @@
+From c3ec11bf22f96490880f61af35483f7a7f3d8b09 Mon Sep 17 00:00:00 2001
+From: builder <builder@localhost.localdomain>
+Date: Wed, 29 Apr 2026 22:01:29 +0000
+Subject: [PATCH] middleware: 3rdparty: cleanup prebuilt after install
+
+---
+ 3rdparty/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/3rdparty/Makefile b/3rdparty/Makefile
+index be80497..966d907 100644
+--- a/3rdparty/Makefile
++++ b/3rdparty/Makefile
+@@ -9,6 +9,7 @@ all:
+ 	    do cd `dirname $$x`; if [ $$? ]; then make || exit 1; cd -; fi; done
+ 	@for g in `find ./ -name .git -type f `; \
+ 	    do if [ -e `dirname $$g` ] ; then git submodule deinit --force `dirname $$g` ; fi; done
++	@rm -rf prebuilt
+ 	@rm -rf ./tmp
+ 
+ clean:
+-- 
+2.43.0
+

@@ -106,6 +106,7 @@ if [ ! -e $bs ]; then
     cd ${BUILDDIR} && ./host/replace-all-linaro-toolchains.sh
   fi
   cd ${BUILDDIR} && rm -f host/riscv64-*.tar.*
+  cd ${BUILDDIR}/build && [ "$GIT_REF" = "develop" ] || git am < /builder/0001-build-cleanup-kernel-object-files-after-install.patch
   cd ${BUILDDIR}/buildroot && git am < /builder/buildroot-pkg-generic-cleanup-build-after-install.patch
   cd ${BUILDDIR}/buildroot && [ "$GIT_REF" = "develop" ] || git am < /builder/buildroot-cleanup-build-before-host-finalize.patch
   cd ${BUILDDIR}/buildroot && [ "$GIT_REF" = "develop" ] || git am < /builder/buildroot-cleanup-build-after-target-finalize.patch
@@ -171,6 +172,8 @@ if [ ! -e $bs ]; then
   fi
   cd ${BUILDDIR}/middleware && git am < /builder/middleware-3rdparty-cleanup-build-after-install.patch
   cd ${BUILDDIR}/middleware && git am < /builder/middleware-3rdparty-deinit-submodules-after-install.patch
+  cd ${BUILDDIR}/middleware && [ "$GIT_REF" = "develop" ] || git am < /builder/0001-middleware-3rdparty-cleanup-prebuilt-after-install.patch
+  cd ${BUILDDIR}/middleware && [ "$GIT_REF" = "develop" ] || git am < /builder/0001-middleware-cleanup-object-files-after-install.patch
   cd ${BUILDDIR}/ramdisk && for f in rootfs/common_*/usr/share/fw_vcodec/*.bin ; do
     [ -e $f ] || continue
     d=`dirname $f`

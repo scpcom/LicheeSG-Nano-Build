@@ -1,0 +1,24 @@
+From 7f2b693057815e3928b571b4a814a47e4ec114f0 Mon Sep 17 00:00:00 2001
+From: builder <builder@localhost.localdomain>
+Date: Wed, 29 Apr 2026 22:13:19 +0000
+Subject: [PATCH] build: cleanup kernel object files after install
+
+---
+ Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Makefile b/Makefile
+index ad01b9a..d3c2218 100644
+--- a/Makefile
++++ b/Makefile
+@@ -329,6 +329,7 @@ ifeq ($(patsubst "%",%,$(CONFIG_ARCH)),arm64)
+ 	# Since we will support aarch32 user space even if the kernel is aarch64, install aarch32 headers also
+ 	$(call copy_header_action, ${KERNEL_PATH}/${KERNEL_OUTPUT_FOLDER}/arm/usr/include)
+ endif
++	${Q}find ${KERNEL_PATH}/${KERNEL_OUTPUT_FOLDER} -name '*.o' -print0 | xargs -0 rm -f
+ 	${Q}rm -rf ${KERNEL_PATH}/build/kernel_output
+ 	${Q}ln -sf ${KERNEL_PATH}/${KERNEL_OUTPUT_FOLDER}  ${KERNEL_PATH}/build/kernel_output
+ 
+-- 
+2.43.0
+
