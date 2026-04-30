@@ -15,7 +15,7 @@ index 1762b62..693bd23 100644
  	# copy mw lib
  	@cp -a lib/*.so*  $(DESTDIR)/usr/lib
  	@cp -a lib/3rd/*.so*  $(DESTDIR)/usr/lib/3rd
-+	@find ./ -name '*.o' -print0 | xargs -0 rm -f
++	@find ./ -name '*.o' ! -name 'sample_common_*.o' -print0 | xargs -0 rm -f
  
  uninstall:
  	@rm $(DESTDIR) -rf
