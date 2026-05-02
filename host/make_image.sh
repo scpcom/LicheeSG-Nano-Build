@@ -14,6 +14,10 @@ if [ "X$GIT_TARGET_HOST" = "X" ]; then
   GIT_TARGET_HOST=$GIT_SOURCE_HOST
 fi
 
+if [ "X$GIT_RELEASES_URL" = "X" ]; then
+  GIT_RELEASES_URL=https://$GIT_TARGET_HOST
+fi
+
 GIT_SOURCE_USER_URL=https://$GIT_SOURCE_HOST/$GIT_SOURCE_USER
 GIT_TARGET_USER_URL=https://$GIT_TARGET_HOST/$GIT_TARGET_USER
 GIT_USER_URL=$GIT_TARGET_USER_URL
@@ -146,6 +150,8 @@ if [ ! -e $bs ]; then
     cd ${BUILDDIR}/buildroot && git add package/tpudemo-sg200x/tpudemo-sg200x.mk
     cd ${BUILDDIR}/buildroot && git add package/uvc-gadget/uvc-gadget.mk
     cd ${BUILDDIR}/buildroot && git commit -m "update package urls"
+    cd ${BUILDDIR}/middleware/3rdparty/opencv4.5/opencv && sed -i 's|https://github.com/opencv/ade/archive|'${GIT_RELEASES_URL}'/opencv/ade/archive|g' modules/gapi/cmake/DownloadADE.cmake
+    cd ${BUILDDIR}/middleware/3rdparty/opencv4.5/opencv && sed -i 's|https://github.com/scpcom/ade/archive|'${GIT_RELEASES_URL}'/scpcom/ade/archive|g' modules/gapi/cmake/DownloadADE.cmake
     cd ${BUILDDIR}/tdl_sdk && sed -i 's|GIT_REPOSITORY https://github.com/google/googletest|GIT_REPOSITORY '${GIT_USER_URL}'/googletest|g' cmake/thirdparty.cmake
     cd ${BUILDDIR}/tdl_sdk && sed -i 's|GIT_REPOSITORY https://github.com/nothings/stb|GIT_REPOSITORY '${GIT_USER_URL}'/stb|g' cmake/thirdparty.cmake
     cd ${BUILDDIR}/tdl_sdk && sed -i 's|GIT_REPOSITORY https://gitlab.com/libeigen/eigen|GIT_REPOSITORY '${GIT_USER_URL}'/eigen|g' cmake/thirdparty.cmake
