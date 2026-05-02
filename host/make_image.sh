@@ -24,6 +24,10 @@ GIT_USER_URL=$GIT_TARGET_USER_URL
 
 [ "X$GIT_REF" = "X" ] && GIT_REF="develop"
 
+if [ "X$TOOLCHAIN_URL_ARM" = "X" ]; then
+  TOOLCHAIN_URL_ARM=$(echo ${TOOLCHAIN_URL} | sed 's|/arm/.*|/arm/gnu|g' | sed 's|/linaro|/arm/gnu|g')
+fi
+
 BUILDDIR="/cvi_mmf_sdk"
 
 if [ "X$BOARD_SHORT" = "X" ]; then
@@ -149,6 +153,11 @@ if [ ! -e $bs ]; then
     cd ${BUILDDIR}/buildroot && git add package/rtc-tools/rtc-tools.mk
     cd ${BUILDDIR}/buildroot && git add package/tpudemo-sg200x/tpudemo-sg200x.mk
     cd ${BUILDDIR}/buildroot && git add package/uvc-gadget/uvc-gadget.mk
+    if [ "X${TOOLCHAIN_URL_ARM}" != "X" ]; then
+      cd ${BUILDDIR}/buildroot && sed -i 's|https://developer.arm.com/-/media/Files/downloads/gnu|'${TOOLCHAIN_URL_ARM}'|g' toolchain/toolchain-external/toolchain-external-arm-aarch64/toolchain-external-arm-aarch64.mk
+      cd ${BUILDDIR}/buildroot && sed -i 's|https://developer.arm.com/-/media/Files/downloads/gnu|'${TOOLCHAIN_URL_ARM}'|g' toolchain/toolchain-external/toolchain-external-arm-arm/toolchain-external-arm-arm.mk
+      cd ${BUILDDIR}/buildroot && git add toolchain/toolchain-external/toolchain-external-arm-*/toolchain-external-arm-*.mk
+    fi
     cd ${BUILDDIR}/buildroot && git commit -m "update package urls"
     cd ${BUILDDIR}/middleware/3rdparty/opencv4.5/opencv && sed -i 's|https://github.com/opencv/ade/archive|'${GIT_RELEASES_URL}'/opencv/ade/archive|g' modules/gapi/cmake/DownloadADE.cmake
     cd ${BUILDDIR}/middleware/3rdparty/opencv4.5/opencv && sed -i 's|https://github.com/scpcom/ade/archive|'${GIT_RELEASES_URL}'/scpcom/ade/archive|g' modules/gapi/cmake/DownloadADE.cmake
