@@ -53,6 +53,8 @@ find -name .git | while read g ; do
     u=$(echo $u | sed 's|'https://boringssl.googlesource.com'|'$GIT_TARGET_USER_URL'|g')
     u=$(echo $u | sed 's|'https://github.com/krb5'|'$GIT_TARGET_USER_URL'|g')
     u=$(echo $u | sed 's|'https://github.com/pyca/cryptography'|'$GIT_TARGET_USER_URL'/pyca-cryptography|g')
+    u=$(echo $u | sed 's|'https://github.com/gost-engine/engine'|'$GIT_TARGET_USER_URL'/gost-engine|g')
+    u=$(echo $u | sed 's|'https://github.com/google/wycheproof'|'$GIT_TARGET_USER_URL'/wycheproof|g')
     u=$(echo $u | sed 's|'https://github.com/FreeRTOS'|'$GIT_TARGET_USER_URL'|g')
     u=$(echo $u | sed 's|'https://github.com/riscv-collab'|'$GIT_TARGET_USER_URL'|g')
     u=$(echo $u | sed 's|'https://github.com/ucb-bar'|'$GIT_TARGET_USER_URL'|g')
