@@ -272,6 +272,7 @@ if [ $shrink = y ]; then
   sed -i /'BR2_PACKAGE_QT5'/d configs/${BR_DEFCONFIG}
 fi
 if [ $nanokvm = y -a $shrink = y ]; then
+  sed -i s/'^BR2_PACKAGE_PYTHON_REQUESTS=y'/'BR2_PACKAGE_PYTHON_TEXTUAL=y\nBR2_PACKAGE_PYTHON_REQUESTS=y'/g configs/${BR_DEFCONFIG}
   sed -i /'BR2_PACKAGE_LFTP'/d configs/${BR_DEFCONFIG}
   sed -i /'BR2_PACKAGE_VSFTPD'/d configs/${BR_DEFCONFIG}
 fi
