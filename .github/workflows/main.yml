@@ -15,8 +15,8 @@ jobs:
       packages: write
     steps:
         - name: checkout
-          uses: actions/checkout@v4
-        - uses: dorny/paths-filter@v3
+          uses: actions/checkout@v6
+        - uses: dorny/paths-filter@v4
           id: filter
           with:
             filters: |
@@ -25,7 +25,7 @@ jobs:
               - '.github/**'
         - name: Log into registry ghcr.io
           if: (github.event_name != 'pull_request' && steps.filter.outputs.src == 'true') || startsWith(github.event.ref, 'refs/tags/v')
-          uses: docker/login-action@v3
+          uses: docker/login-action@v4
           with:
             registry: ghcr.io
             username: ${{ github.actor }}
@@ -34,14 +34,14 @@ jobs:
         - name: Extract Docker metadata
           if: (github.event_name != 'pull_request' && steps.filter.outputs.src == 'true') || startsWith(github.event.ref, 'refs/tags/v')
           id: meta
-          uses: docker/metadata-action@v5
+          uses: docker/metadata-action@v6
           with:
             images: ghcr.io/scpcom/licheesg-nano-image
 
         - name: Build and push Docker image
           if: (github.event_name != 'pull_request' && steps.filter.outputs.src == 'true') || startsWith(github.event.ref, 'refs/tags/v')
           id: build-and-push
-          uses: docker/build-push-action@v5
+          uses: docker/build-push-action@v7
           with:
             context: .
             file: ./host/Dockerfile
@@ -66,9 +66,9 @@ jobs:
     needs: build-docker-image
     steps:
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
       - name: Get Board Configs
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Build Images
         uses: scpcom/docker-run-action@v4
         with:
@@ -83,7 +83,7 @@ jobs:
           ls -lah
           echo "PACKAGE=${{ github.workspace }}/images/*" >> $GITHUB_ENV
       - name: Upload package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: image-files-${{ matrix.boards }}-${{ matrix.variant }}-${{ matrix.storage }}
           path: |
@@ -98,9 +98,9 @@ jobs:
     needs: build-image
     steps:
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
       - name: Get Board Configs
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Build Images
         uses: scpcom/docker-run-action@v4
         with:
@@ -115,7 +115,7 @@ jobs:
           ls -lah
           echo "PACKAGE=${{ github.workspace }}/images/*" >> $GITHUB_ENV
       - name: Upload package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: image-files-${{ matrix.boards }}-${{ matrix.variant }}-${{ matrix.storage }}
           path: |
@@ -127,13 +127,13 @@ jobs:
     permissions: write-all
     steps:
       - name: download firmware
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
       - name: list images
         run: |
           ls -lah
           ls -lah image-files-*/
       - name: publish artifacts
-        uses: softprops/action-gh-release@v2.4.2
+        uses: softprops/action-gh-release@v3
         with:
           append_body: true
           files: |
