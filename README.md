@@ -36,7 +36,7 @@ Sophgo cv181x/sg200x based boards such as LicheeRV Nano and MilkV Duo256/DuoS. T
 - updated cvi_rtsp to weekly rls 2025.03.14
 - updated tdl_sdk to v2.x rls 2025.10.28
 - replaced oss pre-built with 3rdparty libs build from source (source is placed in middleware/3rdparty/)
-- merged mainline v5.10.245 into linux_5.10
+- merged mainline v5.10.260 into linux_5.10
 - updated buildroot to 2025.02.6
 - added maix_mmf sources and media_server submodule to middleware/sample/test_mmf
 - imported rtsp_server from maixcdk to middleware/sample/test_mmf
