@@ -468,6 +468,9 @@ clean_fsbl
 build_fsbl
 cp -v install/soc_${SG_BOARD_LINK}/fip.bin install/soc_${SG_BOARD_LINK}/wifi-only.bin
 
+clean_uboot
+clean_fsbl
+
 mv bak.u-boot-config build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/u-boot/*${SG_BOARD_LINK}_defconfig
 mv bak.fip install/soc_${SG_BOARD_LINK}/fip.bin
 mv bak.fip_spl install/soc_${SG_BOARD_LINK}/fip_spl.bin
